@@ -1,0 +1,220 @@
+/* src/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   GLOBAL COLOR SYSTEM - EDIT COLORS HERE
+   ============================================ */
+
+:root {
+  /* ========== BACKGROUND COLORS ========== */
+  --color-bg-primary: #030712;       /* Main page background (gray-950) */
+  --color-bg-secondary: #111827;     /* Card/section backgrounds (gray-900) */
+  --color-bg-tertiary: #1f2937;      /* Nested elements (gray-800) */
+  --color-bg-elevated: #374151;      /* Buttons, inputs (gray-700) */
+  
+  /* ========== TEXT COLORS ========== */
+  --color-text-primary: #ffffff;     /* Main text */
+  --color-text-secondary: #d1d5db;   /* Muted text (gray-300) */
+  --color-text-tertiary: #9ca3af;    /* Faded text (gray-400) */
+  --color-text-muted: #6b7280;       /* Very faded (gray-500) */
+  
+  /* ========== BORDER COLORS ========== */
+  --color-border-primary: #374151;   /* Main borders (gray-700) */
+  --color-border-secondary: #1f2937; /* Subtle borders (gray-800) */
+  
+  /* ========== ACCENT COLORS ========== */
+  /* Primary accent (blue) */
+  --color-accent-primary: #3b82f6;
+  --color-accent-primary-hover: #2563eb;
+  --color-accent-primary-light: rgba(59, 130, 246, 0.2);
+  
+  /* Success (green) */
+  --color-success: #22c55e;
+  --color-success-hover: #16a34a;
+  --color-success-light: rgba(34, 197, 94, 0.2);
+  
+  /* Warning (yellow/orange) */
+  --color-warning: #eab308;
+  --color-warning-hover: #ca8a04;
+  --color-warning-light: rgba(234, 179, 8, 0.2);
+  
+  /* Danger (red) */
+  --color-danger: #ef4444;
+  --color-danger-hover: #dc2626;
+  --color-danger-light: rgba(239, 68, 68, 0.2);
+  
+  /* Purple accent */
+  --color-purple: #a855f7;
+  --color-purple-hover: #9333ea;
+  --color-purple-light: rgba(168, 85, 247, 0.2);
+  
+  /* Orange accent */
+  --color-orange: #f97316;
+  --color-orange-hover: #ea580c;
+  --color-orange-light: rgba(249, 115, 22, 0.2);
+  
+  /* Cyan/Teal accent */
+  --color-teal: #14b8a6;
+  --color-teal-hover: #0d9488;
+  --color-teal-light: rgba(20, 184, 166, 0.2);
+  
+  /* Pink accent */
+  --color-pink: #ec4899;
+  --color-pink-hover: #db2777;
+  --color-pink-light: rgba(236, 72, 153, 0.2);
+  
+  /* ========== VISUALIZATION COLORS ========== */
+  --color-viz-current: #eab308;      /* Currently processing element */
+  --color-viz-found: #22c55e;        /* Found/matched element */
+  --color-viz-visited: #3b82f6;      /* Already visited */
+  --color-viz-comparing: #f97316;    /* Being compared */
+  --color-viz-sorted: #22c55e;       /* Sorted/complete */
+  --color-viz-default: #6b7280;      /* Default state */
+  
+  /* ========== CODE SYNTAX COLORS ========== */
+  --color-code-keyword: #3b82f6;     /* Keywords (blue) */
+  --color-code-string: #22c55e;      /* Strings (green) */
+  --color-code-number: #f97316;      /* Numbers (orange) */
+  --color-code-comment: #6b7280;     /* Comments (gray) */
+  --color-code-function: #a855f7;    /* Functions (purple) */
+  --color-code-variable: #eab308;    /* Variables (yellow) */
+  --color-code-type: #ec4899;        /* Types (pink) */
+  
+  /* ========== GRADIENT COLORS ========== */
+  --gradient-primary: linear-gradient(to right, var(--color-accent-primary), var(--color-purple));
+  --gradient-success: linear-gradient(to right, var(--color-success), var(--color-teal));
+  --gradient-warning: linear-gradient(to right, var(--color-orange), var(--color-warning));
+}
+
+/* ========== LIGHT THEME OVERRIDES ========== */
+.light {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+  --color-bg-elevated: #e5e7eb;
+  
+  --color-text-primary: #111827;
+  --color-text-secondary: #374151;
+  --color-text-tertiary: #6b7280;
+  --color-text-muted: #9ca3af;
+  
+  --color-border-primary: #d1d5db;
+  --color-border-secondary: #e5e7eb;
+}
+
+/* ============================================
+   UTILITY CLASSES USING CSS VARIABLES
+   ============================================ */
+
+@layer utilities {
+  /* Background utilities */
+  .bg-theme-primary { background-color: var(--color-bg-primary); }
+  .bg-theme-secondary { background-color: var(--color-bg-secondary); }
+  .bg-theme-tertiary { background-color: var(--color-bg-tertiary); }
+  .bg-theme-elevated { background-color: var(--color-bg-elevated); }
+  
+  /* Text utilities */
+  .text-theme-primary { color: var(--color-text-primary); }
+  .text-theme-secondary { color: var(--color-text-secondary); }
+  .text-theme-tertiary { color: var(--color-text-tertiary); }
+  .text-theme-muted { color: var(--color-text-muted); }
+  
+  /* Border utilities */
+  .border-theme-primary { border-color: var(--color-border-primary); }
+  .border-theme-secondary { border-color: var(--color-border-secondary); }
+  
+  /* Accent utilities */
+  .bg-accent-primary { background-color: var(--color-accent-primary); }
+  .bg-accent-primary-hover:hover { background-color: var(--color-accent-primary-hover); }
+  .text-accent-primary { color: var(--color-accent-primary); }
+  
+  .bg-success { background-color: var(--color-success); }
+  .bg-success-hover:hover { background-color: var(--color-success-hover); }
+  .text-success { color: var(--color-success); }
+  
+  .bg-warning { background-color: var(--color-warning); }
+  .bg-warning-hover:hover { background-color: var(--color-warning-hover); }
+  .text-warning { color: var(--color-warning); }
+  
+  .bg-danger { background-color: var(--color-danger); }
+  .bg-danger-hover:hover { background-color: var(--color-danger-hover); }
+  .text-danger { color: var(--color-danger); }
+  
+  .bg-purple { background-color: var(--color-purple); }
+  .bg-purple-hover:hover { background-color: var(--color-purple-hover); }
+  .text-purple { color: var(--color-purple); }
+  
+  .bg-orange { background-color: var(--color-orange); }
+  .bg-orange-hover:hover { background-color: var(--color-orange-hover); }
+  .text-orange { color: var(--color-orange); }
+  
+  .bg-teal { background-color: var(--color-teal); }
+  .bg-teal-hover:hover { background-color: var(--color-teal-hover); }
+  .text-teal { color: var(--color-teal); }
+  
+  .bg-pink { background-color: var(--color-pink); }
+  .bg-pink-hover:hover { background-color: var(--color-pink-hover); }
+  .text-pink { color: var(--color-pink); }
+  
+  /* Visualization utilities */
+  .viz-current { 
+    background-color: var(--color-viz-current-light, rgba(234, 179, 8, 0.3));
+    border-color: var(--color-viz-current);
+  }
+  .viz-found { 
+    background-color: var(--color-viz-found-light, rgba(34, 197, 94, 0.3));
+    border-color: var(--color-viz-found);
+  }
+  .viz-visited { 
+    background-color: var(--color-viz-visited-light, rgba(59, 130, 246, 0.2));
+    border-color: var(--color-viz-visited);
+  }
+  .text-viz-current { color: var(--color-viz-current); }
+  .text-viz-found { color: var(--color-viz-found); }
+  .text-viz-visited { color: var(--color-viz-visited); }
+  
+  /* Code syntax utilities */
+  .code-keyword { color: var(--color-code-keyword); }
+  .code-string { color: var(--color-code-string); }
+  .code-number { color: var(--color-code-number); }
+  .code-comment { color: var(--color-code-comment); }
+  .code-function { color: var(--color-code-function); }
+  .code-variable { color: var(--color-code-variable); }
+  .code-type { color: var(--color-code-type); }
+  
+  /* Additional muted utilities */
+  .bg-theme-muted { background-color: var(--color-text-muted); }
+  .border-theme-muted { border-color: var(--color-text-muted); }
+  
+  /* Light color variants */
+  .bg-accent-primary-light { background-color: var(--color-accent-primary-light); }
+  .bg-success-light { background-color: var(--color-success-light); }
+  .bg-warning-light { background-color: var(--color-warning-light); }
+  .bg-danger-light { background-color: var(--color-danger-light); }
+  .bg-purple-light { background-color: var(--color-purple-light); }
+  .bg-orange-light { background-color: var(--color-orange-light); }
+  .bg-teal-light { background-color: var(--color-teal-light); }
+  .bg-pink-light { background-color: var(--color-pink-light); }
+  
+  /* Hover backgrounds */
+  .bg-success-hover { background-color: var(--color-success-hover); }
+  .bg-warning-hover { background-color: var(--color-warning-hover); }
+  .bg-danger-hover { background-color: var(--color-danger-hover); }
+  .bg-purple-hover { background-color: var(--color-purple-hover); }
+  .bg-orange-hover { background-color: var(--color-orange-hover); }
+  .bg-teal-hover { background-color: var(--color-teal-hover); }
+  .bg-pink-hover { background-color: var(--color-pink-hover); }
+  .bg-accent-primary-hover { background-color: var(--color-accent-primary-hover); }
+  
+  /* Border accent colors */
+  .border-accent-primary { border-color: var(--color-accent-primary); }
+  .border-success { border-color: var(--color-success); }
+  .border-warning { border-color: var(--color-warning); }
+  .border-danger { border-color: var(--color-danger); }
+  .border-purple { border-color: var(--color-purple); }
+  .border-orange { border-color: var(--color-orange); }
+  .border-teal { border-color: var(--color-teal); }
+  .border-pink { border-color: var(--color-pink); }
+}

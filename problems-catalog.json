@@ -1,0 +1,853 @@
+{
+  "metadata": {
+    "project": "AlgoVisualizer",
+    "description": "Complete catalog of algorithm problems with LeetCode links",
+    "totalProblems": 129,
+    "generatedDate": "2026-01-03"
+  },
+  "problems": [
+    {
+      "name": "Container With Most Water",
+      "category": "Arrays",
+      "leetcodeNumber": 11,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/container-with-most-water/"
+    },
+    {
+      "name": "3Sum",
+      "category": "Arrays",
+      "leetcodeNumber": 15,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/3sum/"
+    },
+    {
+      "name": "4Sum",
+      "category": "Arrays",
+      "leetcodeNumber": 18,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/4sum/"
+    },
+    {
+      "name": "Trapping Rain Water",
+      "category": "Arrays",
+      "leetcodeNumber": 42,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/trapping-rain-water/"
+    },
+    {
+      "name": "Maximum Subarray",
+      "category": "Arrays",
+      "leetcodeNumber": 53,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/maximum-subarray/"
+    },
+    {
+      "name": "Merge Intervals",
+      "category": "Arrays",
+      "leetcodeNumber": 56,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/merge-intervals/"
+    },
+    {
+      "name": "Best Time to Buy and Sell Stock",
+      "category": "Arrays",
+      "leetcodeNumber": 121,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/"
+    },
+    {
+      "name": "Maximum Gap",
+      "category": "Arrays",
+      "leetcodeNumber": 164,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/maximum-gap/"
+    },
+    {
+      "name": "Rotate Array",
+      "category": "Arrays",
+      "leetcodeNumber": 189,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/rotate-array/"
+    },
+    {
+      "name": "Product of Array Except Self",
+      "category": "Arrays",
+      "leetcodeNumber": 238,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/product-of-array-except-self/"
+    },
+    {
+      "name": "Move Zeros",
+      "category": "Arrays",
+      "leetcodeNumber": 283,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/move-zeroes/"
+    },
+    {
+      "name": "Split Array Largest Sum",
+      "category": "Arrays",
+      "leetcodeNumber": 410,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/split-array-largest-sum/"
+    },
+    {
+      "name": "Squares of a Sorted Array",
+      "category": "Arrays",
+      "leetcodeNumber": 977,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/squares-of-a-sorted-array/"
+    },
+    {
+      "name": "Max Consecutive Ones III",
+      "category": "Arrays",
+      "leetcodeNumber": 1004,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/max-consecutive-ones-iii/"
+    },
+    {
+      "name": "Sum of Subarray Ranges",
+      "category": "Arrays",
+      "leetcodeNumber": 2104,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/sum-of-subarray-ranges/"
+    },
+    {
+      "name": "Find Maximum Element",
+      "category": "Arrays",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Custom basic problem"
+    },
+    {
+      "name": "Find Minimum Element",
+      "category": "Arrays",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Custom basic problem"
+    },
+    {
+      "name": "Array Sum",
+      "category": "Arrays",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Custom basic problem"
+    },
+    {
+      "name": "Reverse Array",
+      "category": "Arrays",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Custom basic problem"
+    },
+    {
+      "name": "Two Sum",
+      "category": "Arrays",
+      "leetcodeNumber": 1,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/two-sum/"
+    },
+    {
+      "name": "Count Zeros in Array",
+      "category": "Arrays",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Custom basic problem"
+    },
+    {
+      "name": "Sliding Window Maximum",
+      "category": "SlidingWindows",
+      "leetcodeNumber": 239,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/sliding-window-maximum/"
+    },
+    {
+      "name": "Fruit Into Baskets",
+      "category": "SlidingWindows",
+      "leetcodeNumber": 904,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/fruit-into-baskets/"
+    },
+    {
+      "name": "Minimum Window Substring",
+      "category": "SlidingWindows",
+      "leetcodeNumber": 76,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/minimum-window-substring/"
+    },
+    {
+      "name": "Longest Substring Without Repeating Characters",
+      "category": "SlidingWindows",
+      "leetcodeNumber": 3,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/longest-substring-without-repeating-characters/"
+    },
+    {
+      "name": "Basic Binary Search",
+      "category": "BinarySearch",
+      "leetcodeNumber": null,
+      "difficulty": "Easy",
+      "leetcodeUrl": null,
+      "note": "Basic implementation"
+    },
+    {
+      "name": "Search a 2D Matrix",
+      "category": "BinarySearch",
+      "leetcodeNumber": 74,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/search-a-2d-matrix/"
+    },
+    {
+      "name": "Find First and Last Position of Element in Sorted Array",
+      "category": "BinarySearch",
+      "leetcodeNumber": 34,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/"
+    },
+    {
+      "name": "Search in Rotated Sorted Array",
+      "category": "BinarySearch",
+      "leetcodeNumber": 33,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/search-in-rotated-sorted-array/"
+    },
+    {
+      "name": "Find Peak Element",
+      "category": "BinarySearch",
+      "leetcodeNumber": 162,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/find-peak-element/"
+    },
+    {
+      "name": "Find Minimum in Rotated Sorted Array",
+      "category": "BinarySearch",
+      "leetcodeNumber": 153,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/"
+    },
+    {
+      "name": "Peak Index in a Mountain Array",
+      "category": "BinarySearch",
+      "leetcodeNumber": 852,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/peak-index-in-a-mountain-array/"
+    },
+    {
+      "name": "Min Speed to Arrive on Time",
+      "category": "BinarySearch",
+      "leetcodeNumber": 1870,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/minimum-speed-to-arrive-on-time/"
+    },
+    {
+      "name": "Median of Two Sorted Arrays",
+      "category": "BinarySearch",
+      "leetcodeNumber": 4,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/median-of-two-sorted-arrays/"
+    },
+    {
+      "name": "Linked List Cycle",
+      "category": "LinkedList",
+      "leetcodeNumber": 141,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/linked-list-cycle/"
+    },
+    {
+      "name": "Reverse Linked List",
+      "category": "LinkedList",
+      "leetcodeNumber": 206,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/reverse-linked-list/"
+    },
+    {
+      "name": "Merge Two Sorted Lists",
+      "category": "LinkedList",
+      "leetcodeNumber": 21,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/merge-two-sorted-lists/"
+    },
+    {
+      "name": "Sort List",
+      "category": "LinkedList",
+      "leetcodeNumber": 148,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/sort-list/"
+    },
+    {
+      "name": "Swap Pairs",
+      "category": "LinkedList",
+      "leetcodeNumber": 24,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/swap-nodes-in-pairs/"
+    },
+    {
+      "name": "Stack Operations",
+      "category": "Stack",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Basic stack implementation"
+    },
+    {
+      "name": "Permutation",
+      "category": "Stack",
+      "leetcodeNumber": 46,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/permutations/"
+    },
+    {
+      "name": "Largest Rectangle in Histogram",
+      "category": "Stack",
+      "leetcodeNumber": 84,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/largest-rectangle-in-histogram/"
+    },
+    {
+      "name": "Remove K Digits",
+      "category": "Stack",
+      "leetcodeNumber": 402,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/remove-k-digits/"
+    },
+    {
+      "name": "Next Greater Element",
+      "category": "Stack",
+      "leetcodeNumber": 496,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/next-greater-element-i/"
+    },
+    {
+      "name": "Basic Queue (FIFO)",
+      "category": "Queue",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Basic queue implementation"
+    },
+    {
+      "name": "Circular Queue",
+      "category": "Queue",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Circular queue design"
+    },
+    {
+      "name": "Implement Queue using Stacks",
+      "category": "Queue",
+      "leetcodeNumber": 232,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/implement-queue-using-stacks/"
+    },
+    {
+      "name": "Bubble Sort",
+      "category": "Sorting",
+      "leetcodeNumber": 912,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/sort-an-array/"
+    },
+    {
+      "name": "Bucket Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Sorting algorithm implementation"
+    },
+    {
+      "name": "Merge Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Classic sorting algorithm"
+    },
+    {
+      "name": "Quick Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Classic sorting algorithm"
+    },
+    {
+      "name": "Insertion Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Easy",
+      "leetcodeUrl": null,
+      "note": "Basic sorting algorithm"
+    },
+    {
+      "name": "Radix Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Non-comparison sorting"
+    },
+    {
+      "name": "Counting Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Non-comparison sorting"
+    },
+    {
+      "name": "Heap Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Heap-based sorting"
+    },
+    {
+      "name": "Selection Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Easy",
+      "leetcodeUrl": null,
+      "note": "Basic sorting algorithm"
+    },
+    {
+      "name": "Shell Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Optimized insertion sort"
+    },
+    {
+      "name": "Comb Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Optimized bubble sort"
+    },
+    {
+      "name": "Pancake Sort",
+      "category": "Sorting",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Special sorting technique"
+    },
+    {
+      "name": "Heapify (Build Heap)",
+      "category": "Heaps",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Heap construction"
+    },
+    {
+      "name": "Top K Frequent Elements",
+      "category": "Heaps",
+      "leetcodeNumber": 347,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/top-k-frequent-elements/"
+    },
+    {
+      "name": "Task Scheduler",
+      "category": "Heaps",
+      "leetcodeNumber": 621,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/task-scheduler/"
+    },
+    {
+      "name": "Construct Tree from Traversal",
+      "category": "Trees",
+      "leetcodeNumber": 105,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/"
+    },
+    {
+      "name": "LCA of Deepest Leaves",
+      "category": "Trees",
+      "leetcodeNumber": 1123,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/lowest-common-ancestor-of-deepest-leaves/"
+    },
+    {
+      "name": "Validate Binary Search Tree",
+      "category": "Trees",
+      "leetcodeNumber": 98,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/validate-binary-search-tree/"
+    },
+    {
+      "name": "AVL Tree Visualizer",
+      "category": "Trees",
+      "leetcodeNumber": 110,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/balanced-binary-tree/"
+    },
+    {
+      "name": "Symmetric Tree",
+      "category": "Trees",
+      "leetcodeNumber": 111,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/minimum-depth-of-binary-tree/"
+    },
+    {
+      "name": "Binary Tree Right Side View",
+      "category": "Trees",
+      "leetcodeNumber": 199,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/binary-tree-right-side-view/"
+    },
+    {
+      "name": "Print Binary Tree",
+      "category": "Trees",
+      "leetcodeNumber": 655,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/print-binary-tree/"
+    },
+    {
+      "name": "Morris Traversal (Inorder)",
+      "category": "Trees",
+      "leetcodeNumber": 94,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/binary-tree-inorder-traversal/"
+    },
+    {
+      "name": "Flatten Binary Tree to Linked List",
+      "category": "Trees",
+      "leetcodeNumber": 114,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/flatten-binary-tree-to-linked-list/"
+    },
+    {
+      "name": "LRU Cache",
+      "category": "Design",
+      "leetcodeNumber": 146,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/lru-cache/"
+    },
+    {
+      "name": "LFU Cache",
+      "category": "Design",
+      "leetcodeNumber": 460,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/lfu-cache/"
+    },
+    {
+      "name": "Design HashMap",
+      "category": "Design",
+      "leetcodeNumber": 706,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/design-hashmap/"
+    },
+    {
+      "name": "Design Linked List",
+      "category": "Design",
+      "leetcodeNumber": 707,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/design-linked-list/"
+    },
+    {
+      "name": "Min Stack",
+      "category": "Design",
+      "leetcodeNumber": 155,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/min-stack/"
+    },
+    {
+      "name": "Implement Trie (Prefix Tree)",
+      "category": "Design",
+      "leetcodeNumber": 208,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/implement-trie-prefix-tree/"
+    },
+    {
+      "name": "A* Pathfinding",
+      "category": "Pathfinding",
+      "leetcodeNumber": null,
+      "difficulty": "Hard",
+      "leetcodeUrl": null,
+      "note": "Algorithm implementation"
+    },
+    {
+      "name": "Rat in a Maze",
+      "category": "Pathfinding",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Classic backtracking problem"
+    },
+    {
+      "name": "Flood Fill",
+      "category": "Pathfinding",
+      "leetcodeNumber": 733,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/flood-fill/"
+    },
+    {
+      "name": "Color Islands",
+      "category": "Pathfinding",
+      "leetcodeNumber": 200,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/number-of-islands/"
+    },
+    {
+      "name": "Subset Sum",
+      "category": "Recursion",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Classic recursion problem"
+    },
+    {
+      "name": "Tower of Hanoi",
+      "category": "Recursion",
+      "leetcodeNumber": null,
+      "difficulty": "Medium",
+      "leetcodeUrl": null,
+      "note": "Classic puzzle"
+    },
+    {
+      "name": "Fibonacci",
+      "category": "Recursion",
+      "leetcodeNumber": null,
+      "difficulty": "Easy",
+      "leetcodeUrl": null,
+      "note": "Classic recursion example"
+    },
+    {
+      "name": "Factorial",
+      "category": "Recursion",
+      "leetcodeNumber": null,
+      "difficulty": "Easy",
+      "leetcodeUrl": null,
+      "note": "Basic recursion"
+    },
+    {
+      "name": "N-Queens",
+      "category": "Recursion",
+      "leetcodeNumber": 51,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/n-queens/"
+    },
+    {
+      "name": "Binary Search (Recursive)",
+      "category": "Recursion",
+      "leetcodeNumber": null,
+      "difficulty": "Easy",
+      "leetcodeUrl": null,
+      "note": "Recursive implementation"
+    },
+    {
+      "name": "Check Palindrome",
+      "category": "Strings",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Basic string problem"
+    },
+    {
+      "name": "Reverse String",
+      "category": "Strings",
+      "leetcodeNumber": 344,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/reverse-string/"
+    },
+    {
+      "name": "Count Vowels",
+      "category": "Strings",
+      "leetcodeNumber": null,
+      "difficulty": "Basic",
+      "leetcodeUrl": null,
+      "note": "Basic string traversal"
+    },
+    {
+      "name": "First Unique Character",
+      "category": "Strings",
+      "leetcodeNumber": 387,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/first-unique-character-in-a-string/"
+    },
+    {
+      "name": "Valid Anagram",
+      "category": "Strings",
+      "leetcodeNumber": 242,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/valid-anagram/"
+    },
+    {
+      "name": "Longest Common Prefix",
+      "category": "Strings",
+      "leetcodeNumber": 14,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/longest-common-prefix/"
+    },
+    {
+      "name": "String Compression",
+      "category": "Strings",
+      "leetcodeNumber": 443,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/string-compression/"
+    },
+    {
+      "name": "Reverse Words",
+      "category": "Strings",
+      "leetcodeNumber": 151,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/reverse-words-in-a-string/"
+    },
+    {
+      "name": "Longest Palindromic Substring",
+      "category": "Strings",
+      "leetcodeNumber": 5,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/longest-palindromic-substring/"
+    },
+    {
+      "name": "Group Anagrams",
+      "category": "Strings",
+      "leetcodeNumber": 49,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/group-anagrams/"
+    },
+    {
+      "name": "Is Subsequence",
+      "category": "Strings",
+      "leetcodeNumber": 392,
+      "difficulty": "Easy",
+      "leetcodeUrl": "https://leetcode.com/problems/is-subsequence/"
+    },
+    {
+      "name": "Subarray Sum Equals K",
+      "category": "Hashing",
+      "leetcodeNumber": 560,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/subarray-sum-equals-k/"
+    },
+    {
+      "name": "Longest Consecutive Sequence",
+      "category": "Hashing",
+      "leetcodeNumber": 128,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/longest-consecutive-sequence/"
+    },
+    {
+      "name": "Equal Rows and Columns",
+      "category": "Hashing",
+      "leetcodeNumber": 2352,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/equal-row-and-column-pairs/"
+    },
+    {
+      "name": "Best Time to Buy and Sell Stock II",
+      "category": "GreedyAlgorithms",
+      "leetcodeNumber": 122,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/"
+    },
+    {
+      "name": "Two City Scheduling",
+      "category": "GreedyAlgorithms",
+      "leetcodeNumber": 1029,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/two-city-scheduling/"
+    },
+    {
+      "name": "Jump Game II",
+      "category": "GreedyAlgorithms",
+      "leetcodeNumber": 45,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/jump-game-ii/"
+    },
+    {
+      "name": "Gas Station",
+      "category": "GreedyAlgorithms",
+      "leetcodeNumber": 134,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/gas-station/"
+    },
+    {
+      "name": "Job Scheduling",
+      "category": "GreedyAlgorithms",
+      "leetcodeNumber": 1235,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/maximum-profit-in-job-scheduling/"
+    },
+    {
+      "name": "0/1 Knapsack",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 416,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/partition-equal-subset-sum/"
+    },
+    {
+      "name": "Longest Common Subsequence",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 1143,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/longest-common-subsequence/"
+    },
+    {
+      "name": "Coin Change",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 322,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/coin-change/"
+    },
+    {
+      "name": "Edit Distance",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 72,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/edit-distance/"
+    },
+    {
+      "name": "Longest Increasing Subsequence",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 300,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/longest-increasing-subsequence/"
+    },
+    {
+      "name": "Burst Balloons",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 312,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/burst-balloons/"
+    },
+    {
+      "name": "Burst Balloons Top Down",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 312,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/burst-balloons/"
+    },
+    {
+      "name": "Buy/Sell Stock IV",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 188,
+      "difficulty": "Hard",
+      "leetcodeUrl": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/"
+    },
+    {
+      "name": "Unique Paths",
+      "category": "Dynamic Programming",
+      "leetcodeNumber": 62,
+      "difficulty": "Medium",
+      "leetcodeUrl": "https://leetcode.com/problems/unique-paths/"
+    },
+    {
+      "name": "Max Flow (Edmonds-Karp, Dinic)",
+      "category": "Graphs",
+      "leetcodeNumber": null,
+      "difficulty": "Hard",
+      "leetcodeUrl": null,
+      "note": "Network flow algorithms"
+    }
+  ]
+}
