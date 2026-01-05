@@ -1,37 +1,33 @@
 import React, { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { SearchCode } from "lucide-react";
+import Footer from "../components/Footer.jsx";
 import { CardSpotlight } from "../components/ui/card-spotlight.jsx";
 import categories from "../data/categories";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
+import ArrayPage from "./Arrays/Arrays.jsx";
+import SlidingWindowsPage from "./SlidingWindows/SlidingWindows.jsx";
+import LinkedListPage from "./LinkedList/LinkedList.jsx";
+import StackPage from "./Stack/Stack.jsx";
+import TreesPage from "./Trees/Trees.jsx";
+import HeapsPage from "./Heaps/Heaps.jsx";
+import SearchingPage from "./Searching/Searching.jsx";
+import DesignPage from "./Design/Design.jsx";
+import RecursionPage from "./Recursion/Recursion.jsx";
+import SortingPage from "./Sorting/Sorting.jsx";
+import PathfindingPage from "./Pathfinding/Pathfinding.jsx";
+import QueuePage from "./Queue/Queue.jsx";
+import BinarySearchPage from "./BinarySearch/BinarySearch.jsx";
+import DPPage from "./DynamicProgramming/DynamicProgramming.jsx";
+import GraphsPage from "./Graphs/Graphs.jsx";
+import GreedyPage from "./GreedyAlgorithms/Greedy.jsx";
+import BacktrackingPage from "./Backtracking/Backtracking.jsx";
+import StringPage from "./Strings/Strings.jsx";
+import BitPage from "./BitManipulation/BitManipulation.jsx";
+import HashingPage from "./Hashing/Hashing.jsx";
+import MathsMiscPage from "./MathematicalMiscellaneous/MathematicalMiscellaneous.jsx";
+import StarredProblems from "./Starred/StarredProblems.jsx";
 import "./HomePage.css";
 import CardFlip from "../components/kokonut-ui/card-flip.jsx";
-
-// Map category page names to URL paths
-const categoryPathMap = {
-  Sorting: "/sorting",
-  Arrays: "/arrays",
-  BinarySearch: "/binary-search",
-  Strings: "/strings",
-  Searching: "/searching",
-  Hashing: "/hashing",
-  LinkedList: "/linked-list",
-  Recursion: "/recursion",
-  BitManipulation: "/bit-manipulation",
-  Stack: "/stack",
-  Queue: "/queue",
-  SlidingWindows: "/sliding-windows",
-  Heaps: "/heaps",
-  Trees: "/trees",
-  Graphs: "/graphs",
-  Pathfinding: "/pathfinding",
-  GreedyAlgorithms: "/greedy",
-  Backtracking: "/backtracking",
-  DynamicProgramming: "/dynamic-programming",
-  Design: "/design",
-  MathematicalMiscellaneous: "/maths-misc",
-  Starred: "/starred",
-};
 
 const CategoryCard = ({ category, onSelect }) => {
   const Icon = category.icon;
@@ -173,13 +169,9 @@ const AlgorithmHome = ({ navigate }) => {
 
   const handleSelect = (item) => {
     if (item.type === "category") {
-      const categoryPath = categoryPathMap[item.category] || `/${item.category.toLowerCase()}`;
-      navigate(categoryPath);
+      navigate(item.category);
     } else {
-      // Navigate to specific algorithm
-      const categoryPath = categoryPathMap[item.category] || `/${item.category.toLowerCase()}`;
-      const subpagePath = item.subpage.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
-      navigate(`${categoryPath}/${subpagePath}`);
+      navigate({ page: item.category, subpage: item.subpage });
     }
     setOpen(false);
     setQuery("");
@@ -214,10 +206,7 @@ const AlgorithmHome = ({ navigate }) => {
         />
 
         <section>
-          <CategoryGrid onSelect={(categoryPage) => {
-            const path = categoryPathMap[categoryPage] || `/${categoryPage.toLowerCase()}`;
-            navigate(path);
-          }} />
+          <CategoryGrid onSelect={navigate} />
         </section>
 
         <CardSpotlight className="home-footnote" color="#475569" radius={260}>
@@ -228,10 +217,67 @@ const AlgorithmHome = ({ navigate }) => {
   );
 };
 
-const HomePage = () => {
-  const navigate = useNavigate();
+const PAGE_RENDERERS = {
+  Starred: (navigate, initialSubPage) => <StarredProblems navigate={navigate} initialPage={initialSubPage} />,
+  Arrays: (navigate, initialSubPage) => <ArrayPage navigate={navigate} initialPage={initialSubPage} />,
+  Strings: (navigate, initialSubPage) => <StringPage navigate={navigate} initialPage={initialSubPage} />,
+  Hashing: (navigate, initialSubPage) => <HashingPage navigate={navigate} initialPage={initialSubPage} />,
+  SlidingWindows: (navigate, initialSubPage) => <SlidingWindowsPage navigate={navigate} initialPage={initialSubPage} />,
+  LinkedList: (navigate, initialSubPage) => <LinkedListPage navigate={navigate} initialPage={initialSubPage} />,
+  Stack: (navigate, initialSubPage) => <StackPage navigate={navigate} initialPage={initialSubPage} />,
+  Sorting: (navigate, initialSubPage) => <SortingPage navigate={navigate} initialPage={initialSubPage} />,
+  Searching: (navigate, initialSubPage) => <SearchingPage navigate={navigate} initialPage={initialSubPage} />,
+  Trees: (navigate, initialSubPage) => <TreesPage navigate={navigate} initialPage={initialSubPage} />,
+  Design: (navigate, initialSubPage) => <DesignPage navigate={navigate} initialPage={initialSubPage} />,
+  Queue: (navigate, initialSubPage) => <QueuePage navigate={navigate} initialPage={initialSubPage} />,
+  BinarySearch: (navigate, initialSubPage) => <BinarySearchPage navigate={navigate} initialPage={initialSubPage} />,
+  Heaps: (navigate, initialSubPage) => <HeapsPage navigate={navigate} initialPage={initialSubPage} />,
+  Recursion: (navigate, initialSubPage) => <RecursionPage navigate={navigate} initialPage={initialSubPage} />,
+  Pathfinding: (navigate, initialSubPage) => <PathfindingPage navigate={navigate} initialPage={initialSubPage} />,
+  Graphs: (navigate, initialSubPage) => <GraphsPage navigate={navigate} initialPage={initialSubPage} />,
+  GreedyPage: (navigate, initialSubPage) => <GreedyPage navigate={navigate} initialPage={initialSubPage} />,
+  BacktrackingPage: (navigate, initialSubPage) => <BacktrackingPage navigate={navigate} initialPage={initialSubPage} />,
+  DynamicProgramming: (navigate, initialSubPage) => <DPPage navigate={navigate} initialPage={initialSubPage} />,
+  MathsMiscPage: (navigate, initialSubPage) => <MathsMiscPage navigate={navigate} initialPage={initialSubPage} />,
+  BitManipulation: (navigate, initialSubPage) => <BitPage navigate={navigate} initialPage={initialSubPage} />,
+};
 
-  return <AlgorithmHome navigate={navigate} />;
+const HomePage = () => {
+  const [page, setPage] = useState("home");
+  const [initialSubPage, setInitialSubPage] = useState(null);
+
+  const navigate = (target) => {
+    if (typeof target === "string") {
+      setPage(target);
+      setInitialSubPage(null);
+      return;
+    }
+
+    if (target && typeof target === "object" && target.page) {
+      setPage(target.page);
+      setInitialSubPage(target.subpage || null);
+    }
+  };
+
+  const renderPage = () => {
+    if (page === "home") {
+      return <AlgorithmHome navigate={navigate} />;
+    }
+
+    const renderer = PAGE_RENDERERS[page];
+    if (renderer) {
+      return renderer(navigate, initialSubPage);
+    }
+
+    return <AlgorithmHome navigate={navigate} />;
+  };
+
+  return (
+    <>
+      {renderPage()}
+      <Footer />
+    </>
+  );
 };
 
 export default HomePage;

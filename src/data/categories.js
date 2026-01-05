@@ -214,7 +214,7 @@ export const categories = [
     icon: CheckCircle,
     description:
       "Make locally optimal choices in the hope of finding a global optimum.",
-    page: "GreedyPage",
+    page: "GreedyAlgorithms",
     spotlightColor: "#f43f5e",
     subtitle: "Greedy optimization",
     topics: getTopicsForCategory("GreedyAlgorithms"),
@@ -224,7 +224,7 @@ export const categories = [
     icon: ArrowLeft,
     description:
       "Exploring all possible solutions by trying and undoing choices efficiently.",
-    page: "BacktrackingPage",
+    page: "Backtracking",
     spotlightColor: "#fb923c",
     subtitle: "Backtracking exploration",
     topics: getTopicsForCategory("Backtracking"),
@@ -253,7 +253,7 @@ export const categories = [
     icon: Calculator,
     description:
       "Master the numerical foundations and essential utilities for efficient problem-solving.",
-    page: "MathsMiscPage",
+    page: "MathematicalMiscellaneous",
     spotlightColor: "#2dd4bf",
     subtitle: "Mathematical foundations",
     topics: getTopicsForCategory("MathematicalMiscellaneous"),
