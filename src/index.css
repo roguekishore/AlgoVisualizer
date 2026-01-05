@@ -6,23 +6,63 @@
 /* ============================================
    GLOBAL COLOR SYSTEM - EDIT COLORS HERE
    ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body {
+  font-family: 'Inter', sans-serif;
+  /* background-image: var(--color-bg-primary) !important; */
+}
 
 :root {
-  /* ========== BACKGROUND COLORS ========== */
-  --color-bg-primary: #030712;       /* Main page background (gray-950) */
-  --color-bg-secondary: #111827;     /* Card/section backgrounds (gray-900) */
-  --color-bg-tertiary: #1f2937;      /* Nested elements (gray-800) */
-  --color-bg-elevated: #374151;      /* Buttons, inputs (gray-700) */
+  /* ========== SHADCN NEUTRAL THEME - Light Mode ========== */
+  --radius: 0.65rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+
+  /* ========== LEGACY BACKGROUND COLORS (mapped to shadcn) ========== */
+  --color-bg-primary: var(--background);       /* Main page background */
+  --color-bg-secondary: var(--card);           /* Card/section backgrounds */
+  --color-bg-tertiary: var(--secondary);       /* Nested elements */
+  --color-bg-elevated: var(--input);           /* Buttons, inputs */
   
-  /* ========== TEXT COLORS ========== */
-  --color-text-primary: #ffffff;     /* Main text */
-  --color-text-secondary: #d1d5db;   /* Muted text (gray-300) */
-  --color-text-tertiary: #9ca3af;    /* Faded text (gray-400) */
-  --color-text-muted: #6b7280;       /* Very faded (gray-500) */
+  /* ========== LEGACY TEXT COLORS (mapped to shadcn) ========== */
+  --color-text-primary: var(--foreground);     /* Main text */
+  --color-text-secondary: var(--card-foreground); /* Muted text */
+  --color-text-tertiary: var(--muted-foreground); /* Faded text */
+  --color-text-muted: var(--muted-foreground); /* Very faded */
   
-  /* ========== BORDER COLORS ========== */
-  --color-border-primary: #374151;   /* Main borders (gray-700) */
-  --color-border-secondary: #1f2937; /* Subtle borders (gray-800) */
+  /* ========== LEGACY BORDER COLORS (mapped to shadcn) ========== */
+  --color-border-primary: var(--border);       /* Main borders */
+  --color-border-secondary: var(--border);     /* Subtle borders */
   
   /* ========== ACCENT COLORS ========== */
   /* Primary accent (blue) */
@@ -88,20 +128,62 @@
   --gradient-warning: linear-gradient(to right, var(--color-orange), var(--color-warning));
 }
 
+* {
+  border-radius: 0 !important;
+}
+
+/* ========== DARK THEME (shadcn) ========== */
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+
+  /* Update legacy color mappings for dark mode */
+  --color-bg-primary: var(--background);
+  --color-bg-secondary: var(--card);
+  --color-bg-tertiary: var(--secondary);
+  --color-bg-elevated: var(--input);
+  
+  --color-text-primary: var(--foreground);
+  --color-text-secondary: var(--card-foreground);
+  --color-text-tertiary: var(--muted-foreground);
+  --color-text-muted: var(--muted-foreground);
+  
+  --color-border-primary: var(--border);
+  --color-border-secondary: var(--border);
+}
+
 /* ========== LIGHT THEME OVERRIDES ========== */
 .light {
-  --color-bg-primary: #ffffff;
-  --color-bg-secondary: #f9fafb;
-  --color-bg-tertiary: #f3f4f6;
-  --color-bg-elevated: #e5e7eb;
-  
-  --color-text-primary: #111827;
-  --color-text-secondary: #374151;
-  --color-text-tertiary: #6b7280;
-  --color-text-muted: #9ca3af;
-  
-  --color-border-primary: #d1d5db;
-  --color-border-secondary: #e5e7eb;
+  /* Already set in :root */
 }
 
 /* ============================================
@@ -217,4 +299,24 @@
   .border-orange { border-color: var(--color-orange); }
   .border-teal { border-color: var(--color-teal); }
   .border-pink { border-color: var(--color-pink); }
+}
+
+/* For Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
 }

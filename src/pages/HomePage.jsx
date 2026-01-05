@@ -1,920 +1,237 @@
-import React, { useMemo, useRef, useState } from "react";
-import { useTheme } from "../context/ThemeContext.jsx";
-import {Sun,Moon} from "lucide-react";
-import Footer from "../components/Footer.jsx";
-import {
-  ArrowLeft,
-  Shapes,
-  Brackets,
-  GitBranch,
-  Layers,
-  ArrowRightLeft,
-  RectangleHorizontal,
-  SearchCode,
-  Repeat,
-  Binary,
-  Network,
-  Filter,
-  Share2,
-  Workflow,
-  Sparkles,
-  Zap,
-  Trophy,
-  Wrench,
-  ArrowDownUp,
-  Navigation,
-  Target,
-  CheckCircle,
-  Type,
-  ScanLine,
-  Search,
-  Calculator,
-  Hash,
-  Star,
-} from "lucide-react";
-
-import ArrayPage from "./Arrays/Arrays.jsx";
-import SlidingWindowsPage from "./SlidingWindows/SlidingWindows.jsx";
-import LinkedListPage from "./LinkedList/LinkedList.jsx";
-import StackPage from "./Stack/Stack.jsx";
-import TreesPage from "./Trees/Trees.jsx";
-import HeapsPage from "./Heaps/Heaps.jsx";
-import SearchingPage from "./Searching/Searching.jsx";
-import DesignPage from "./Design/Design.jsx";
-import RecursionPage from "./Recursion/Recursion.jsx";
-import SortingPage from "./Sorting/Sorting.jsx";
-import PathfindingPage from "./Pathfinding/Pathfinding.jsx";
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { SearchCode } from "lucide-react";
+import { CardSpotlight } from "../components/ui/card-spotlight.jsx";
+import categories from "../data/categories";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
-import QueuePage from "./Queue/Queue.jsx";
-import BinarySearchPage from "./BinarySearch/BinarySearch.jsx";
-import DPPage from "./DynamicProgramming/DynamicProgramming.jsx";
-import ScrollToTop from "../components/ScrollToTop";
-import GraphsPage from "./Graphs/Graphs.jsx";
-import GreedyPage from "./GreedyAlgorithms/Greedy.jsx";
-import BacktrackingPage from "./Backtracking/Backtracking.jsx";
-import StringPage from "./Strings/Strings.jsx";
-import BitPage from "./BitManipulation/BitManipulation.jsx";
-import HashingPage from "./Hashing/Hashing.jsx";
-import MathsMiscPage from "./MathematicalMiscellaneous/MathematicalMiscellaneous.jsx";
-import StarredProblems from "./Starred/StarredProblems.jsx";
+import "./HomePage.css";
+import CardFlip from "../components/kokonut-ui/card-flip.jsx";
 
-const AlgorithmCategories = ({ navigate }) => {
-  const { theme, toggleTheme } = useTheme();
-  const [hoveredIndex, setHoveredIndex] = useState(null);
+// Map category page names to URL paths
+const categoryPathMap = {
+  Sorting: "/sorting",
+  Arrays: "/arrays",
+  BinarySearch: "/binary-search",
+  Strings: "/strings",
+  Searching: "/searching",
+  Hashing: "/hashing",
+  LinkedList: "/linked-list",
+  Recursion: "/recursion",
+  BitManipulation: "/bit-manipulation",
+  Stack: "/stack",
+  Queue: "/queue",
+  SlidingWindows: "/sliding-windows",
+  Heaps: "/heaps",
+  Trees: "/trees",
+  Graphs: "/graphs",
+  Pathfinding: "/pathfinding",
+  GreedyAlgorithms: "/greedy",
+  Backtracking: "/backtracking",
+  DynamicProgramming: "/dynamic-programming",
+  Design: "/design",
+  MathematicalMiscellaneous: "/maths-misc",
+  Starred: "/starred",
+};
+
+const CategoryCard = ({ category, onSelect }) => {
+  const Icon = category.icon;
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      onSelect(category.page);
+    }
+  };
+
+  return (
+      <CardFlip
+        title={category.name}
+        subtitle={category.subtitle}
+        description={category.description}
+        features={category.topics}
+        icon={Icon}
+        onNavigate={() => onSelect(category.page)}
+      ></CardFlip>
+  );
+};
+
+const CategoryGrid = ({ onSelect }) => (
+  <div className="category-grid">
+    {categories.map((category) => (
+      <CategoryCard
+        key={category.name}
+        category={category}
+        onSelect={onSelect}
+      />
+    ))}
+  </div>
+);
+
+const SearchBar = ({
+  query,
+  onQueryChange,
+  results,
+  onSelect,
+  open,
+  setOpen,
+  onSubmit,
+}) => {
+  return (
+    <div className="search">
+      <form className="search__form" onSubmit={onSubmit}>
+        <SearchCode className="search__icon" aria-hidden="true" />
+        <input
+          value={query}
+          onChange={(event) => {
+            onQueryChange(event.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onBlur={() => setTimeout(() => setOpen(false), 120)}
+          placeholder="Search problems or topics"
+          className="search__input"
+          aria-label="Search problems or topics"
+        />
+        <button type="submit" className="search__button">
+          Search
+        </button>
+      </form>
+
+      {open && query && (
+        <div className="search__panel" role="listbox">
+          {results.length === 0 ? (
+            <div className="search__empty">No matches yet.</div>
+          ) : (
+            results.map((item) => (
+              <button
+                key={`${item.type}-${item.label}`}
+                type="button"
+                className="search-result"
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => onSelect(item)}
+              >
+                <span className="search-result__badge">
+                  {item.type === "problem" ? "Problem" : "Category"}
+                </span>
+                <span>
+                  <span className="search-result__label">{item.label}</span>
+                  {item.type === "problem" && (
+                    <span className="search-result__meta">
+                      {item.category}
+                      {item.platforms?.length ? ` • ${item.platforms.join(", ")}` : ""}
+                    </span>
+                  )}
+                  {item.type === "category" && (
+                    <span className="search-result__meta">{item.category}</span>
+                  )}
+                </span>
+              </button>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AlgorithmHome = ({ navigate }) => {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  const inputRef = useRef(null);
 
-  const categories = useMemo(
-    () => [
-      {
-        name: "Starred Topics",
-        icon: Star,
-        description: "Review your saved problems and topics for easy access.",
-        page: "Starred", // This is the key we'll use for routing
-        gradient: "from-warning to-orange500",
-        iconBg: "bg-warning/20",
-        borderColor: "border-warning/30",
-        iconColor: "text-warning",
-      },
-      {
-        name: "Sorting",
-        icon: ArrowDownUp,
-        description:
-          "Arrange data efficiently using algorithms like QuickSort, MergeSort, and BubbleSort.",
-        page: "Sorting",
-        gradient: "from-orange to-warning-hover",
-        iconBg: "bg-orange/20",
-        borderColor: "border-orange500/30",
-        iconColor: "text-orange",
-      },
-      {
-        name: "Arrays",
-        icon: Brackets,
-        description: "Contiguous data, two-pointers, and traversals.",
-        page: "Arrays",
-        gradient: "from-accent-primary500 to-accent-primary600",
-        iconBg: "bg-accent-primary-light",
-        borderColor: "border-accent-primary/30",
-        iconColor: "text-accent-primary",
-      },
-      {
-        name: "BinarySearch",
-        icon: SearchCode,
-        description: "Logarithmic time search in sorted data.",
-        page: "BinarySearch",
-        gradient: "from-teal500 to-success-hover",
-        iconBg: "bg-teallight",
-        borderColor: "border-teal/30",
-        iconColor: "text-teal",
-      },
-      {
-        name: "Strings",
-        icon: Type,
-        description:
-          "Text manipulation, pattern matching, and character operations.",
-        page: "Strings",
-        gradient: "from-purple500 to-pink600",
-        iconBg: "bg-purplelight",
-        borderColor: "border-purple/30",
-        iconColor: "text-purple",
-      },
-      {
-        name: "Searching",
-        icon: Search,
-        description: "Find elements using efficient search logic.",
-        page: "Searching",
-        gradient: "from-teal500 to-success-hover",
-        iconBg: "bg-teallight",
-        borderColor: "border-teal/30",
-        iconColor: "text-teal",
-      },
-      {
-        name: "Hashing",
-        icon: Hash,
-        description: "Key-value pairs, hash maps, and collision resolution.",
-        page: "Hashing",
-        gradient: "from-danger500 to-orange600",
-        iconBg: "bg-danger-light",
-        borderColor: "border-danger/30",
-        iconColor: "text-danger",
-      },
-      {
-        name: "Linked List",
-        icon: GitBranch,
-        description: "Nodes, pointers, cycle detection, and list manipulation.",
-        page: "LinkedList",
-        gradient: "from-accent-primary500 to-accent-primary600",
-        iconBg: "bg-accent-primary-light",
-        borderColor: "border-accent-primary/30",
-        iconColor: "text-accent-primary",
-      },
-      {
-        name: "Recursion",
-        icon: Repeat,
-        description: "Solve problems by breaking them into smaller instances.",
-        page: "Recursion",
-        gradient: "from-accent-primary500 to-accent-primary600",
-        iconBg: "bg-accent-primary-light",
-        borderColor: "border-accent-primary/30",
-        iconColor: "text-accent-primary",
-      },
-      {
-        name: "Bit Manipulation",
-        icon: Binary,
-        description:
-          "Work with data at the binary level for ultimate efficiency.",
-        page: "BitManipulation",
-        gradient: "from-slate-500 to-theme-tertiary",
-        iconBg: "bg-theme-muted/20",
-        borderColor: "border-slate-500/30",
-        iconColor: "text-theme-tertiary",
-      },
-
-      {
-        name: "Stack",
-        icon: Layers,
-        description:
-          "LIFO-based problems, expression evaluation, and histograms.",
-        page: "Stack",
-        gradient: "from-purple500 to-purple600",
-        iconBg: "bg-purple/20",
-        borderColor: "border-purple500/30",
-        iconColor: "text-purple",
-      },
-
-      {
-        name: "Queue",
-        icon: ArrowRightLeft,
-        description: "FIFO principle, breadth-first search, and schedulers.",
-        page: "Queue",
-        gradient: "from-pink500 to-pink600",
-        iconBg: "bg-pink/20",
-        borderColor: "border-pink500/30",
-        iconColor: "text-pink",
-      },
-
-      {
-        name: "Sliding Window",
-        icon: RectangleHorizontal,
-        description: "Efficiently process subarrays, substrings, and ranges.",
-        page: "SlidingWindows",
-        gradient: "from-teal500 to-teal600",
-        iconBg: "bg-teal/20",
-        borderColor: "border-teal500/30",
-        iconColor: "text-teal",
-      },
-      {
-        name: "Heaps",
-        icon: Filter,
-        description:
-          "Priority queues and finding min/max elements efficiently.",
-        page: "Heaps",
-        gradient: "from-orange500 to-orange600",
-        iconBg: "bg-orangelight",
-        borderColor: "border-orange/30",
-        iconColor: "text-orange",
-      },
-      {
-        name: "Trees",
-        icon: Network,
-        description:
-          "Hierarchical data, traversals (BFS, DFS), and binary trees.",
-        page: "Trees",
-        gradient: "from-success to-success600",
-        iconBg: "bg-success/20",
-        borderColor: "border-success500/30",
-        iconColor: "text-success",
-      },
-
-      {
-        name: "Graphs",
-        icon: Network,
-        description:
-          "Networks of nodes, traversal algorithms, and pathfinding.",
-        page: "Graphs",
-        gradient: "from-accent-primary500 to-teal600",
-        iconBg: "bg-accent-primary-light",
-        borderColor: "border-accent-primary/30",
-        iconColor: "text-accent-primary",
-      },
-      {
-        name: "Pathfinding",
-        icon: Navigation,
-        description:
-          "Navigate through mazes using BFS, DFS, and advanced pathfinding algorithms.",
-        page: "Pathfinding",
-        gradient: "from-purple500 to-pink600",
-        iconBg: "bg-purplelight",
-        borderColor: "border-purple/30",
-        iconColor: "text-purple",
-      },
-      {
-        name: "Greedy Algorithms",
-        icon: CheckCircle,
-        description:
-          "Make locally optimal choices in the hope of finding a global optimum.",
-        page: "GreedyPage",
-        gradient: "from-pink500 to-pink600",
-        iconBg: "bg-pink/20",
-        borderColor: "border-pink500/30",
-        iconColor: "text-pink",
-      },
-      {
-        name: "Backtracking",
-        icon: ArrowLeft,
-        description:
-          "Exploring all possible solutions by trying and undoing choices efficiently.",
-        page: "BacktrackingPage",
-        gradient: "from-orange500 to-orange600",
-        iconBg: "bg-purple/20",
-        borderColor: "border-purple/30",
-        iconColor: "text-purple",
-      },
-      {
-        name: "Dynamic Programming",
-        icon: Workflow,
-        description: "Optimization by solving and caching sub-problems.",
-        page: "DynamicProgramming",
-        gradient: "from-fuchsia-500 to-purple600",
-        iconBg: "bg-fuchsia-500/20",
-        borderColor: "border-fuchsia-500/30",
-        iconColor: "text-fuchsia-400",
-      },
-      {
-        name: "Design",
-        icon: Wrench,
-        description:
-          "Implement complex data structures combining HashMap, Linked List, and advanced design patterns.",
-        page: "Design",
-        gradient: "from-teal500 to-success-hover",
-        iconBg: "bg-teallight",
-        borderColor: "border-teal/30",
-        iconColor: "text-teal",
-      },
-      {
-        name: "Mathematical & Miscellaneous",
-        icon: Calculator,
-        description:
-          "Master the numerical foundations and essential utilities for efficient problem-solving.",
-        page: "MathsMiscPage",
-        gradient: "from-accent-primary500 to-teal600",
-        iconBg: "bg-accent-primary-light",
-        borderColor: "border-accent-primary/30",
-        iconColor: "text-accent-primary",
-      },
-    ],
-    []
-  );
-
-  // Build a lightweight search index for categories and problems
-  const SEARCH_INDEX = useMemo(() => {
-    const categoryItems = categories.map((c) => ({
+  const searchIndex = useMemo(() => {
+    const categoryItems = categories.map((category) => ({
       type: "category",
-      label: c.name,
-      category: c.page,
-      keywords: [c.name.toLowerCase()],
+      label: category.name,
+      category: category.page,
+      keywords: [category.name.toLowerCase()],
     }));
-    const problemItems = PROBLEM_CATALOG.map((p) => ({
-      type: "problem",
-      ...p,
-    })).filter((p) => p.category && p.subpage); // Ensure items are valid
-    return [...categoryItems, ...problemItems];
-  }, [categories]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    const tokens = q.split(/\s+/);
-    const match = (item) => {
-      const hay = [
-        item.label.toLowerCase(),
-        item.category?.toLowerCase(),
+    const problemItems = PROBLEM_CATALOG.map((problem) => ({
+      type: "problem",
+      ...problem,
+    })).filter((problem) => problem.category && problem.subpage);
+
+    return [...categoryItems, ...problemItems];
+  }, []);
+
+  const results = useMemo(() => {
+    const term = query.trim().toLowerCase();
+    if (!term) return [];
+
+    const tokens = term.split(/\s+/);
+    const matches = searchIndex.filter((item) => {
+      const haystack = [
+        item.label?.toLowerCase?.() || "",
+        item.category?.toLowerCase?.() || "",
         ...(item.keywords || []),
       ].join(" ");
-      return tokens.every((t) => hay.includes(t));
-    };
-    const results = SEARCH_INDEX.filter(match);
-    // Sort: exact prefix matches first, then by type (problem over category), then alphabetically
-    results.sort((a, b) => {
-      const ap = a.label.toLowerCase().startsWith(query.toLowerCase()) ? 0 : 1;
-      const bp = b.label.toLowerCase().startsWith(query.toLowerCase()) ? 0 : 1;
-      if (ap !== bp) return ap - bp;
-      if (a.type !== b.type) return a.type === "problem" ? -1 : 1;
-      return a.label.localeCompare(b.label);
+      return tokens.every((token) => haystack.includes(token));
     });
-    return results.slice(0, 10);
-  }, [SEARCH_INDEX, query]);
 
-  const handleSubmit = (e) => {
-    e?.preventDefault?.();
-    const target = filtered[0];
-    if (!target) return;
-    if (target.type === "category") {
-      navigate(target.category);
+    return matches.slice(0, 10);
+  }, [query, searchIndex]);
+
+  const handleSelect = (item) => {
+    if (item.type === "category") {
+      const categoryPath = categoryPathMap[item.category] || `/${item.category.toLowerCase()}`;
+      navigate(categoryPath);
     } else {
-      navigate({ page: target.category, subpage: target.subpage });
+      // Navigate to specific algorithm
+      const categoryPath = categoryPathMap[item.category] || `/${item.category.toLowerCase()}`;
+      const subpagePath = item.subpage.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+      navigate(`${categoryPath}/${subpagePath}`);
     }
     setOpen(false);
     setQuery("");
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (results.length > 0) {
+      handleSelect(results[0]);
+    }
+  };
+
   return (
-    <div className="px-4 sm:px-6 py-6 sm:py-8 max-w-7xl mx-auto">
-      <header className="text-center mb-12 sm:mb-16 md:mb-20 lg:mb-24 mt-8 sm:mt-12 md:mt-16 relative">
-        <div className="hidden md:block absolute top-0 left-1/4 w-56 h-56 lg:w-72 lg:h-72 bg-accent-primary-light rounded-full blur-3xl animate-pulse-slow" />
-        <div className="hidden md:block absolute top-20 right-1/4 w-72 h-72 lg:w-96 lg:h-96 bg-purplelight rounded-full blur-3xl animate-pulse-slow-delayed" />
+    <div className="home-shell">
+      <div className="home-content">
+        <section className="home-hero">
+          <span className="home-hero__eyebrow">Interactive algorithm studio</span>
+          <h1 className="home-title">AlgoVisualizer</h1>
+          <p className="home-lede">
+            Master algorithms through clear explanations, interactive walkthroughs, and visual problem guides.
+          </p>
+        </section>
 
-        <div className="relative z-10">
-          {/* Main Logo and Title */}
-          <div className="flex justify-center items-center gap-x-4 sm:gap-x-6 md:gap-x-8 mb-8 sm:mb-10 md:mb-12">
-            <div className="relative">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                className="h-12 w-12 sm:h-16 sm:w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 animated-icon animate-color-shift"
-              >
-                <g
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  color="currentColor"
-                >
-                  <path d="M11.5 6C7.022 6 4.782 6 3.391 7.172S2 10.229 2 14s0 5.657 1.391 6.828S7.021 22 11.5 22c4.478 0 6.718 0 8.109-1.172S21 17.771 21 14c0-1.17 0-2.158-.041-3M18.5 2l.258.697c.338.914.507 1.371.84 1.704c.334.334.791.503 1.705.841L22 5.5l-.697.258c-.914.338-1.371.507-1.704.84c-.334.334-.503.791-.841 1.705L18.5 9l-.258-.697c-.338-.914-.507-1.371-.84-1.704c-.334-.334-.503-.791-.841 1.705L15 5.5l.697-.258c.914-.338 1.371-.507 1.704-.84c.334-.334.503-.791.841-1.705z" />
-                  <path d="m15.5 12l1.227 1.057c.515.445.773.667.773.943s-.258.498-.773.943L15.5 16m-8-4l-1.227 1.057c-.515.445-.773.667-.773.943s.258.498.773.943L7.5 16m5-5l-2 6" />
-                </g>
-              </svg>
-              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 md:h-7 md:w-7 text-theme-primary absolute -top-2 -right-2 sm:-top-3 sm:-right-3" />
-            </div>
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[1.15] md:leading-[1.1] pb-1 bg-clip-text text-transparent bg-gradient-to-r from-accent-primary400 via-purple-400 to-pink400 animated-gradient">
-              AlgoVisualizer
-            </h1>
-          </div>
+        <SearchBar
+          query={query}
+          onQueryChange={setQuery}
+          results={results}
+          onSelect={handleSelect}
+          open={open}
+          setOpen={setOpen}
+          onSubmit={handleSubmit}
+        />
 
-          {/* Hero Description */}
-          <div className="space-y-4 sm:space-y-6 mb-8 sm:mb-10 md:mb-12">
-            <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-theme-primary max-w-5xl mx-auto leading-tight px-4">
-              Master algorithms through{" "}
-              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent-primary400 to-purple400 animate-text-shimmer">
-                interactive visualizations
-              </span>
-            </p>
-            {/* Global Search */}
-            <div className="max-w-2xl mx-auto px-4">
-              <form onSubmit={handleSubmit} className="relative z-50">
-                <div className="flex items-center gap-2 bg-theme-secondary/80 border border-theme-secondary rounded-2xl px-4 py-3 shadow-lg focus-within:border-accent-primary/50">
-                  <SearchCode className="h-5 w-5 text-theme-tertiary" />
-                  <input
-                    ref={inputRef}
-                    value={query}
-                    onChange={(e) => {
-                      setQuery(e.target.value);
-                      setOpen(true);
-                    }}
-                    onFocus={() => setOpen(true)}
-                    placeholder="Search problems or topics (e.g., LRU Cache, sliding window)"
-                    className="w-full bg-transparent outline-none text-theme-secondary placeholder:text-theme-muted"
-                    aria-label="Search problems or topics"
-                  />
-                  <button
-                    type="submit"
-                    className="px-3 py-1.5 text-sm rounded-lg bg-accent-primary-hover/80 hover:bg-accent-primary-hover text-theme-primary transition cursor-pointer"
-                    aria-label="Search"
-                  >
-                    Search
-                  </button>
-                </div>
+        <section>
+          <CategoryGrid onSelect={(categoryPage) => {
+            const path = categoryPathMap[categoryPage] || `/${categoryPage.toLowerCase()}`;
+            navigate(path);
+          }} />
+        </section>
 
-                {open && query && (
-                  <>
-                    {/* screen overlay to block background interactions */}
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setOpen(false)}
-                    />
-                    <div
-                      className="absolute left-0 right-0 mt-2 bg-theme-primary border border-theme-secondary rounded-xl shadow-2xl overflow-hidden backdrop-blur-xl z-50"
-                      onMouseDown={(e) => e.preventDefault()}
-                    >
-                      {filtered.length === 0 ? (
-                        <div className="px-4 py-3 text-sm text-theme-muted">
-                          No matches
-                        </div>
-                      ) : (
-                        <ul className="max-h-72 overflow-auto divide-y divide-theme-secondary">
-                          {filtered.map((item, idx) => (
-                            <li key={`${item.type}-${item.label}-${idx}`}>
-                              <button
-                                type="button"
-                                className="w-full text-left px-4 py-3 hover:bg-theme-tertiary/80 transition flex items-center gap-3"
-                                onClick={() => {
-                                  if (item.type === "category") {
-                                    navigate(item.category);
-                                  } else {
-                                    navigate({
-                                      page: item.category,
-                                      subpage: item.subpage,
-                                    });
-                                  }
-                                  setOpen(false);
-                                  setQuery("");
-                                }}
-                              >
-                                <span
-                                  className={`text-xs font-medium px-2 py-0.5 rounded-md border ${
-                                    item.type === "problem"
-                                      ? "text-purple bg-purple/10 border-purple/30"
-                                      : "text-accent-primary bg-accent-primary/10 border-accent-primary/30"
-                                  }`}
-                                >
-                                  {item.type === "problem"
-                                    ? "Problem"
-                                    : "Topic"}
-                                </span>
-                                <span className="text-theme-secondary font-semibold">
-                                  {/* ✅ ADD PROBLEM NUMBER AND PLATFORM DISPLAY */}
-                                  {item.type === "problem" && item.number && (
-                                    <span className="text-theme-muted font-mono mr-2">
-                                      #{item.number}
-                                    </span>
-                                  )}
-                                  {item.label}
-                                  {item.type === "problem" && (
-                                    <span className="text-theme-muted font-normal ml-2">
-                                      — {item.category}
-                                      {item.platforms &&
-                                        item.platforms.length > 0 && (
-                                          <span className="ml-2 font-mono text-xs px-2 py-0.5 rounded bg-theme-elevated/50 border border-theme-primary">
-                                            {item.platforms.join(", ")}
-                                          </span>
-                                        )}
-                                    </span>
-                                  )}
-                                </span>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </>
-                )}
-              </form>
-            </div>
-            <p className="text-xs sm:text-sm text-theme-tertiary max-w-3xl mx-auto px-4 leading-relaxed">
-              Clear, step-by-step demonstrations that bring algorithms to life.
-            </p>
-          </div>
-
-          {/* Feature Badges */}
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 md:mb-12 px-4">
-            <div className="group px-6 py-3 bg-gradient-to-r from-accent-primary500/15 to-purple500/15 rounded-2xl border border-accent-primary/40 backdrop-blur-sm hover:scale-110 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 cursor-default">
-              <div className="flex items-center gap-3">
-                <Zap className="h-5 w-5 text-accent-primary" />
-                <span className="text-base font-semibold text-theme-secondary">
-                  Interactive Learning
-                </span>
-              </div>
-            </div>
-            <div className="group px-6 py-3 bg-gradient-to-r from-purple500/15 to-pink500/15 rounded-2xl border border-purple/40 backdrop-blur-sm hover:scale-110 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-default">
-              <div className="flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-purple" />
-                <span className="text-base font-semibold text-theme-secondary">
-                  Visual Demos
-                </span>
-              </div>
-            </div>
-            <div className="group px-6 py-3 bg-gradient-to-r from-pink500/15 to-pink500/15 rounded-2xl border border-pink/40 backdrop-blur-sm hover:scale-110 hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300 cursor-default">
-              <div className="flex items-center gap-3">
-                <Trophy className="h-5 w-5 text-pink" />
-                <span className="text-base font-semibold text-theme-secondary">
-                  Master Topics
-                </span>
-              </div>
-            </div>
-            <button
-              onClick={toggleTheme}
-              className="group px-6 py-3 bg-gradient-to-r from-gray-500/15 to-slate-500/15 rounded-2xl border border-theme-muted/40 backdrop-blur-sm hover:scale-110 hover:shadow-lg hover:shadow-gray-500/20 transition-all duration-300 cursor-pointer"
-              aria-label="Toggle theme"
-            >
-              <div className="flex items-center gap-3">
-                {theme === 'dark' ? (
-                  <Sun className="h-5 w-5 text-warning" />
-                ) : (
-                  <Moon className="h-5 w-5 text-accent-primary" />
-                )}
-                <span className="text-base font-semibold text-theme-secondary">
-                  {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-                </span>
-              </div>
-            </button>
-          </div>
-
-          {/* Call to Action */}
-          <div className="inline-block animate-bounce-subtle">
-            <div className="px-6 py-3 bg-gradient-to-r from-gray-800/50 to-theme-elevated/50 rounded-2xl border border-theme-primary/50 backdrop-blur-sm">
-              <p className="text-theme-secondary text-base font-medium flex items-center gap-2">
-                <span>Choose a category below to start learning</span>
-                <span className="text-xl">↓</span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-        {categories.map((cat, index) => {
-          const isPlaceholder = cat.page === "placeholder";
-          const isHovered = hoveredIndex === index;
-          const Icon = cat.icon;
-
-          return (
-            <div
-              key={cat.name}
-              onClick={() => !isPlaceholder && navigate(cat.page)}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              className={`group relative h-40 sm:h-48 transition-all duration-500 transform animate-fade-in-up ${
-                isPlaceholder
-                  ? "opacity-40 cursor-not-allowed"
-                  : "cursor-pointer hover:-translate-y-4 hover:scale-[1.03]"
-              }`}
-              style={{
-                animationDelay: `${index * 50}ms`,
-              }}
-            >
-              {/* Enhanced shadow effect */}
-              <div
-                className={`absolute -inset-2 rounded-3xl bg-gradient-to-br ${cat.gradient} opacity-0 group-hover:opacity-25 transition-all duration-500 blur-md`}
-              />
-
-              {/* Main card container */}
-              <div
-                className={`relative bg-theme-primary backdrop-blur-sm rounded-3xl p-5 sm:p-6 border ${
-                  cat.borderColor
-                } transition-all duration-500 ${
-                  isHovered && !isPlaceholder
-                    ? "shadow-2xl shadow-gray-900/60"
-                    : "shadow-xl shadow-gray-900/40"
-                } w-full h-full flex flex-col justify-between card-shadow card-glow`}
-              >
-                {/* Header */}
-                <div className="flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4">
-                  <div
-                    className={`p-3 ${
-                      cat.iconBg
-                    } rounded-2xl transition-all duration-300 ${
-                      !isPlaceholder &&
-                      "group-hover:scale-110 group-hover:rotate-6"
-                    }`}
-                  >
-                    <Icon
-                      className={`h-8 w-8 sm:h-10 sm:w-10 ${
-                        isHovered && !isPlaceholder
-                          ? "text-theme-primary"
-                          : cat.iconColor
-                      } transition-colors duration-300`}
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h2
-                      className={`text-lg sm:text-xl font-bold transition-colors duration-300 leading-tight ${
-                        isHovered && !isPlaceholder
-                          ? "text-theme-primary"
-                          : "text-theme-secondary"
-                      }`}
-                    >
-                      {cat.name}
-                    </h2>
-                  </div>
-                </div>
-
-                {/* COMING SOON badge */}
-                {isPlaceholder && (
-                  <div className="absolute -top-1 -right-1 z-20">
-                    <div className="px-2 py-1 bg-gradient-to-r from-theme-elevated to-gray-800 text-theme-secondary text-xs font-bold rounded-full border border-theme-primary animate-pulse-subtle shadow-lg">
-                      COMING SOON
-                    </div>
-                  </div>
-                )}
-
-                {/* Description + Footer */}
-                <div className="flex flex-col flex-grow justify-between">
-                  <p
-                    className={`text-sm leading-relaxed transition-colors duration-300 ${
-                      isHovered && !isPlaceholder
-                        ? "text-theme-secondary"
-                        : "text-theme-muted"
-                    }`}
-                  >
-                    {cat.description}
-                  </p>
-
-                  {!isPlaceholder && (
-                    <div
-                      className={`pt-4 mt-6 border-t border-theme-secondary/50 flex items-center justify-between transition-all duration-300 ${
-                        isHovered
-                          ? "opacity-100 translate-y-0"
-                          : "opacity-0 translate-y-2"
-                      }`}
-                    >
-                      <span className="text-xs text-theme-tertiary font-medium">
-                        Click to explore
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-gradient-to-r from-accent-primary400 to-purple400 animate-pulse" />
-                        <div
-                          className="w-2 h-2 rounded-full bg-gradient-to-r from-purple400 to-pink400 animate-pulse"
-                          style={{ animationDelay: "0.2s" }}
-                        />
-                        <div
-                          className="w-2 h-2 rounded-full bg-gradient-to-r from-pink400 to-pink400 animate-pulse"
-                          style={{ animationDelay: "0.4s" }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="mt-16 text-center">
-        <p className="text-theme-muted text-sm">
-          More categories coming soon • Built with React & Tailwind CSS
-        </p>
+        <CardSpotlight className="home-footnote" color="#475569" radius={260}>
+          More categories coming soon. Built with React and vanilla CSS.
+        </CardSpotlight>
       </div>
     </div>
   );
 };
 
 const HomePage = () => {
-  const [page, setPage] = useState("home");
-  const [initialSubPage, setInitialSubPage] = useState(null);
-  const navigate = (newPage) => {
-    if (typeof newPage === "string") {
-      setPage(newPage);
-      setInitialSubPage(null);
-      return;
-    }
-    if (newPage && typeof newPage === "object" && newPage.page) {
-      setPage(newPage.page);
-      setInitialSubPage(newPage.subpage || null);
-    }
-  };
+  const navigate = useNavigate();
 
-  const renderPage = () => {
-    switch (page) {
-      // ADD THE NEW CASE HERE
-      case "Starred":
-        return <StarredProblems navigate={navigate} />;
-      case "Arrays":
-        return <ArrayPage navigate={navigate} initialPage={initialSubPage} />;
-      case "Strings":
-        return <StringPage navigate={navigate} initialPage={initialSubPage} />;
-      case "Hashing":
-        return <HashingPage navigate={navigate} initialPage={initialSubPage} />;
-      case "SlidingWindows":
-        return (
-          <SlidingWindowsPage
-            navigate={navigate}
-            initialPage={initialSubPage}
-          />
-        );
-      case "LinkedList":
-        return (
-          <LinkedListPage navigate={navigate} initialPage={initialSubPage} />
-        );
-      case "Stack":
-        return <StackPage navigate={navigate} initialPage={initialSubPage} />;
-      case "Sorting":
-        return <SortingPage navigate={navigate} initialPage={initialSubPage} />;
-      case "Searching":
-        return (
-          <SearchingPage navigate={navigate} initialPage={initialSubPage} />
-        );
-      case "Trees":
-        return <TreesPage navigate={navigate} initialPage={initialSubPage} />;
-      case "Design":
-        return <DesignPage navigate={navigate} initialPage={initialSubPage} />;
-      case "Queue":
-        return <QueuePage navigate={navigate} initialPage={initialSubPage} />;
-      case "BinarySearch":
-        return (
-          <BinarySearchPage navigate={navigate} initialPage={initialSubPage} />
-        );
-      case "Heaps":
-        return <HeapsPage navigate={navigate} initialPage={initialSubPage} />;
-      case "Recursion":
-        return (
-          <RecursionPage navigate={navigate} initialPage={initialSubPage} />
-        );
-      case "Pathfinding":
-        return (
-          <PathfindingPage navigate={navigate} initialPage={initialSubPage} />
-        );
-      case "Graphs":
-        return <GraphsPage navigate={navigate} initialPage={initialSubPage} />;
-      case "GreedyPage":
-        return <GreedyPage navigate={navigate} initialPage={initialSubPage} />;
-      case "BacktrackingPage":
-        return (
-          <BacktrackingPage navigate={navigate} initialPage={initialSubPage} />
-        );
-      case "DynamicProgramming":
-        return <DPPage navigate={navigate} initialPage={initialSubPage} />;
-      case "MathsMiscPage":
-        return (
-          <MathsMiscPage navigate={navigate} initialPage={initialSubPage} />
-        );
-      case "BitManipulation":
-        return <BitPage navigate={navigate} initialPage={initialSubPage} />;
-      case "home":
-      default:
-        return <AlgorithmCategories navigate={navigate} />;
-    }
-  };
-
-  const PageWrapper = ({ children }) => (
-    <>
-      <div className="bg-theme-primary text-theme-primary min-h-screen relative overflow-hidden">
-        <div className="fixed inset-0 z-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent-primary-light rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purplelight rounded-full blur-3xl animate-float-delayed" />
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-pinklight rounded-full blur-3xl animate-pulse-slow" />
-        </div>
-
-        <div className="relative z-10">{children}</div>
-        <ScrollToTop />
-
-        <style>{`
-        .animated-gradient {
-          background-size: 200% auto;
-          animation: gradient-animation 4s ease-in-out infinite;
-        }
-        @keyframes gradient-animation {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-
-        .animate-text-shimmer {
-          background-size: 200% auto;
-          animation: text-shimmer 3s ease-in-out infinite;
-        }
-        @keyframes text-shimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-
-        .animate-fade-in-up {
-          animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-          opacity: 0;
-        }
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        .animated-icon {
-          animation: float-rotate 8s ease-in-out infinite;
-          filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.6));
-        }
-        @keyframes float-rotate {
-          0%, 100% { transform: translateY(0) rotate(0deg); }
-          33% { transform: translateY(-10px) rotate(120deg); }
-          66% { transform: translateY(-5px) rotate(240deg); }
-        }
-
-        .animate-spin-slow {
-          animation: spin-slow 10s linear infinite;
-        }
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        .animate-pulse-slow {
-          animation: pulse-slow 4s ease-in-out infinite;
-        }
-        .animate-pulse-slow-delayed {
-          animation: pulse-slow 4s ease-in-out infinite;
-          animation-delay: 2s;
-        }
-        @keyframes pulse-slow {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 0.6; }
-        }
-
-        .animate-pulse-subtle {
-          animation: pulse-subtle 3s ease-in-out infinite;
-        }
-        @keyframes pulse-subtle {
-          0%, 100% { opacity: 0.8; }
-          50% { opacity: 1; }
-        }
-
-        /* Animate icon color through heading gradient hues */
-        .animate-color-shift {
-          animation: color-shift 6s linear infinite;
-        }
-        @keyframes color-shift {
-          0% { color: #60a5fa; } /* blue-400 */
-          33% { color: #a78bfa; } /* purple-400 */
-          66% { color: #f472b6; } /* pink-400 */
-          100% { color: #60a5fa; }
-        }
-
-        .animate-bounce-subtle {
-          animation: bounce-subtle 2s ease-in-out infinite;
-        }
-        @keyframes bounce-subtle {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-5px); }
-        }
-
-        .animate-float {
-          animation: float 20s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float 20s ease-in-out infinite;
-          animation-delay: 10s;
-        }
-        @keyframes float {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          50% { transform: translate(30px, -30px) scale(1.1); }
-        }
-
-        /* Enhanced card hover effects */
-        .group:hover .card-shadow {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        }
-        
-        /* Smooth transitions for all interactive elements */
-        * {
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Enhanced card hover glow effect */
-        .group:hover .card-glow {
-          box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
-        }
-      `}</style>
-      </div>
-      <Footer />
-    </>
-  );
-  return <PageWrapper>{renderPage()}</PageWrapper>;
+  return <AlgorithmHome navigate={navigate} />;
 };
 
 export default HomePage;
