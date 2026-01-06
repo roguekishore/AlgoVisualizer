@@ -1,0 +1,975 @@
+import React, { useState, useEffect, useCallback } from "react"; // Added useEffect/useCallback
+import {
+  ArrowLeft,
+  GitMerge,
+  Code2,
+  Clock,
+  TrendingUp,
+  Star,
+  Zap,
+  Layers,
+  TreeDeciduous, // Kept from maintainer
+  Check, // Kept from maintainer
+  X, // Kept from maintainer
+  CheckCircle, // Kept from maintainer
+  TreePine, // Kept from maintainer
+} from "lucide-react";
+
+// --- Import your specific tree algorithm visualizer components ---
+import ConstructBinaryTree from "./ConstructBinaryTree.jsx";
+import LCAofDeepestLeaves from "./LCAofDeepestLeaves";
+import AVLTree from "./AVLTree.jsx";
+import SymmetricTreeVisualizer from "./SymmetricTreeVisualizer.jsx";
+import BinaryTreeRightSideView from "./BinaryTreeRightSideView.jsx"
+import PrintBinaryTreeVisualizer from "./PrintBinaryTree.jsx"
+import MorrisTraversalVisualizer from "./MorrisTraversal.jsx"
+import FlattenBinaryTreeVisualizer from "./FlattenBinaryTree.jsx"
+
+// --- ✅ Import the master catalog and your StarButton ---
+import { problems as PROBLEM_CATALOG } from "../../../search/catalog";
+import StarButton from "../../../components/StarButton";
+
+// ====================================================================================
+// ✅ Merged: SHARED HELPER COMPONENT (from maintainer)
+// ====================================================================================
+const CodeLine = ({ line, content, colorMapping, activeLine }) => (
+  <div
+    className={`block rounded-md transition-colors px-2 py-1 ${
+      activeLine === line
+        ? "bg-success/20 border-l-4 border-success400"
+        : ""
+    }`}
+  >
+    <span className="text-theme-muted w-8 inline-block text-right pr-4 select-none">
+      {line}
+    </span>
+    {content.map((token, index) => (
+      <span key={index} className={colorMapping[token.c]}>
+        {token.t}
+      </span>
+    ))}
+  </div>
+);
+
+// ====================================================================================
+// ✅ Merged: VISUALIZER COMPONENT: ValidateBST (from maintainer)
+// ====================================================================================
+const ValidateBST = ({ navigate }) => {
+  const [history, setHistory] = useState([]);
+  const [currentStep, setCurrentStep] = useState(-1);
+  const [treeInput, setTreeInput] = useState("5,1,7,null,null,6,8");
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const buildTreeFromInput = (arr) => {
+    if (!arr || arr.length === 0 || arr[0] === null)
+      return { nodes: [], edges: [] };
+    const nodes = [];
+    let nodeCounter = 0;
+    const root = {
+      id: nodeCounter++,
+      data: arr[0],
+      x: 450,
+      y: 50,
+      left: null,
+      right: null,
+    };
+    nodes.push(root);
+    const queue = [root];
+    let i = 1;
+    let yPos = 150;
+    let xOffset = 200;
+    while (queue.length > 0 && i < arr.length) {
+      let levelSize = queue.length;
+      for (let j = 0; j < levelSize; j++) {
+        const parent = queue.shift();
+        if (i < arr.length && arr[i] !== null) {
+          const leftChild = {
+            id: nodeCounter++,
+            data: arr[i],
+            x: parent.x - xOffset,
+            y: yPos,
+            left: null,
+            right: null,
+          };
+          parent.left = leftChild.id;
+          nodes.push(leftChild);
+          queue.push(leftChild);
+        }
+        i++;
+        if (i < arr.length && arr[i] !== null) {
+          const rightChild = {
+            id: nodeCounter++,
+            data: arr[i],
+            x: parent.x + xOffset,
+            y: yPos,
+            left: null,
+            right: null,
+          };
+          parent.right = rightChild.id;
+          nodes.push(rightChild);
+          queue.push(rightChild);
+        }
+        i++;
+      }
+      yPos += 100;
+      xOffset /= 2;
+    }
+    const edges = [];
+    nodes.forEach((node) => {
+      if (node.left !== null) edges.push({ from: node.id, to: node.left });
+      if (node.right !== null) edges.push({ from: node.id, to: node.right });
+    });
+    return { nodes, edges };
+  };
+
+  const generateHistory = useCallback((nodes, edges) => {
+    if (nodes.length === 0) {
+      setHistory([
+        {
+          finished: true,
+          result: true,
+          explanation: "An empty tree is a valid BST.",
+        },
+      ]);
+      setCurrentStep(0);
+      return;
+    }
+    const newHistory = [];
+    const addState = (props) =>
+      newHistory.push({
+        nodes: JSON.parse(JSON.stringify(nodes)),
+        edges: JSON.parse(JSON.stringify(edges)),
+        callStack: [],
+        explanation: "",
+        ...props,
+      });
+    function isValid(nodeId, min, max, callStack) {
+      const call = { nodeId, min, max, id: Math.random() };
+      const newCallStack = [...callStack, call];
+      const node = nodes.find((n) => n.id === nodeId);
+      addState({
+        callStack: newCallStack,
+        line: 8,
+        explanation: `Recursive call on node ${
+          node?.data ?? "null"
+        } with range [${min ?? "-∞"}, ${max ?? "+∞"}]`,
+        highlightNode: nodeId,
+        min,
+        max,
+      });
+      if (nodeId === null) {
+        addState({
+          callStack: newCallStack,
+          line: 9,
+          explanation:
+            "Base case: Node is null, which is valid. Returning true.",
+          highlightNode: null,
+          min,
+          max,
+        });
+        return true;
+      }
+      const isMinValid = min === null || node.data > min;
+      const isMaxValid = max === null || node.data < max;
+      addState({
+        callStack: newCallStack,
+        line: 10,
+        explanation: `Checking if node ${node.data} is within range [${
+          min ?? "-∞"
+        }, ${max ?? "+∞"}].`,
+        highlightNode: nodeId,
+        min,
+        max,
+      });
+      if (!isMinValid || !isMaxValid) {
+        addState({
+          callStack: newCallStack,
+          line: 11,
+          explanation: `Node ${node.data} violates the BST property. Returning false.`,
+          highlightNode: nodeId,
+          validationResult: "fail",
+          min,
+          max,
+        });
+        return false;
+      }
+      addState({
+        callStack: newCallStack,
+        line: 10,
+        explanation: `Node ${node.data} is valid.`,
+        highlightNode: nodeId,
+        validationResult: "pass",
+        min,
+        max,
+      });
+      addState({
+        callStack: newCallStack,
+        line: 12,
+        explanation: `Checking left subtree with updated upper bound: [${
+          min ?? "-∞"
+        }, ${node.data}].`,
+        highlightNode: nodeId,
+        min,
+        max,
+      });
+      const leftIsValid = isValid(node.left, min, node.data, newCallStack);
+      if (!leftIsValid) {
+        addState({
+          callStack: newCallStack,
+          line: 12,
+          explanation: `Left subtree of ${node.data} is invalid. Propagating false up.`,
+          highlightNode: nodeId,
+          min,
+          max,
+        });
+        return false;
+      }
+      addState({
+        callStack: newCallStack,
+        line: 13,
+        explanation: `Checking right subtree with updated lower bound: [${
+          node.data
+        }, ${max ?? "+∞"}].`,
+        highlightNode: nodeId,
+        min,
+        max,
+      });
+      const rightIsValid = isValid(node.right, node.data, max, newCallStack);
+      if (!rightIsValid) {
+        addState({
+          callStack: newCallStack,
+          line: 13,
+          explanation: `Right subtree of ${node.data} is invalid. Propagating false up.`,
+          highlightNode: nodeId,
+          min,
+          max,
+        });
+        return false;
+      }
+      addState({
+        callStack: newCallStack,
+        line: 14,
+        explanation: `Both subtrees of ${node.data} are valid. Returning true.`,
+        highlightNode: nodeId,
+        min,
+        max,
+      });
+      return true;
+    }
+    addState({
+      line: 4,
+      explanation: "Starting validation from the root node.",
+    });
+    const finalResult = isValid(0, null, null, []);
+    addState({
+      finished: true,
+      result: finalResult,
+      explanation: `Validation complete. The tree is ${
+        finalResult ? "a valid" : "an invalid"
+      } BST.`,
+    });
+    setHistory(newHistory);
+    setCurrentStep(0);
+  }, []);
+
+  const loadTree = () => {
+    try {
+      const arr = JSON.parse(`[${treeInput}]`);
+      const { nodes, edges } = buildTreeFromInput(arr);
+      setIsLoaded(true);
+      generateHistory(nodes, edges);
+    } catch (err) {
+      alert("Invalid array format.");
+    }
+  };
+  const reset = () => {
+    setIsLoaded(false);
+    setHistory([]);
+    setCurrentStep(-1);
+  };
+  const stepForward = useCallback(
+    () => setCurrentStep((prev) => Math.min(prev + 1, history.length - 1)),
+    [history.length]
+  );
+  const stepBackward = useCallback(
+    () => setCurrentStep((prev) => Math.max(prev - 1, 0)),
+    []
+  );
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (isLoaded) {
+        if (e.key === "ArrowLeft") stepBackward();
+        if (e.key === "ArrowRight") stepForward();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isLoaded, stepForward, stepBackward]);
+
+  const state = history[currentStep] || {};
+  const code = [
+    { l: 3, c: [{ t: "bool isValidBST(TreeNode* root) {", c: "" }] },
+    { l: 4, c: [{ t: "  return validate(root, NULL, NULL);", c: "" }] },
+    { l: 5, c: [{ t: "}", c: "light-gray" }] },
+    {
+      l: 7,
+      c: [{ t: "bool validate(TreeNode* n, long min, long max) {", c: "" }],
+    },
+    { l: 8, c: [{ t: "  if (n == NULL) return true;", c: "" }] },
+    {
+      l: 9,
+      c: [
+        {
+          t: "  if ((min != NULL && n->val <= min) || (max != NULL && n->val >= max)) {",
+          c: "",
+        },
+      ],
+    },
+    { l: 10, c: [{ t: "    return false;", c: "" }] },
+    { l: 11, c: [{ t: "  }", c: "light-gray" }] },
+    { l: 12, c: [{ t: "  return validate(n->left, min, n->val) &&", c: "" }] },
+    { l: 13, c: [{ t: "         validate(n->right, n->val, max);", c: "" }] },
+    { l: 14, c: [{ t: "}", c: "light-gray" }] },
+  ];
+  const colorMapping = {
+    purple: "text-purple",
+    cyan: "text-teal",
+    "light-gray": "text-theme-tertiary",
+    "": "text-theme-secondary",
+  };
+
+  // Returning the full JSX for the visualizer
+  return (
+    <div className="p-4 max-w-7xl mx-auto">
+      <header className="text-center mb-8">
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-teal400 to-teal500 bg-clip-text text-transparent">
+          Validate Binary Search Tree
+        </h1>
+        <p className="text-xl text-theme-tertiary mt-3">Visualizing LeetCode 98</p>
+      </header>
+      <div className="bg-theme-tertiary p-5 rounded-xl shadow-2xl border border-theme-primary mb-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 w-full">
+            <label className="font-mono text-sm text-theme-secondary whitespace-nowrap">
+              Tree Array:
+            </label>
+            <input
+              type="text"
+              value={treeInput}
+              onChange={(e) => setTreeInput(e.target.value)}
+              disabled={isLoaded}
+              className="font-mono flex-grow bg-theme-secondary p-2 rounded-lg border-2 border-theme-primary focus:border-teal focus:outline-none transition-colors text-theme-primary"
+              placeholder="e.g., 5,1,4,null,null,3,6"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            {!isLoaded ? (
+              <button
+                onClick={loadTree}
+                className="bg-gradient-to-r from-teal500 to-teal600 hover:from-teal600 hover:to-teal700 text-theme-primary font-bold py-3 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105"
+              >
+                Load & Visualize
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={stepBackward}
+                  disabled={currentStep <= 0}
+                  className="bg-theme-elevated hover:bg-theme-elevated p-3 rounded-lg disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+                  </svg>
+                </button>
+                <span className="font-mono text-lg w-28 text-center bg-theme-elevated px-3 py-2 rounded-lg">
+                  {currentStep >= 0 ? currentStep + 1 : 0}/{history.length}
+                </span>
+                <button
+                  onClick={stepForward}
+                  disabled={currentStep >= history.length - 1}
+                  className="bg-theme-elevated hover:bg-theme-elevated p-3 rounded-lg disabled:opacity-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            )}
+            <button
+              onClick={reset}
+              className="bg-danger-hover hover:bg-danger-hover font-bold py-3 px-6 rounded-xl shadow-lg transition-all transform hover:scale-105"
+            >
+              Reset
+            </button>
+          </div>
+        </div>
+      </div>
+      {isLoaded ? (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-gradient-to-br from-gray-800 to-gray-850 p-5 rounded-2xl shadow-2xl border border-theme-primary">
+              <h3 className="font-bold text-2xl text-teal mb-4 pb-3 border-b border-theme-primary flex items-center gap-2">
+                <Code2 size={22} /> C++ Solution
+              </h3>
+              <pre className="text-sm overflow-auto">
+                <code className="font-mono leading-relaxed">
+                  {code.map((l) => (
+                    <CodeLine
+                      key={l.l}
+                      line={l.l}
+                      content={l.c}
+                      colorMapping={colorMapping}
+                      activeLine={state.line}
+                    />
+                  ))}
+                </code>
+              </pre>
+            </div>
+            <div className="bg-theme-secondary/50 p-4 rounded-xl border border-theme-primary">
+              <h4 className="font-mono text-sm text-teal300 mb-3 flex items-center gap-2">
+                <Layers size={18} /> Recursion Call Stack
+              </h4>
+              <div className="flex flex-col-reverse gap-2 max-h-48 overflow-y-auto">
+                {state.callStack?.length > 0 ? (
+                  state.callStack.map((call, index) => (
+                    <div
+                      key={call.id}
+                      className={`p-3 rounded-lg border-2 text-xs transition-all ${
+                        index === state.callStack.length - 1
+                          ? "bg-teal/30 border-teal"
+                          : "bg-theme-elevated/50 border-theme-primary"
+                      }`}
+                    >
+                      <p className="font-bold text-teal300">
+                        validate(node:{" "}
+                        {state.nodes.find((n) => n.id === call.nodeId)?.data ??
+                          "null"}
+                        , min: {call.min ?? "-∞"}, max: {call.max ?? "+∞"})
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <span className="text-theme-muted italic text-sm">
+                    No active calls
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="lg:col-span-2 space-y-6">
+            <div className="relative bg-gradient-to-br from-gray-800 to-gray-850 p-6 rounded-2xl border border-theme-primary shadow-2xl min-h-[500px]">
+              <h3 className="font-bold text-xl text-theme-secondary mb-4 flex items-center gap-2">
+                <TreeDeciduous size={24} /> Binary Tree Visualization
+              </h3>
+              <div
+                className="relative bg-theme-secondary/30 rounded-xl"
+                style={{ width: "100%", height: "450px", overflow: "auto" }}
+              >
+                <svg
+                  className="absolute top-0 left-0"
+                  style={{ width: "1000px", height: "450px" }}
+                >
+                  <defs>
+                    <linearGradient id="edge-gradient">
+                      <stop offset="0%" stopColor="#2dd4bf" />
+                      <stop offset="100%" stopColor="#14b8a6" />
+                    </linearGradient>
+                  </defs>
+                  {state.edges?.map((edge, i) => {
+                    const fromNode = state.nodes.find(
+                      (n) => n.id === edge.from
+                    );
+                    const toNode = state.nodes.find((n) => n.id === edge.to);
+                    if (!fromNode || !toNode) return null;
+                    return (
+                      <line
+                        key={i}
+                        x1={fromNode.x}
+                        y1={fromNode.y + 28}
+                        x2={toNode.x}
+                        y2={toNode.y - 28}
+                        stroke="url(#edge-gradient)"
+                        strokeWidth="3"
+                      />
+                    );
+                  })}
+                </svg>
+                <div
+                  className="absolute top-0 left-0"
+                  style={{ width: "1000px", height: "450px" }}
+                >
+                  {state.nodes?.map((node) => {
+                    const isHighlighted = state.highlightNode === node.id;
+                    let validationClass = "";
+                    if (isHighlighted && state.validationResult) {
+                      validationClass =
+                        state.validationResult === "pass"
+                          ? "shadow-green-500/70 border-success"
+                          : "shadow-red-500/70 border-danger";
+                    }
+                    return (
+                      <div
+                        key={node.id}
+                        style={{
+                          left: `${node.x - 32}px`,
+                          top: `${node.y - 32}px`,
+                        }}
+                        className="absolute transition-all duration-500"
+                      >
+                        <div
+                          className={`w-16 h-16 flex items-center justify-center rounded-full font-mono text-xl font-bold text-theme-primary border-4 transition-all duration-300 shadow-2xl ${
+                            isHighlighted
+                              ? `bg-gradient-to-br from-teal400 to-teal500 scale-110 ${validationClass}`
+                              : "bg-gradient-to-br from-theme-tertiary to-theme-elevated border-theme-muted"
+                          }`}
+                        >
+                          {node.data}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-850 p-5 rounded-2xl border border-theme-primary shadow-xl">
+              <h3 className="font-mono text-base text-teal300 mb-3 flex items-center gap-2">
+                <GitMerge size={18} /> Current Node's Constraints
+              </h3>
+              <div className="text-center font-mono text-2xl bg-theme-secondary/50 p-4 rounded-lg">
+                <span className="text-theme-tertiary">Range: [ </span>
+                <span className="font-bold text-orange">
+                  {state.min ?? "-∞"}
+                </span>
+                <span className="text-theme-tertiary">, </span>
+                <span className="font-bold text-orange">
+                  {state.max ?? "+∞"}
+                </span>
+                <span className="text-theme-tertiary"> ]</span>
+              </div>
+            </div>
+            <div
+              className={`p-5 rounded-2xl border-2 transition-all shadow-xl ${
+                state.finished
+                  ? state.result
+                    ? "bg-gradient-to-br from-success900/40 to-success900/40 border-success"
+                    : "bg-gradient-to-br from-danger900/40 to-pink900/40 border-danger"
+                  : "bg-gradient-to-br from-gray-800 to-gray-850 border-theme-primary"
+              }`}
+            >
+              <h3
+                className={`text-sm font-semibold flex items-center gap-2 mb-2 ${
+                  state.finished
+                    ? state.result
+                      ? "text-success"
+                      : "text-danger"
+                    : "text-theme-tertiary"
+                }`}
+              >
+                <CheckCircle size={18} /> Final Result
+              </h3>
+              <p
+                className={`font-mono text-4xl font-bold ${
+                  state.finished
+                    ? state.result
+                      ? "text-success"
+                      : "text-danger"
+                    : "text-theme-tertiary"
+                }`}
+              >
+                {state.finished ? (
+                  state.result ? (
+                    <span className="flex items-center gap-3">
+                      <Check /> Valid BST
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-3">
+                      <X /> Invalid BST
+                    </span>
+                  )
+                ) : (
+                  "Processing..."
+                )}
+              </p>
+            </div>
+            <div className="bg-gradient-to-br from-gray-800 to-gray-850 p-5 rounded-2xl border border-theme-primary shadow-xl min-h-[6rem]">
+              <h3 className="text-theme-tertiary text-sm font-semibold mb-2">
+                Step Explanation
+              </h3>
+              <p className="text-theme-secondary text-base leading-relaxed">
+                {state.explanation || 'Click "Load & Visualize" to begin'}
+              </p>
+            </div>
+            <div className="lg:col-span-3 bg-gradient-to-br from-gray-800 to-gray-850 p-6 rounded-2xl shadow-2xl border border-theme-primary">
+              <h3 className="font-bold text-2xl text-teal mb-5 pb-3 border-b-2 border-theme-primary flex items-center gap-2">
+                <Clock size={24} /> Complexity Analysis
+              </h3>
+              <div className="space-y-5 text-base">
+                <div className="bg-theme-secondary/50 p-4 rounded-xl">
+                  <h4 className="font-semibold text-teal300 text-lg mb-2">
+                    Time Complexity:{" "}
+                    <span className="font-mono text-teal300">O(N)</span>
+                  </h4>
+                  <p className="text-theme-secondary">
+                    The algorithm must visit every node in the tree exactly once
+                    to validate its properties.
+                  </p>
+                </div>
+                <div className="bg-theme-secondary/50 p-4 rounded-xl">
+                  <h4 className="font-semibold text-teal300 text-lg mb-2">
+                    Space Complexity:{" "}
+                    <span className="font-mono text-teal300">O(H)</span>
+                  </h4>
+                  <p className="text-theme-secondary">
+                    The space is determined by the recursion depth. In the worst
+                    case (a skewed tree), this is O(N). For a balanced tree, it
+                    is O(log N). H represents the height of the tree.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="text-center py-20">
+          <TreeDeciduous size={64} className="mx-auto text-theme-muted mb-4" />
+          <p className="text-theme-tertiary text-xl">
+            Load a tree array to begin visualization.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// ✅ (Optional but Recommended) Default values for visual properties
+const defaultVisuals = {
+  icon: GitMerge,
+  gradient: "from-theme-elevated to-gray-800",
+  borderColor: "border-theme-primary",
+  iconBg: "bg-theme-elevated/20",
+  iconColor: "text-theme-secondary",
+};
+
+// ====================================================================================
+// ALGORITHM LIST COMPONENT (Your refactored version)
+// ====================================================================================
+const AlgorithmList = ({ navigate }) => {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [filter, setFilter] = useState("all"); // ✅ Keep maintainer's filter logic
+
+  // ✅ Get Tree problems directly from the master catalog
+  const treeAlgorithms = PROBLEM_CATALOG.filter((p) => p.category === "Trees");
+
+  // ✅ Filter logic from maintainer, adapted for your catalog data
+  const filteredAlgorithms = treeAlgorithms.filter((algo) => {
+    if (filter === "all") return true;
+    if (filter === "easy") return algo.tier === "Tier 1";
+    if (filter === "medium") return algo.tier === "Tier 2";
+    if (filter === "hard") return algo.tier === "Tier 3";
+    return true;
+  });
+
+  return (
+    <div className="px-6 py-8 max-w-7xl mx-auto">
+      <header className="text-center mb-16 mt-8 relative">
+        {/* ... Header markup from maintainer/your version ... */}
+        <div className="absolute top-0 left-1/3 w-64 h-64 bg-success/10 rounded-full blur-3xl animate-pulse-slow pointer-events-none" />
+        <div className="absolute top-10 right-1/3 w-80 h-80 bg-success-light rounded-full blur-3xl animate-pulse-slow-delayed pointer-events-none" />
+        <div className="relative z-10">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-5 mb-6">
+            <div className="relative">
+              {/* ✅ Use TreePine from maintainer for header icon */}
+              <TreePine className="h-14 sm:h-16 w-14 sm:w-16 text-success animated-icon" />
+              <Zap className="h-5 w-5 text-success absolute -top-1 -right-1 animate-pulse" />
+            </div>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-success400 via-green-400 to-lime-400 animated-gradient">
+              Tree Algorithms
+            </h1>
+          </div>
+          <p className="text-lg sm:text-xl text-theme-secondary mt-6 max-w-3xl mx-auto leading-relaxed px-4">
+            Explore the elegance of tree data structures. Visualize complex
+            problems involving{" "}
+            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-success400 to-success400">
+              recursion
+            </span>{" "}
+            and{" "}
+            <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal400 to-teal400">
+              traversals
+            </span>
+            .
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 mt-8 px-4">
+            <div className="px-4 py-2 bg-gradient-to-r from-success/10 to-success500/10 rounded-full border border-success500/30 backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <Code2 className="h-3.5 w-3.5 text-success" />
+                <span className="text-xs font-medium text-theme-secondary">
+                  {treeAlgorithms.length} Problem(s)
+                </span>
+              </div>
+            </div>
+            <div className="px-4 py-2 bg-gradient-to-r from-accent-primary500/10 to-teal500/10 rounded-full border border-accent-primary/30 backdrop-blur-sm">
+              <div className="flex items-center gap-2">
+                <TrendingUp className="h-3.5 w-3.5 text-accent-primary" />
+                <span className="text-xs font-medium text-theme-secondary">
+                  Recursive Solutions
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ✅ Keep maintainer's filter buttons */}
+      <div className="flex flex-wrap justify-center gap-3 mb-8">
+        <button
+          onClick={() => setFilter("all")}
+          className={`px-4 py-2 rounded-full border backdrop-blur-sm transition-all ${
+            filter === "all"
+              ? "bg-success/20 border-success500/50 text-success300"
+              : "bg-theme-tertiary/50 border-theme-primary text-theme-tertiary hover:border-theme-primary"
+          }`}
+        >
+          All Problems
+        </button>
+        <button
+          onClick={() => setFilter("easy")}
+          className={`px-4 py-2 rounded-full border backdrop-blur-sm transition-all ${
+            filter === "easy"
+              ? "bg-success-light border-success/50 text-success"
+              : "bg-theme-tertiary/50 border-theme-primary text-theme-tertiary hover:border-theme-primary"
+          }`}
+        >
+          Easy (Tier 1)
+        </button>
+        <button
+          onClick={() => setFilter("medium")}
+          className={`px-4 py-2 rounded-full border backdrop-blur-sm transition-all ${
+            filter === "medium"
+              ? "bg-warning-light border-warning/50 text-warning"
+              : "bg-theme-tertiary/50 border-theme-primary text-theme-tertiary hover:border-theme-primary"
+          }`}
+        >
+          Medium (Tier 2)
+        </button>
+        <button
+          onClick={() => setFilter("hard")}
+          className={`px-4 py-2 rounded-full border backdrop-blur-sm transition-all ${
+            filter === "hard"
+              ? "bg-danger-light border-danger/50 text-danger"
+              : "bg-theme-tertiary/50 border-theme-primary text-theme-tertiary hover:border-theme-primary"
+          }`}
+        >
+          Hard (Tier 3)
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+        {filteredAlgorithms.map((algo, index) => {
+          // ✅ Use your filteredAlgorithms
+          const isHovered = hoveredIndex === index;
+          const Icon = algo.icon || defaultVisuals.icon;
+          return (
+            <div
+              key={algo.subpage}
+              onClick={() => navigate(algo.subpage)}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className="group relative cursor-pointer animate-fade-in-up"
+              style={{ animationDelay: `${index * 80}ms` }}
+            >
+              <div
+                className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${
+                  algo.gradient || defaultVisuals.gradient
+                } opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl`}
+              />
+              <div
+                className={`relative bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-sm rounded-2xl p-6 border ${
+                  algo.borderColor || defaultVisuals.borderColor
+                } transition-all duration-300 transform group-hover:-translate-y-2 group-hover:scale-[1.02] group-hover:shadow-2xl`}
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`p-3 ${
+                        algo.iconBg || defaultVisuals.iconBg
+                      } rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}
+                    >
+                      <Icon
+                        className={`h-10 w-10 ${
+                          isHovered
+                            ? "text-theme-primary"
+                            : algo.iconColor || defaultVisuals.iconColor
+                        } transition-colors duration-300`}
+                      />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-mono text-theme-muted">
+                          #{algo.number}
+                        </span>
+                        <div
+                          className={`px-2 py-0.5 rounded-md text-xs font-bold ${algo.difficultyBg} ${algo.difficultyColor} border ${algo.difficultyBorder}`}
+                        >
+                          {algo.difficulty}
+                        </div>
+                      </div>
+                      <h2
+                        className={`text-xl font-bold transition-colors duration-300 ${
+                          isHovered ? "text-theme-primary" : "text-theme-secondary"
+                        }`}
+                      >
+                        {algo.label}
+                      </h2>
+                    </div>
+                  </div>
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <StarButton problemId={algo.subpage} />
+                  </div>
+                </div>
+                <p className="text-sm leading-relaxed mb-5 transition-colors duration-300">
+                  {algo.description}
+                </p>
+                <div className="flex items-center justify-between pt-4 border-t border-theme-secondary">
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-1.5">
+                      <Star className="h-4 w-4 text-orange" />
+                      <span className="text-xs font-medium text-theme-tertiary">
+                        {algo.technique}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="h-4 w-4 text-accent-primary" />
+                      <span className="text-xs font-mono text-theme-tertiary">
+                        {algo.timeComplexity}
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className={`transition-all duration-300 ${
+                      isHovered
+                        ? "opacity-100 translate-x-0"
+                        : "opacity-0 -translate-x-2"
+                    }`}
+                  >
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs font-medium text-theme-tertiary">
+                        Solve
+                      </span>
+                      <ArrowLeft className="h-4 w-4 text-theme-tertiary rotate-180" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-12 text-center">
+        <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-gray-800/80 to-gray-900/80 rounded-full border border-theme-primary backdrop-blur-sm">
+          <TrendingUp className="h-4 w-4 text-success" />
+          <span className="text-sm text-theme-tertiary">
+            More tree problems coming soon
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ====================================================================================
+// MAIN PAGE COMPONENT (Wrapper)
+// ====================================================================================
+const PageWrapper = ({ children }) => (
+  <div className="bg-theme-primary text-theme-primary min-h-screen relative overflow-hidden">
+    <div className="fixed inset-0 z-0 pointer-events-none">
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-success/20 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-success-light rounded-full blur-3xl animate-float-delayed" />
+    </div>
+    <style>{`.animated-gradient { background-size: 200% auto; animation: gradient-animation 4s ease-in-out infinite; } @keyframes gradient-animation { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } } .animate-fade-in-up { animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; } @keyframes fade-in-up { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } } .animated-icon { animation: float-rotate 8s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.6)); } @keyframes float-rotate { 0%, 100% { transform: translateY(0) rotate(0deg); } 33% { transform: translateY(-8px) rotate(120deg); } 66% { transform: translateY(-4px) rotate(240deg); } } .animate-pulse-slow, .animate-pulse-slow-delayed { animation: pulse-slow 4s ease-in-out infinite; animation-delay: var(--animation-delay, 0s); } @keyframes pulse-slow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.6; } } .animate-float, .animate-float-delayed { animation: float 20s ease-in-out infinite; animation-delay: var(--animation-delay, 0s); } @keyframes float { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(30px, -30px) scale(1.1); } }`}</style>
+    <div className="relative z-10">{children}</div>
+  </div>
+);
+
+const TreesPage = ({ navigate: parentNavigate }) => {
+  const [page, setPage] = useState("home");
+  const navigate = (newPage) => setPage(newPage);
+
+  const renderPage = () => {
+    switch (page) {
+      case "ConstructBinaryTree":
+        return <ConstructBinaryTree navigate={navigate} />;
+      case "LCAofDeepestLeaves":
+        return <LCAofDeepestLeaves navigate={navigate} />;
+      case "AVLTree":
+        return <AVLTree navigate={navigate} />;
+      case "ValidateBST":
+        return <ValidateBST navigate={navigate} />; // ✅ Merged change
+      case "SymmetricTreeVisualizer":
+        return <SymmetricTreeVisualizer navigate={navigate} />;
+      case "BinaryTreeRightSideView":
+        return <BinaryTreeRightSideView navigate={navigate} />
+      case "PrintBinaryTree":
+        return <PrintBinaryTreeVisualizer navigate={navigate} />
+      case "MorrisTraversal":
+        return <MorrisTraversalVisualizer navigate={navigate} />
+      case "FlattenBinaryTree":
+        return <FlattenBinaryTreeVisualizer navigate={navigate} />
+      case "home":
+      default:
+        return <AlgorithmList navigate={navigate} />;
+    }
+  };
+
+  return (
+    <PageWrapper>
+      {page !== "home" && (
+        <nav className="bg-theme-secondary/80 backdrop-blur-xl border-b border-theme-secondary sticky top-0 z-50 h-16 flex items-center shadow-xl">
+          <div className="max-w-7xl px-6 w-full mx-auto flex items-center justify-between">
+            <button
+              onClick={() => navigate("home")}
+              className="flex items-center gap-2 text-theme-secondary bg-theme-tertiary/80 hover:bg-theme-elevated active:bg-theme-elevated px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 border border-theme-primary hover:border-theme-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Problems
+            </button>
+            <div className="flex items-center gap-2">
+              <TreePine className="h-5 w-5 text-success" />{" "}
+              {/* ✅ Use maintainer's icon */}
+              <span className="text-sm font-semibold text-theme-secondary">
+                Tree Algorithms
+              </span>
+            </div>
+          </div>
+        </nav>
+      )}
+      {page === "home" && parentNavigate && (
+        <nav className="bg-theme-secondary/80 backdrop-blur-xl border-b border-theme-secondary sticky top-0 z-50 h-16 flex items-center shadow-xl">
+          <div className="max-w-7xl px-6 w-full mx-auto">
+            <button
+              onClick={() => parentNavigate("home")}
+              className="flex items-center gap-2 text-theme-secondary bg-theme-tertiary/80 hover:bg-theme-elevated active:bg-theme-elevated px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 hover:scale-105 border border-theme-primary hover:border-theme-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </button>
+          </div>
+        </nav>
+      )}
+      {renderPage()}
+    </PageWrapper>
+  );
+};
+
+export default TreesPage;

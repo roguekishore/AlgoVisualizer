@@ -1,0 +1,796 @@
+/* ========================================
+   DSA SKILL TREE - WORLD MAP STYLES
+   Self-contained styles for WorldMap component
+   ======================================== */
+
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --accent-primary: #6366f1;
+  --accent-secondary: #818cf8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --locked: #475569;
+}
+
+/* ========================================
+   SVG COUNTRY STATE CLASSES (Performance optimized)
+   ======================================== */
+
+/* Base path - LOW RES mode (default) */
+svg path {
+  contain: layout style;
+}
+
+/* HIGH RES mode - remove performance optimizations for better quality */
+.high-res-mode svg path {
+  contain: none;
+  transition: fill 0.2s ease, opacity 0.2s ease;
+}
+
+.high-res-mode .map-container,
+.high-res-mode .world-svg {
+  transform: none;
+  backface-visibility: visible;
+}
+
+.high-res-mode .react-transform-wrapper,
+.high-res-mode .react-transform-component {
+  will-change: auto;
+}
+
+/* Placeholder - countries without problems */
+svg path.country-placeholder {
+  fill: #374151;
+  opacity: 0.7;
+  stroke: #4b5563;
+  stroke-width: 0.5;
+  cursor: default;
+}
+
+/* Default path styling (before classes are applied) */
+svg path:not(.country-placeholder):not(.country-completed):not(.country-current):not(.country-available):not(.country-locked) {
+  fill: #374151;
+  opacity: 0.7;
+  stroke: #4b5563;
+  stroke-width: 0.5;
+}
+
+/* Completed - solved problems */
+svg path.country-completed {
+  fill: var(--topic-color, #6366f1);
+  opacity: 1;
+  stroke: #1e293b;
+  stroke-width: 0.8;
+  cursor: pointer;
+}
+
+svg path.country-completed:hover {
+  opacity: 0.85;
+}
+
+/* Current - active problem to solve */
+svg path.country-current {
+  fill: #fef08a;
+  opacity: 1;
+  stroke: var(--topic-color, #6366f1);
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+svg path.country-current:hover {
+  opacity: 0.9;
+}
+
+/* Available - can be solved but not current */
+svg path.country-available {
+  fill: #f8fafc;
+  opacity: 1;
+  stroke: var(--topic-color, #6366f1);
+  stroke-width: 1.5;
+  cursor: pointer;
+}
+
+svg path.country-available:hover {
+  opacity: 0.85;
+}
+
+/* Locked - prerequisites not met */
+svg path.country-locked {
+  fill: #6b7280;
+  opacity: 0.6;
+  stroke: #4b5563;
+  stroke-width: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   MAIN WRAPPER
+   ======================================== */
+
+.skill-tree-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1f35 100%);
+  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+
+.skill-tree-wrapper * {
+  box-sizing: border-box;
+}
+
+/* ========================================
+   PROGRESS HEADER
+   ======================================== */
+
+.progress-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0) 100%);
+  z-index: 100;
+}
+
+.progress-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.progress-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #fff 0%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+.progress-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.progress-bar-container {
+  width: 150px;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-primary), var(--success));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+
+/* Header Actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-icon-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.action-icon-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.action-icon-btn.active {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+}
+
+.action-icon-btn .resolution-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+/* ========================================
+   TOPIC LEGEND
+   ======================================== */
+
+.topic-legend {
+  position: absolute;
+  top: 80px;
+  left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  z-index: 100;
+  padding-right: 0.5rem;
+}
+
+.topic-legend::-webkit-scrollbar {
+  width: 4px;
+}
+
+.topic-legend::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.topic-legend::-webkit-scrollbar-thumb {
+  background: var(--bg-tertiary);
+  border-radius: 2px;
+}
+
+.topic-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  white-space: nowrap;
+}
+
+.topic-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--topic-color, var(--accent-primary));
+  color: var(--text-primary);
+  transform: translateX(4px);
+}
+
+.topic-btn.complete {
+  border-color: var(--success);
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.topic-btn.complete .topic-progress {
+  background: var(--success);
+  color: white;
+}
+
+.topic-icon {
+  font-size: 0.9rem;
+}
+
+.topic-name {
+  flex: 1;
+  text-align: left;
+  font-weight: 500;
+}
+
+.topic-progress {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* ========================================
+   CURRENT POSITION INDICATOR
+   ======================================== */
+
+.current-position-indicator {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  background: rgba(250, 204, 21, 0.15);
+  border: 1px solid #facc15;
+  border-radius: 9999px;
+  color: #facc15;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.current-position-indicator:hover {
+  background: rgba(250, 204, 21, 0.25);
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.current-position-indicator .pulse {
+  animation: pulse 2s infinite;
+}
+
+.roadmap-index {
+  font-size: 0.65rem;
+  background: rgba(250, 204, 21, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* Position Marker Overlay */
+.pulse-ring {
+  animation: pulseRing 2s infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    r: 12;
+    opacity: 0.6;
+  }
+  50% {
+    r: 20;
+    opacity: 0.2;
+  }
+  100% {
+    r: 12;
+    opacity: 0.6;
+  }
+}
+
+/* ========================================
+   DEBUG PANEL
+   ======================================== */
+
+.debug-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  z-index: 500;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.debug-panel h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.debug-panel p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.debug-topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.debug-topic-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-tertiary);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.debug-topic-btn:hover:not(:disabled) {
+  border-color: var(--topic-color, var(--accent-primary));
+  color: var(--text-primary);
+}
+
+.debug-topic-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+}
+
+.debug-close {
+  width: 100%;
+  padding: 0.75rem;
+  background: var(--bg-tertiary);
+  border: none;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.debug-close:hover {
+  background: var(--accent-primary);
+  color: white;
+}
+
+/* ========================================
+   ZOOM CONTROLS
+   ======================================== */
+
+.zoom-controls {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 100;
+}
+
+.zoom-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zoom-controls button:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+/* ========================================
+   MAP CONTAINER
+   ======================================== */
+
+.map-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  /* GPU acceleration for smooth transforms */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.world-svg {
+  width: 100%;
+  height: auto;
+  max-height: 100vh;
+  /* GPU acceleration */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Disable transitions during pan/zoom for performance */
+.react-transform-wrapper {
+  will-change: transform;
+}
+
+.react-transform-component {
+  will-change: transform;
+}
+
+/* Disable path transitions during active transforms */
+.react-transform-wrapper:active svg path,
+.map-container:active svg path {
+  transition: none !important;
+}
+
+/* ========================================
+   TOOLTIP
+   ======================================== */
+
+.tooltip {
+  position: fixed;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 1000;
+  pointer-events: none;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================================
+   SIDE PANEL
+   ======================================== */
+
+.side-panel {
+  position: fixed;
+  right: -400px;
+  top: 0;
+  width: 360px;
+  height: 100%;
+  background: var(--bg-secondary);
+  border-left: 1px solid var(--bg-tertiary);
+  padding: 1.5rem;
+  transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 200;
+  overflow-y: auto;
+}
+
+.side-panel.active {
+  right: 0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.panel-content {
+  margin-top: 3rem;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-bottom: 1rem;
+}
+
+.status-badge.completed {
+  background: rgba(16, 185, 129, 0.2);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.status-badge.available {
+  background: rgba(99, 102, 241, 0.2);
+  color: var(--accent-secondary);
+  border: 1px solid var(--accent-primary);
+}
+
+.status-badge.current {
+  background: rgba(250, 204, 21, 0.2);
+  color: #facc15;
+  border: 1px solid #facc15;
+}
+
+.status-badge.unlocked {
+  background: rgba(99, 102, 241, 0.2);
+  color: var(--accent-secondary);
+  border: 1px solid var(--accent-primary);
+}
+
+.status-badge.locked {
+  background: rgba(71, 85, 105, 0.3);
+  color: var(--text-muted);
+  border: 1px solid var(--locked);
+}
+
+/* Problem Title */
+.problem-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0.75rem 0 0.5rem;
+}
+
+.problem-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Problem Card */
+.problem-card {
+  background: var(--bg-tertiary);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.problem-topic {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.problem-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.problem-order {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Panel Actions */
+.panel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn.primary {
+  background: var(--accent-primary);
+  border: none;
+  color: white;
+}
+
+.action-btn.primary:hover {
+  background: var(--accent-secondary);
+  transform: translateY(-2px);
+}
+
+.action-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.action-btn.secondary:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.completed-message {
+  text-align: center;
+  color: var(--success);
+  font-size: 0.875rem;
+  padding: 0.75rem;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 8px;
+}
+
+/* Route Info */
+.route-info {
+  background: var(--bg-primary);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+}
+
+.route-info code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 768px) {
+  .topic-legend {
+    top: auto;
+    bottom: 5rem;
+    left: 0.5rem;
+  }
+
+  .topic-btn {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .side-panel {
+    width: 100%;
+    right: -100%;
+  }
+
+  .progress-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .progress-title {
+    font-size: 1.25rem;
+  }
+}

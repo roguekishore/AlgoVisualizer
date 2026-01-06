@@ -1,8 +1,8 @@
 import React, { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { categoryConfig } from "./config";
-import CategoryPage from "../pages/CategoryPage";
-import VisualizerPage from "../pages/VisualizerPage";
+import CategoryPage from "../pages/categories/CategoryPage";
+import VisualizerPage from "../pages/visualizer/VisualizerPage";
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -30,186 +30,186 @@ const VisualizerRoute = ({ component: Component, title, category }) => {
 
 // Lazy load all visualizer components
 // SORTING
-const BubbleSort = lazy(() => import("../pages/Sorting/BubbleSort"));
-const MergeSort = lazy(() => import("../pages/Sorting/MergeSort"));
-const QuickSort = lazy(() => import("../pages/Sorting/QuickSort"));
-const InsertionSort = lazy(() => import("../pages/Sorting/InsertionSort"));
-const RadixSort = lazy(() => import("../pages/Sorting/RadixSort"));
-const CountingSort = lazy(() => import("../pages/Sorting/CountingSort"));
-const HeapSort = lazy(() => import("../pages/Sorting/HeapSort"));
-const SelectionSort = lazy(() => import("../pages/Sorting/SelectionSort"));
-const CombSort = lazy(() => import("../pages/Sorting/CombSort"));
-const BucketSort = lazy(() => import("../pages/Sorting/BucketSort"));
-const ShellSort = lazy(() => import("../pages/Sorting/ShellSort"));
-const PancakeSort = lazy(() => import("../pages/Sorting/PancakeSort"));
+const BubbleSort = lazy(() => import("../pages/algorithms/Sorting/BubbleSort"));
+const MergeSort = lazy(() => import("../pages/algorithms/Sorting/MergeSort"));
+const QuickSort = lazy(() => import("../pages/algorithms/Sorting/QuickSort"));
+const InsertionSort = lazy(() => import("../pages/algorithms/Sorting/InsertionSort"));
+const RadixSort = lazy(() => import("../pages/algorithms/Sorting/RadixSort"));
+const CountingSort = lazy(() => import("../pages/algorithms/Sorting/CountingSort"));
+const HeapSort = lazy(() => import("../pages/algorithms/Sorting/HeapSort"));
+const SelectionSort = lazy(() => import("../pages/algorithms/Sorting/SelectionSort"));
+const CombSort = lazy(() => import("../pages/algorithms/Sorting/CombSort"));
+const BucketSort = lazy(() => import("../pages/algorithms/Sorting/BucketSort"));
+const ShellSort = lazy(() => import("../pages/algorithms/Sorting/ShellSort"));
+const PancakeSort = lazy(() => import("../pages/algorithms/Sorting/PancakeSort"));
 
 // ARRAYS
-const TrappingRainWater = lazy(() => import("../pages/Arrays/TrappingRainWater"));
-const ContainerWithMostWater = lazy(() => import("../pages/Arrays/ContainerWithMostWater"));
-const MaxConsecutiveOnesIIIArrays = lazy(() => import("../pages/Arrays/MaxConsecutiveOnesIII"));
-const SubarrayRangesArrays = lazy(() => import("../pages/Arrays/SubarrayRanges"));
-const FindMaxElement = lazy(() => import("../pages/Arrays/FindMaxElement"));
-const FindMinElement = lazy(() => import("../pages/Arrays/FindMinElement"));
-const MoveZeros = lazy(() => import("../pages/Arrays/MoveZeros"));
-const CountZeros = lazy(() => import("../pages/Arrays/CountZeros"));
-const ArraySum = lazy(() => import("../pages/Arrays/ArraySum"));
-const ReverseArray = lazy(() => import("../pages/Arrays/ReverseArray"));
-const TwoSum = lazy(() => import("../pages/Arrays/TwoSum"));
-const ThreeSum = lazy(() => import("../pages/Arrays/3Sum"));
-const FourSum = lazy(() => import("../pages/Arrays/4-sum"));
-const SplitArrayLargestSum = lazy(() => import("../pages/Arrays/SplitArrayLargestSum"));
-const SquaresOfSortedArray = lazy(() => import("../pages/Arrays/SquaresOfSortedArray.tsx"));
-const ProductOfArrayExceptSelf = lazy(() => import("../pages/Arrays/ProductOfArrayExceptSelf"));
-const MaximumSubarray = lazy(() => import("../pages/Arrays/MaximumSubarray"));
-const MergeIntervals = lazy(() => import("../pages/Arrays/MergeIntervals"));
-const RotateArray = lazy(() => import("../pages/Arrays/RotateArray"));
-const MaximumGap = lazy(() => import("../pages/Arrays/MaximumGap"));
+const TrappingRainWater = lazy(() => import("../pages/algorithms/Arrays/TrappingRainWater"));
+const ContainerWithMostWater = lazy(() => import("../pages/algorithms/Arrays/ContainerWithMostWater"));
+const MaxConsecutiveOnesIIIArrays = lazy(() => import("../pages/algorithms/Arrays/MaxConsecutiveOnesIII"));
+const SubarrayRangesArrays = lazy(() => import("../pages/algorithms/Arrays/SubarrayRanges"));
+const FindMaxElement = lazy(() => import("../pages/algorithms/Arrays/FindMaxElement"));
+const FindMinElement = lazy(() => import("../pages/algorithms/Arrays/FindMinElement"));
+const MoveZeros = lazy(() => import("../pages/algorithms/Arrays/MoveZeros"));
+const CountZeros = lazy(() => import("../pages/algorithms/Arrays/CountZeros"));
+const ArraySum = lazy(() => import("../pages/algorithms/Arrays/ArraySum"));
+const ReverseArray = lazy(() => import("../pages/algorithms/Arrays/ReverseArray"));
+const TwoSum = lazy(() => import("../pages/algorithms/Arrays/TwoSum"));
+const ThreeSum = lazy(() => import("../pages/algorithms/Arrays/3Sum"));
+const FourSum = lazy(() => import("../pages/algorithms/Arrays/4-sum"));
+const SplitArrayLargestSum = lazy(() => import("../pages/algorithms/Arrays/SplitArrayLargestSum"));
+const SquaresOfSortedArray = lazy(() => import("../pages/algorithms/Arrays/SquaresOfSortedArray.tsx"));
+const ProductOfArrayExceptSelf = lazy(() => import("../pages/algorithms/Arrays/ProductOfArrayExceptSelf"));
+const MaximumSubarray = lazy(() => import("../pages/algorithms/Arrays/MaximumSubarray"));
+const MergeIntervals = lazy(() => import("../pages/algorithms/Arrays/MergeIntervals"));
+const RotateArray = lazy(() => import("../pages/algorithms/Arrays/RotateArray"));
+const MaximumGap = lazy(() => import("../pages/algorithms/Arrays/MaximumGap"));
 
 // BINARY SEARCH
-const BinarySearchBasic = lazy(() => import("../pages/BinarySearch/BinarySearchBasic"));
-const FindFirstAndLastPosition = lazy(() => import("../pages/BinarySearch/FindFirstAndLastPosition"));
-const FindMinimumInRotatedSortedArray = lazy(() => import("../pages/BinarySearch/FindMinimumInRotatedSortedArray"));
-const FindPeakElement = lazy(() => import("../pages/BinarySearch/FindPeakElement"));
-const MedianOfTwoSortedArrays = lazy(() => import("../pages/BinarySearch/MedianOfTwoSortedArrays"));
-const MinSpeedToArriveOnTime = lazy(() => import("../pages/BinarySearch/MinSpeedToArriveOnTime"));
-const PeakIndexInMountainArray = lazy(() => import("../pages/BinarySearch/PeakIndexInMountainArray"));
-const Search2DMatrix = lazy(() => import("../pages/BinarySearch/Search2DMatrix"));
-const SearchInRotatedSortedArray = lazy(() => import("../pages/BinarySearch/SearchInRotatedSortedArray"));
+const BinarySearchBasic = lazy(() => import("../pages/algorithms/BinarySearch/BinarySearchBasic"));
+const FindFirstAndLastPosition = lazy(() => import("../pages/algorithms/BinarySearch/FindFirstAndLastPosition"));
+const FindMinimumInRotatedSortedArray = lazy(() => import("../pages/algorithms/BinarySearch/FindMinimumInRotatedSortedArray"));
+const FindPeakElement = lazy(() => import("../pages/algorithms/BinarySearch/FindPeakElement"));
+const MedianOfTwoSortedArrays = lazy(() => import("../pages/algorithms/BinarySearch/MedianOfTwoSortedArrays"));
+const MinSpeedToArriveOnTime = lazy(() => import("../pages/algorithms/BinarySearch/MinSpeedToArriveOnTime"));
+const PeakIndexInMountainArray = lazy(() => import("../pages/algorithms/BinarySearch/PeakIndexInMountainArray"));
+const Search2DMatrix = lazy(() => import("../pages/algorithms/BinarySearch/Search2DMatrix"));
+const SearchInRotatedSortedArray = lazy(() => import("../pages/algorithms/BinarySearch/SearchInRotatedSortedArray"));
 
 // GRAPHS
-const BFSGraphs = lazy(() => import("../pages/Graphs/BFS"));
-const DFSGraphs = lazy(() => import("../pages/Graphs/DFS"));
-const Dijkstra = lazy(() => import("../pages/Graphs/Dijkstra"));
-const TopologicalSort = lazy(() => import("../pages/Graphs/TopologicalSort"));
-const Kruskal = lazy(() => import("../pages/Graphs/Kruskal"));
-const NetworkFlow = lazy(() => import("../pages/Graphs/NetworkFlow"));
+const BFSGraphs = lazy(() => import("../pages/algorithms/Graphs/BFS"));
+const DFSGraphs = lazy(() => import("../pages/algorithms/Graphs/DFS"));
+const Dijkstra = lazy(() => import("../pages/algorithms/Graphs/Dijkstra"));
+const TopologicalSort = lazy(() => import("../pages/algorithms/Graphs/TopologicalSort"));
+const Kruskal = lazy(() => import("../pages/algorithms/Graphs/Kruskal"));
+const NetworkFlow = lazy(() => import("../pages/algorithms/Graphs/NetworkFlow"));
 
 // TREES
-const AVLTree = lazy(() => import("../pages/Trees/AVLTree"));
-const BinaryTreeRightSideView = lazy(() => import("../pages/Trees/BinaryTreeRightSideView"));
-const ConstructBinaryTree = lazy(() => import("../pages/Trees/ConstructBinaryTree"));
-const FlattenBinaryTree = lazy(() => import("../pages/Trees/FlattenBinaryTree"));
-const LCAofDeepestLeaves = lazy(() => import("../pages/Trees/LCAofDeepestLeaves"));
-const MorrisTraversal = lazy(() => import("../pages/Trees/MorrisTraversal"));
-const PrintBinaryTree = lazy(() => import("../pages/Trees/PrintBinaryTree"));
-const SymmetricTreeVisualizer = lazy(() => import("../pages/Trees/SymmetricTreeVisualizer"));
-const ValidateBST = lazy(() => import("../pages/Trees/ValidateBST"));
+const AVLTree = lazy(() => import("../pages/algorithms/Trees/AVLTree"));
+const BinaryTreeRightSideView = lazy(() => import("../pages/algorithms/Trees/BinaryTreeRightSideView"));
+const ConstructBinaryTree = lazy(() => import("../pages/algorithms/Trees/ConstructBinaryTree"));
+const FlattenBinaryTree = lazy(() => import("../pages/algorithms/Trees/FlattenBinaryTree"));
+const LCAofDeepestLeaves = lazy(() => import("../pages/algorithms/Trees/LCAofDeepestLeaves"));
+const MorrisTraversal = lazy(() => import("../pages/algorithms/Trees/MorrisTraversal"));
+const PrintBinaryTree = lazy(() => import("../pages/algorithms/Trees/PrintBinaryTree"));
+const SymmetricTreeVisualizer = lazy(() => import("../pages/algorithms/Trees/SymmetricTreeVisualizer"));
+const ValidateBST = lazy(() => import("../pages/algorithms/Trees/ValidateBST"));
 
 // STACK
-const LargestRectangleHistogram = lazy(() => import("../pages/Stack/LargestRectangleHistogram"));
-const NextGreaterElement = lazy(() => import("../pages/Stack/NextGreaterElement"));
-const PermutationStack = lazy(() => import("../pages/Stack/Permutation"));
-const RemoveKDigits = lazy(() => import("../pages/Stack/RemoveKDigits"));
-const StackOperation = lazy(() => import("../pages/Stack/StackOperstion"));
-const SubarrayRangesStack = lazy(() => import("../pages/Stack/SubarrayRanges"));
+const LargestRectangleHistogram = lazy(() => import("../pages/algorithms/Stack/LargestRectangleHistogram"));
+const NextGreaterElement = lazy(() => import("../pages/algorithms/Stack/NextGreaterElement"));
+const PermutationStack = lazy(() => import("../pages/algorithms/Stack/Permutation"));
+const RemoveKDigits = lazy(() => import("../pages/algorithms/Stack/RemoveKDigits"));
+const StackOperation = lazy(() => import("../pages/algorithms/Stack/StackOperstion"));
+const SubarrayRangesStack = lazy(() => import("../pages/algorithms/Stack/SubarrayRanges"));
 
 // LINKED LIST
-const LinkedListCycle = lazy(() => import("../pages/LinkedList/LinkedListCycle"));
-const MergeTwoSortedLists = lazy(() => import("../pages/LinkedList/MergeTwoSortedLists"));
-const ReverseLinkedList = lazy(() => import("../pages/LinkedList/ReverseLinkedList"));
-const SortList = lazy(() => import("../pages/LinkedList/SortList"));
-const SwapPairs = lazy(() => import("../pages/LinkedList/SwapPairs"));
+const LinkedListCycle = lazy(() => import("../pages/algorithms/LinkedList/LinkedListCycle"));
+const MergeTwoSortedLists = lazy(() => import("../pages/algorithms/LinkedList/MergeTwoSortedLists"));
+const ReverseLinkedList = lazy(() => import("../pages/algorithms/LinkedList/ReverseLinkedList"));
+const SortList = lazy(() => import("../pages/algorithms/LinkedList/SortList"));
+const SwapPairs = lazy(() => import("../pages/algorithms/LinkedList/SwapPairs"));
 
 // DYNAMIC PROGRAMMING
-const BurstBalloons = lazy(() => import("../pages/DynamicProgramming/BurstBalloons"));
-const CoinChange = lazy(() => import("../pages/DynamicProgramming/CoinChange"));
-const EditDistance = lazy(() => import("../pages/DynamicProgramming/EditDistance"));
-const KnapSack = lazy(() => import("../pages/DynamicProgramming/KnapSack"));
-const LISubsequence = lazy(() => import("../pages/DynamicProgramming/LISubsequence"));
-const LongestCommonSubsequence = lazy(() => import("../pages/DynamicProgramming/LongestCommonSubsequence"));
-const SellStockIV = lazy(() => import("../pages/DynamicProgramming/SellStockIVVisualizer"));
-const UniquePaths = lazy(() => import("../pages/DynamicProgramming/UniquePaths"));
+const BurstBalloons = lazy(() => import("../pages/algorithms/DynamicProgramming/BurstBalloons"));
+const CoinChange = lazy(() => import("../pages/algorithms/DynamicProgramming/CoinChange"));
+const EditDistance = lazy(() => import("../pages/algorithms/DynamicProgramming/EditDistance"));
+const KnapSack = lazy(() => import("../pages/algorithms/DynamicProgramming/KnapSack"));
+const LISubsequence = lazy(() => import("../pages/algorithms/DynamicProgramming/LISubsequence"));
+const LongestCommonSubsequence = lazy(() => import("../pages/algorithms/DynamicProgramming/LongestCommonSubsequence"));
+const SellStockIV = lazy(() => import("../pages/algorithms/DynamicProgramming/SellStockIVVisualizer"));
+const UniquePaths = lazy(() => import("../pages/algorithms/DynamicProgramming/UniquePaths"));
 
 // SLIDING WINDOWS
-const FruitsIntoBaskets = lazy(() => import("../pages/SlidingWindows/FruitsIntoBaskets"));
-const LongestSubstring = lazy(() => import("../pages/SlidingWindows/LongestSubstring"));
-const MaxConsecutiveOnesIII = lazy(() => import("../pages/SlidingWindows/MaxConsecutiveOnesIII"));
-const MinimumWindow = lazy(() => import("../pages/SlidingWindows/MinimumWindow"));
-const SlidingWindowMaximum = lazy(() => import("../pages/SlidingWindows/SlidingWindowMaximum"));
+const FruitsIntoBaskets = lazy(() => import("../pages/algorithms/SlidingWindows/FruitsIntoBaskets"));
+const LongestSubstring = lazy(() => import("../pages/algorithms/SlidingWindows/LongestSubstring"));
+const MaxConsecutiveOnesIII = lazy(() => import("../pages/algorithms/SlidingWindows/MaxConsecutiveOnesIII"));
+const MinimumWindow = lazy(() => import("../pages/algorithms/SlidingWindows/MinimumWindow"));
+const SlidingWindowMaximum = lazy(() => import("../pages/algorithms/SlidingWindows/SlidingWindowMaximum"));
 
 // BACKTRACKING
-const ExpressionAddOperators = lazy(() => import("../pages/Backtracking/ExpressionAddOperators"));
-const KnightsTour = lazy(() => import("../pages/Backtracking/KnightsTour"));
-const Permutations = lazy(() => import("../pages/Backtracking/Permutations"));
-const SudokuSolver = lazy(() => import("../pages/Backtracking/SudokuSolver"));
-const WordSearch = lazy(() => import("../pages/Backtracking/WordSearch"));
+const ExpressionAddOperators = lazy(() => import("../pages/algorithms/Backtracking/ExpressionAddOperators"));
+const KnightsTour = lazy(() => import("../pages/algorithms/Backtracking/KnightsTour"));
+const Permutations = lazy(() => import("../pages/algorithms/Backtracking/Permutations"));
+const SudokuSolver = lazy(() => import("../pages/algorithms/Backtracking/SudokuSolver"));
+const WordSearch = lazy(() => import("../pages/algorithms/Backtracking/WordSearch"));
 
 // STRINGS
-const CountVowels = lazy(() => import("../pages/Strings/CountVowels"));
-const IsSubSequence = lazy(() => import("../pages/Strings/IsSubSequence"));
-const LongestCP = lazy(() => import("../pages/Strings/LongestCP"));
-const PalindromeCheck = lazy(() => import("../pages/Strings/PalindromeCheck"));
-const ReverseString = lazy(() => import("../pages/Strings/ReverseString"));
-const ReverseWords = lazy(() => import("../pages/Strings/ReverseWords"));
-const StringCompression = lazy(() => import("../pages/Strings/StringCompression"));
-const ValidAnagramStrings = lazy(() => import("../pages/Strings/ValidAnagram"));
+const CountVowels = lazy(() => import("../pages/algorithms/Strings/CountVowels"));
+const IsSubSequence = lazy(() => import("../pages/algorithms/Strings/IsSubSequence"));
+const LongestCP = lazy(() => import("../pages/algorithms/Strings/LongestCP"));
+const PalindromeCheck = lazy(() => import("../pages/algorithms/Strings/PalindromeCheck"));
+const ReverseString = lazy(() => import("../pages/algorithms/Strings/ReverseString"));
+const ReverseWords = lazy(() => import("../pages/algorithms/Strings/ReverseWords"));
+const StringCompression = lazy(() => import("../pages/algorithms/Strings/StringCompression"));
+const ValidAnagramStrings = lazy(() => import("../pages/algorithms/Strings/ValidAnagram"));
 
 // QUEUE
-const BasicQueue = lazy(() => import("../pages/Queue/BasicQueue"));
-const CircularQueue = lazy(() => import("../pages/Queue/CircularQueue"));
-const QueueUsingStacks = lazy(() => import("../pages/Queue/QueueUsingStacks"));
+const BasicQueue = lazy(() => import("../pages/algorithms/Queue/BasicQueue"));
+const CircularQueue = lazy(() => import("../pages/algorithms/Queue/CircularQueue"));
+const QueueUsingStacks = lazy(() => import("../pages/algorithms/Queue/QueueUsingStacks"));
 
 // HEAPS
-const Heapify = lazy(() => import("../pages/Heaps/Heapify"));
-const TaskScheduler = lazy(() => import("../pages/Heaps/TaskScheduler"));
-const TopKFrequent = lazy(() => import("../pages/Heaps/TopKFrequentVisualizer"));
+const Heapify = lazy(() => import("../pages/algorithms/Heaps/Heapify"));
+const TaskScheduler = lazy(() => import("../pages/algorithms/Heaps/TaskScheduler"));
+const TopKFrequent = lazy(() => import("../pages/algorithms/Heaps/TopKFrequentVisualizer"));
 
 // HASHING
-const EqualRowsColumnPair = lazy(() => import("../pages/Hashing/EqualRowsColumnPair"));
-const LongestConsecutiveSequence = lazy(() => import("../pages/Hashing/LongestConsecutiveSequence"));
-const SubarraySumEqualsK = lazy(() => import("../pages/Hashing/SubarraySumEqualsK"));
-const ValidAnagramHashing = lazy(() => import("../pages/Hashing/ValidAnagram"));
+const EqualRowsColumnPair = lazy(() => import("../pages/algorithms/Hashing/EqualRowsColumnPair"));
+const LongestConsecutiveSequence = lazy(() => import("../pages/algorithms/Hashing/LongestConsecutiveSequence"));
+const SubarraySumEqualsK = lazy(() => import("../pages/algorithms/Hashing/SubarraySumEqualsK"));
+const ValidAnagramHashing = lazy(() => import("../pages/algorithms/Hashing/ValidAnagram"));
 
 // RECURSION
-const BinarySearchRecursive = lazy(() => import("../pages/Recursion/BinarySearchRecursive"));
-const Factorial = lazy(() => import("../pages/Recursion/Factorial"));
-const Fibonacci = lazy(() => import("../pages/Recursion/Fibonacci"));
-const NQueens = lazy(() => import("../pages/Recursion/NQueens"));
-const SubsetSum = lazy(() => import("../pages/Recursion/SubsetSum"));
-const TowerOfHanoi = lazy(() => import("../pages/Recursion/TowerOfHanoi"));
+const BinarySearchRecursive = lazy(() => import("../pages/algorithms/Recursion/BinarySearchRecursive"));
+const Factorial = lazy(() => import("../pages/algorithms/Recursion/Factorial"));
+const Fibonacci = lazy(() => import("../pages/algorithms/Recursion/Fibonacci"));
+const NQueens = lazy(() => import("../pages/algorithms/Recursion/NQueens"));
+const SubsetSum = lazy(() => import("../pages/algorithms/Recursion/SubsetSum"));
+const TowerOfHanoi = lazy(() => import("../pages/algorithms/Recursion/TowerOfHanoi"));
 
 // BIT MANIPULATION
-const CountingBits = lazy(() => import("../pages/BitManipulation/CountingBits"));
-const NumberOf1Bits = lazy(() => import("../pages/BitManipulation/NumberOf1Bits"));
-const PowerOfTwo = lazy(() => import("../pages/BitManipulation/PowerOfTwo"));
-const ReverseBits = lazy(() => import("../pages/BitManipulation/ReverseBits"));
-const SingleNumber = lazy(() => import("../pages/BitManipulation/SingleNumber"));
+const CountingBits = lazy(() => import("../pages/algorithms/BitManipulation/CountingBits"));
+const NumberOf1Bits = lazy(() => import("../pages/algorithms/BitManipulation/NumberOf1Bits"));
+const PowerOfTwo = lazy(() => import("../pages/algorithms/BitManipulation/PowerOfTwo"));
+const ReverseBits = lazy(() => import("../pages/algorithms/BitManipulation/ReverseBits"));
+const SingleNumber = lazy(() => import("../pages/algorithms/BitManipulation/SingleNumber"));
 
 // GREEDY
-const AssignCookies = lazy(() => import("../pages/GreedyAlgorithms/AssignCookies"));
-const BestTimeStockII = lazy(() => import("../pages/GreedyAlgorithms/BestTimeStockII"));
-const JobScheduling = lazy(() => import("../pages/GreedyAlgorithms/JobScheduling"));
-const TwoCityScheduling = lazy(() => import("../pages/GreedyAlgorithms/TwoCityScheduling"));
+const AssignCookies = lazy(() => import("../pages/algorithms/GreedyAlgorithms/AssignCookies"));
+const BestTimeStockII = lazy(() => import("../pages/algorithms/GreedyAlgorithms/BestTimeStockII"));
+const JobScheduling = lazy(() => import("../pages/algorithms/GreedyAlgorithms/JobScheduling"));
+const TwoCityScheduling = lazy(() => import("../pages/algorithms/GreedyAlgorithms/TwoCityScheduling"));
 
 // MATHS
-const CountPrimes = lazy(() => import("../pages/MathematicalMiscellaneous/CountPrimes"));
-const ExcelSheetColumnTitle = lazy(() => import("../pages/MathematicalMiscellaneous/ExcelSheetColumnTitle"));
-const FactorialZeroes = lazy(() => import("../pages/MathematicalMiscellaneous/FactorialZeroes"));
-const Power = lazy(() => import("../pages/MathematicalMiscellaneous/Power"));
-const PrimePalindrome = lazy(() => import("../pages/MathematicalMiscellaneous/PrimePalindrome"));
+const CountPrimes = lazy(() => import("../pages/algorithms/MathematicalMiscellaneous/CountPrimes"));
+const ExcelSheetColumnTitle = lazy(() => import("../pages/algorithms/MathematicalMiscellaneous/ExcelSheetColumnTitle"));
+const FactorialZeroes = lazy(() => import("../pages/algorithms/MathematicalMiscellaneous/FactorialZeroes"));
+const Power = lazy(() => import("../pages/algorithms/MathematicalMiscellaneous/Power"));
+const PrimePalindrome = lazy(() => import("../pages/algorithms/MathematicalMiscellaneous/PrimePalindrome"));
 
 // SEARCHING
-const ExponentialSearch = lazy(() => import("../pages/Searching/ExponentialSearch"));
-const KthMissingNumber = lazy(() => import("../pages/Searching/KthMissingNumber"));
-const LinearSearch = lazy(() => import("../pages/Searching/LinearSearch"));
-const SmallestLetter = lazy(() => import("../pages/Searching/SmallestLetter"));
-const SpecialArray = lazy(() => import("../pages/Searching/specialArray"));
-const UnknownSizeSearch = lazy(() => import("../pages/Searching/UnknownSizeSearch"));
+const ExponentialSearch = lazy(() => import("../pages/algorithms/Searching/ExponentialSearch"));
+const KthMissingNumber = lazy(() => import("../pages/algorithms/Searching/KthMissingNumber"));
+const LinearSearch = lazy(() => import("../pages/algorithms/Searching/LinearSearch"));
+const SmallestLetter = lazy(() => import("../pages/algorithms/Searching/SmallestLetter"));
+const SpecialArray = lazy(() => import("../pages/algorithms/Searching/specialArray"));
+const UnknownSizeSearch = lazy(() => import("../pages/algorithms/Searching/UnknownSizeSearch"));
 
 // DESIGN
-const DesignHashMap = lazy(() => import("../pages/Design/DesignHashMap"));
-const DesignLinkedList = lazy(() => import("../pages/Design/DesignLinkedList"));
-const ImplementTrie = lazy(() => import("../pages/Design/ImplementTrie"));
-const LFUCache = lazy(() => import("../pages/Design/LFUCache"));
-const LRUCache = lazy(() => import("../pages/Design/LRUCache"));
-const MinStack = lazy(() => import("../pages/Design/MinStack"));
+const DesignHashMap = lazy(() => import("../pages/algorithms/Design/DesignHashMap"));
+const DesignLinkedList = lazy(() => import("../pages/algorithms/Design/DesignLinkedList"));
+const ImplementTrie = lazy(() => import("../pages/algorithms/Design/ImplementTrie"));
+const LFUCache = lazy(() => import("../pages/algorithms/Design/LFUCache"));
+const LRUCache = lazy(() => import("../pages/algorithms/Design/LRUCache"));
+const MinStack = lazy(() => import("../pages/algorithms/Design/MinStack"));
 
 // PATHFINDING
-const AStarPathfinding = lazy(() => import("../pages/Pathfinding/AStar"));
-const BFSPathfinding = lazy(() => import("../pages/Pathfinding/BFS"));
-const ColorIslands = lazy(() => import("../pages/Pathfinding/ColorIslands"));
-const FloodFill = lazy(() => import("../pages/Pathfinding/FloodFill"));
-const RatInMaze = lazy(() => import("../pages/Pathfinding/RatInMaze"));
+const AStarPathfinding = lazy(() => import("../pages/algorithms/Pathfinding/AStar"));
+const BFSPathfinding = lazy(() => import("../pages/algorithms/Pathfinding/BFS"));
+const ColorIslands = lazy(() => import("../pages/algorithms/Pathfinding/ColorIslands"));
+const FloodFill = lazy(() => import("../pages/algorithms/Pathfinding/FloodFill"));
+const RatInMaze = lazy(() => import("../pages/algorithms/Pathfinding/RatInMaze"));
 
 /**
  * AppRoutes - All application routes
