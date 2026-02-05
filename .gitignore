@@ -140,3 +140,49 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .vscode/
+
+# ====================
+# Spring Boot / Java
+# ====================
+# Compiled class files
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+
+# Maven
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Gradle
+.gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# IDE - IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# IDE - Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+
+# Spring Boot
+*.log
+application-*.yml
+!application.yml
+!application-example.yml
