@@ -28,6 +28,7 @@ export function MagicCard({
   gradientTo = "#FE8BBB",
   texture = "none",
   textureOpacity,
+  background = "bg-background",
 }) {
   const mouseX = useMotionValue(-gradientSize)
   const mouseY = useMotionValue(-gradientSize)
@@ -92,7 +93,7 @@ export function MagicCard({
           `,
         }}
       />
-      <div className="bg-background absolute inset-px rounded-[inherit]" />
+      <div className={`${background} absolute inset-px rounded-[inherit]`} />
       {texture && texture !== "none" && (
         <TextureOverlay texture={texture} opacity={textureOpacity} className="rounded-[inherit]" />
       )}

@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SearchCode, Map } from "lucide-react";
 import { CardSpotlight } from "../components/ui/card-spotlight.jsx";
+import { ThemeToggle } from "../components/theme-toggle.jsx";
 import categories from "../data/categories";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
 import { categoryConfig, getCategoryByKey } from "../routes/config";
@@ -186,6 +187,11 @@ const HomePage = () => {
   return (
     <>
       <div className="home-shell">
+        {/* Theme Toggle - Fixed position */}
+        <div className="fixed top-4 right-4 z-50">
+          <ThemeToggle />
+        </div>
+        
         <div className="home-content">
           <section className="home-hero">
             <span className="home-hero__eyebrow">Interactive algorithm studio</span>

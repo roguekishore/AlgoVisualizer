@@ -22,9 +22,8 @@ import UniquePathsVisualizer from "./UniquePaths.jsx";
 import BurstBalloonsTopDownVisualizer from "./BurstBallonsTopDown.jsx"
 // NOTE: Add more visualizer imports here as you create them!
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from "../../../search/catalog";
-import StarButton from "../../../components/StarButton";
 
 // ✅ (Optional but Recommended) Default values for visual properties
 const defaultVisuals = {
@@ -170,9 +169,8 @@ const AlgorithmList = ({ navigate }) => {
                     </div>
                   </div>
 
-                  {/* StarButton */}
+
                   <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
                   </div>
                 </div>
 

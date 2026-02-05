@@ -22,9 +22,8 @@ import FruitIntoBaskets from "./FruitsIntoBaskets.jsx";
 import LongestSubstring from "./LongestSubstring.jsx"; // ✅ Maintainer's new import
 import MinimumWindow from "./MinimumWindow.jsx"; // ✅ Maintainer's new import
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from '../../../search/catalog';
-import StarButton from '../../../components/StarButton';
 
 // ✅ (Optional but Recommended) Default values for visual properties
 const defaultVisuals = {
@@ -159,9 +158,6 @@ const AlgorithmList = ({ navigate }) => {
                       </div>
                       <h2 className={`text-xl font-bold transition-colors duration-300 ${isHovered ? "text-theme-primary" : "text-theme-secondary"}`}>{algo.label}</h2>
                     </div>
-                  </div>
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
                   </div>
                 </div>
                 <p className={`text-sm leading-relaxed mb-5 transition-colors duration-300 ${isHovered ? "text-theme-secondary" : "text-theme-tertiary"}`}>{algo.description}</p>

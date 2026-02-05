@@ -21,9 +21,8 @@ import StackOperations from "./StackOperstion.jsx"; // Note: Typo in filename 'S
 import NextGreaterElementVisualizer from "./NextGreaterElement.jsx";
 import Permutation from "./Permutation.jsx";
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from '../../../search/catalog';
-import StarButton from '../../../components/StarButton';
 
 // ✅ (Optional but Recommended) Default values for visual properties
 const defaultVisuals = {
@@ -138,12 +137,6 @@ const AlgorithmList = ({ navigate }) => {
                       </h2>
                     </div>
                   </div>
-                  
-                  {/* ✅ Add the StarButton here */}
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
-                  </div>
-
                 </div>
                 <p
                   className={`text-sm leading-relaxed mb-5 transition-colors duration-300 ${

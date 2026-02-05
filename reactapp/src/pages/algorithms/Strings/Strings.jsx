@@ -31,7 +31,7 @@ import IsSubsequence from "./IsSubSequence.jsx";
 
 // importing problems as PROBLEM_CATALOG from catalog.js to see if this fixes the issue and star button - @prajithravisankar
 import { problems as PROBLEM_CATALOG } from "../../../search/catalog.js";
-import StarButton from "../../../components/StarButton.jsx";
+
 
 // Default visuals for fallback
 const defaultVisuals = {
@@ -205,9 +205,7 @@ function AlgorithmList({ navigate }) {
                     </div>
                   </div>
 
-                  {/* ✅ Add the StarButton here */}
                   <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
                   </div>
 
                 </div>

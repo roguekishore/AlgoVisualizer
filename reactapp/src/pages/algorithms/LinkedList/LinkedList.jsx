@@ -15,8 +15,7 @@ import MergeTwoSortedLists from "./MergeTwoSortedLists.jsx";
 import ReverseLinkedList from "./ReverseLinkedList.jsx";
 import SortList from "./SortList.jsx";
 import SwapPairs from "./SwapPairs.jsx";
-// --- ✅ Import the master catalog and your StarButton ---
-import StarButton from '../../../components/StarButton';
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from '../../../search/catalog';
 
 // ✅ (Optional but Recommended) Default values for visual properties
@@ -138,9 +137,7 @@ const AlgorithmList = ({ navigate }) => {
                     </div>
                   </div>
 
-                  {/* ✅ Add the StarButton here */}
                   <div onClick={(e) => e.stopPropagation()}>
-                      <StarButton problemId={algo.subpage} />
                   </div>
 
                 </div>

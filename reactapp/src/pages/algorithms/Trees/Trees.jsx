@@ -25,9 +25,8 @@ import PrintBinaryTreeVisualizer from "./PrintBinaryTree.jsx"
 import MorrisTraversalVisualizer from "./MorrisTraversal.jsx"
 import FlattenBinaryTreeVisualizer from "./FlattenBinaryTree.jsx"
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from "../../../search/catalog";
-import StarButton from "../../../components/StarButton";
 
 // ====================================================================================
 // ✅ Merged: SHARED HELPER COMPONENT (from maintainer)
@@ -835,7 +834,6 @@ const AlgorithmList = ({ navigate }) => {
                     </div>
                   </div>
                   <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed mb-5 transition-colors duration-300">

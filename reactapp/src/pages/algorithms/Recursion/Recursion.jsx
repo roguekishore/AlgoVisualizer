@@ -22,9 +22,8 @@ import FactorialVisualizer from "./Factorial.jsx";
 import NQueensVisualizer from "./NQueens.jsx";
 import BinarySearchRecursiveVisualizer from "./BinarySearchRecursive.jsx";
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from '../../../search/catalog';
-import StarButton from "../../../components/StarButton.jsx";
 
 
 // ✅ (Optional but Recommended) Default values for visual properties
@@ -134,9 +133,6 @@ const AlgorithmList = ({ navigate }) => {
                         {algo.label}
                       </h2>
                     </div>
-                  </div>
-                   <div onClick={(e) => e.stopPropagation()}>
-                      <StarButton problemId={algo.subpage} />
                   </div>
                 </div>
                 <p

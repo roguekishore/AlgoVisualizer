@@ -48,9 +48,8 @@ import MergeIntervals from "./MergeIntervals.jsx";
 import RotateArray from "./RotateArray.jsx";
 import MaximumGap from "./MaximumGap.jsx";
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from '../../../search/catalog';
-import StarButton from '../../../components/StarButton';
 
 // ✅ (Optional but Recommended) Default values for visual properties
 const defaultVisuals = {
@@ -215,9 +214,8 @@ function AlgorithmList({ navigate }) {
                       </h2>
                     </div>
                   </div>
-                  {/* ✅ StarButton included */}
+
                   <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
                   </div>
                 </div>
                 <p className={`text-sm leading-relaxed mb-5 transition-colors duration-300 ${isHovered ? "text-theme-secondary" : "text-theme-tertiary"}`}>

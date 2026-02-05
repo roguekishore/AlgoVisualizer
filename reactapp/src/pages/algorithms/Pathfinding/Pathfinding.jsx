@@ -19,9 +19,8 @@ import { FloodFill } from "./FloodFill.jsx";
 import { ColorIslands } from "./ColorIslands.jsx";
 import AStarVisualizer from "./AStar.jsx";
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from '../../../search/catalog';
-import StarButton from '../../../components/StarButton';
 
 // ✅ (Optional but Recommended) Default values for visual properties
 const defaultVisuals = {
@@ -121,9 +120,6 @@ const AlgorithmList = ({ navigate }) => {
                             {algo.label}
                         </h3>
                     </div>
-                  </div>
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
                   </div>
                 </div>
                 <p className="text-theme-secondary text-sm leading-relaxed mb-4">

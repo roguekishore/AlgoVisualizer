@@ -1,6 +1,7 @@
  import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { ThemeToggle } from "../../components/theme-toggle.jsx";
 import "../HomePage.css";
 
 /**
@@ -20,6 +21,11 @@ export function withVisualizerLayout(VisualizerComponent, config) {
     return (
       <>
         <div className="visualizer-shell">
+          {/* Theme Toggle - Fixed position */}
+          <div className="fixed top-4 right-4 z-50">
+            <ThemeToggle />
+          </div>
+          
           <nav className="visualizer-nav">
             <Link to={categoryPath} className="visualizer-nav__back">
               <ArrowLeft size={16} />
@@ -53,6 +59,11 @@ const VisualizerPage = ({
   return (
     <>
       <div className="visualizer-shell">
+        {/* Theme Toggle - Fixed position */}
+        <div className="fixed top-4 right-4 z-50">
+          <ThemeToggle />
+        </div>
+        
         <nav className="visualizer-nav">
           <Link to={categoryPath} className="visualizer-nav__back">
             <ArrowLeft size={16} />

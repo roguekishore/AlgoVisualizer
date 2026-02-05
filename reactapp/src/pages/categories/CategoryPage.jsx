@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { ArrowLeft, Clock, ChevronRight } from "lucide-react";
 import { MagicCard } from "../../components/magic-ui/magic-card.jsx";
+import { ThemeToggle } from "../../components/theme-toggle.jsx";
 import {
   Card,
   CardHeader,
@@ -43,6 +44,11 @@ const CategoryPage = ({
   return (
     <>
       <div className="home-shell">
+        {/* Theme Toggle - Fixed position */}
+        <div className="fixed top-4 right-4 z-50">
+          <ThemeToggle />
+        </div>
+        
         <div className="home-content">
           {/* Back Navigation */}
           <nav className="category-nav">
@@ -101,7 +107,7 @@ const CategoryPage = ({
                 return (
                   <Card
                     key={algo.subpage}
-                    className="border-none p-0 shadow-none bg-transparent cursor-pointer group/card min-h-[300px] h-full"
+                    className="border-none p-0 shadow-none bg-card cursor-pointer group/card min-h-[300px] h-full"
                     onClick={() => navigate(`${basePath}/${algo.subpage}`)}
                     role="button"
                     tabIndex={0}
@@ -114,6 +120,7 @@ const CategoryPage = ({
                   >
                     <MagicCard
                       className="h-full flex flex-col"
+                      background="bg-card"
                       gradientSize={200}
                       gradientColor={gradient.gradientColor}
                       gradientFrom={gradient.gradientFrom}

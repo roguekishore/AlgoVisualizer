@@ -22,9 +22,8 @@ import CountingBits from "./CountingBits.jsx";
 import ReverseBits from "./ReverseBits.jsx";
 import PowerOfTwo from "./PowerOfTwo.jsx";
 
-// --- ✅ Import the master catalog and your StarButton ---
+// --- ✅ Import the master catalog ---
 import { problems as PROBLEM_CATALOG } from '../../../search/catalog';
-import StarButton from '../../../components/StarButton';
 
 const AlgorithmList = ({ navigate }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -292,9 +291,8 @@ const AlgorithmList = ({ navigate }) => {
                     </div>
                   </div>
                   
-                  {/* ✅ Add the StarButton here */}
+
                   <div onClick={(e) => e.stopPropagation()}>
-                    <StarButton problemId={algo.subpage} />
                   </div>
                 </div>
 

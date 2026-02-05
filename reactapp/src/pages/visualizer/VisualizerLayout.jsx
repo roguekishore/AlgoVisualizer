@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import Footer from "../components/Footer.jsx";
-import "./HomePage.css";
+import { ThemeToggle } from "../../components/theme-toggle.jsx";
+import "../HomePage.css";
 
 /**
  * VisualizerLayout - A wrapper component for individual algorithm visualizers
@@ -25,6 +25,11 @@ const VisualizerLayout = ({
   return (
     <>
       <div className="visualizer-shell">
+        {/* Theme Toggle - Fixed position */}
+        <div className="fixed top-4 right-4 z-50">
+          <ThemeToggle />
+        </div>
+        
         <nav className="visualizer-nav">
           <Link to={categoryPath} className="visualizer-nav__back">
             <ArrowLeft size={16} />
@@ -39,7 +44,6 @@ const VisualizerLayout = ({
           {children}
         </div>
       </div>
-      <Footer />
     </>
   );
 };
