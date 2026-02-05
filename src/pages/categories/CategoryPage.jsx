@@ -11,7 +11,6 @@ import {
   CardFooter,
 } from "../../components/ui/card.jsx";
 import { problems as PROBLEM_CATALOG } from "../../search/catalog";
-import Footer from "../../components/Footer.jsx";
 import "../HomePage.css";
 
 /**
@@ -51,10 +50,10 @@ const CategoryPage = ({
               <ArrowLeft className="category-nav__icon" />
               Back to Home
             </Link>
-            <div className="category-nav__title">
+            {/* <div className="category-nav__title">
               {Icon && <Icon className="category-nav__category-icon" />}
               <span>{title}</span>
-            </div>
+            </div> */}
           </nav>
 
           {/* Hero Section - Same as HomePage */}
@@ -66,12 +65,12 @@ const CategoryPage = ({
 
           {/* Section Header */}
           <section>
-            <div className="section-header">
+            {/* <div className="section-header">
               <h2 className="section-header__title">Available Algorithms</h2>
               <p className="section-header__note">
                 {algorithms.length} {algorithms.length === 1 ? 'algorithm' : 'algorithms'} to explore
               </p>
-            </div>
+            </div> */}
 
             {/* Algorithm Grid - Same as HomePage category grid */}
             <div className="category-grid">
@@ -119,8 +118,8 @@ const CategoryPage = ({
                       gradientColor={gradient.gradientColor}
                       gradientFrom={gradient.gradientFrom}
                       gradientTo={gradient.gradientTo}
-                      texture="grid"
-                      textureOpacity={100}
+                      // texture="dor"
+                      // textureOpacity={100}
                     >
                       <CardHeader className="p-4 pb-2">
                         <div className="flex items-center gap-3 mb-2">
@@ -178,21 +177,20 @@ const CategoryPage = ({
 
           {/* Footnote */}
           <Card className="border-none p-0 shadow-none bg-transparent mt-8">
-            <MagicCard
+            {/* <MagicCard
               className="p-6 text-center"
               gradientSize={260}
               gradientColor="#262626"
               gradientFrom="#9E7AFF"
               gradientTo="#FE8BBB"
-            >
+            > */}
               <p className="text-muted-foreground text-sm">
                 Click on any algorithm to explore its interactive visualization.
               </p>
-            </MagicCard>
+            {/* </MagicCard> */}
           </Card>
         </div>
       </div>
-      <Footer />
     </>
   );
 };

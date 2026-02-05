@@ -94,6 +94,34 @@
   font-weight: 400;
 }
 
+.skill-tree-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  align-self: center;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--home-text-strong);
+  color: var(--home-bg);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.skill-tree-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--home-shadow-strong);
+  opacity: 0.9;
+}
+
+.skill-tree-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
 .search {
   position: relative;
   max-width: 720px;
@@ -240,7 +268,7 @@
 
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
 }
 

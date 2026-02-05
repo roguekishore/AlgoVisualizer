@@ -8,14 +8,17 @@ import { persist } from 'zustand/middleware';
  * Countries = Individual DSA Problems
  * Topics = Logical groupings (not geography-based)
  * Hybrid progression: Free topic access + Sequential within topics
+ * 
+ * Routes are mapped to match the actual application routes from routes/config.js
  */
 
 /**
  * ALL PROBLEMS - Derived from routes/index.jsx
  * Each problem: { id, title, route, topic, order }
+ * Routes match the actual categoryConfig paths
  */
 export const ALL_PROBLEMS = [
-  // ARRAYS (20 problems)
+  // ARRAYS (20 problems) - path: /arrays
   { id: 'arrays-1', title: 'Find Max Element', route: '/arrays/FindMaxElement', topic: 'arrays', order: 1 },
   { id: 'arrays-2', title: 'Find Min Element', route: '/arrays/FindMinElement', topic: 'arrays', order: 2 },
   { id: 'arrays-3', title: 'Move Zeros', route: '/arrays/MoveZeros', topic: 'arrays', order: 3 },
@@ -37,7 +40,7 @@ export const ALL_PROBLEMS = [
   { id: 'arrays-19', title: 'Squares of Sorted Array', route: '/arrays/SquaresOfSortedArray', topic: 'arrays', order: 19 },
   { id: 'arrays-20', title: 'Maximum Gap', route: '/arrays/MaximumGap', topic: 'arrays', order: 20 },
 
-  // STRINGS (8 problems)
+  // STRINGS (8 problems) - path: /strings
   { id: 'strings-1', title: 'Reverse String', route: '/strings/ReverseString', topic: 'strings', order: 1 },
   { id: 'strings-2', title: 'Palindrome Check', route: '/strings/PalindromeCheck', topic: 'strings', order: 2 },
   { id: 'strings-3', title: 'Count Vowels', route: '/strings/CountVowels', topic: 'strings', order: 3 },
@@ -47,14 +50,14 @@ export const ALL_PROBLEMS = [
   { id: 'strings-7', title: 'Is Subsequence', route: '/strings/IsSubSequence', topic: 'strings', order: 7 },
   { id: 'strings-8', title: 'Reverse Words', route: '/strings/ReverseWords', topic: 'strings', order: 8 },
 
-  // LINKED LIST (5 problems)
-  { id: 'linkedlist-1', title: 'Reverse Linked List', route: '/linkedlist/ReverseLinkedList', topic: 'linkedlist', order: 1 },
-  { id: 'linkedlist-2', title: 'Linked List Cycle', route: '/linkedlist/LinkedListCycle', topic: 'linkedlist', order: 2 },
-  { id: 'linkedlist-3', title: 'Merge Two Sorted Lists', route: '/linkedlist/MergeTwoSortedLists', topic: 'linkedlist', order: 3 },
-  { id: 'linkedlist-4', title: 'Swap Pairs', route: '/linkedlist/SwapPairs', topic: 'linkedlist', order: 4 },
-  { id: 'linkedlist-5', title: 'Sort List', route: '/linkedlist/SortList', topic: 'linkedlist', order: 5 },
+  // LINKED LIST (5 problems) - path: /linked-list
+  { id: 'linkedlist-1', title: 'Reverse Linked List', route: '/linked-list/ReverseLinkedList', topic: 'linkedlist', order: 1 },
+  { id: 'linkedlist-2', title: 'Linked List Cycle', route: '/linked-list/LinkedListCycle', topic: 'linkedlist', order: 2 },
+  { id: 'linkedlist-3', title: 'Merge Two Sorted Lists', route: '/linked-list/MergeTwoSortedLists', topic: 'linkedlist', order: 3 },
+  { id: 'linkedlist-4', title: 'Swap Pairs', route: '/linked-list/SwapPairs', topic: 'linkedlist', order: 4 },
+  { id: 'linkedlist-5', title: 'Sort List', route: '/linked-list/SortList', topic: 'linkedlist', order: 5 },
 
-  // STACK (6 problems)
+  // STACK (6 problems) - path: /stack
   { id: 'stack-1', title: 'Stack Operations', route: '/stack/StackOperation', topic: 'stack', order: 1 },
   { id: 'stack-2', title: 'Next Greater Element', route: '/stack/NextGreaterElement', topic: 'stack', order: 2 },
   { id: 'stack-3', title: 'Largest Rectangle Histogram', route: '/stack/LargestRectangleHistogram', topic: 'stack', order: 3 },
@@ -62,12 +65,12 @@ export const ALL_PROBLEMS = [
   { id: 'stack-5', title: 'Permutation', route: '/stack/Permutation', topic: 'stack', order: 5 },
   { id: 'stack-6', title: 'Subarray Ranges', route: '/stack/SubarrayRanges', topic: 'stack', order: 6 },
 
-  // QUEUE (3 problems)
+  // QUEUE (3 problems) - path: /queue
   { id: 'queue-1', title: 'Basic Queue', route: '/queue/BasicQueue', topic: 'queue', order: 1 },
   { id: 'queue-2', title: 'Circular Queue', route: '/queue/CircularQueue', topic: 'queue', order: 2 },
   { id: 'queue-3', title: 'Queue Using Stacks', route: '/queue/QueueUsingStacks', topic: 'queue', order: 3 },
 
-  // SORTING (12 problems)
+  // SORTING (12 problems) - path: /sorting
   { id: 'sorting-1', title: 'Bubble Sort', route: '/sorting/BubbleSort', topic: 'sorting', order: 1 },
   { id: 'sorting-2', title: 'Selection Sort', route: '/sorting/SelectionSort', topic: 'sorting', order: 2 },
   { id: 'sorting-3', title: 'Insertion Sort', route: '/sorting/InsertionSort', topic: 'sorting', order: 3 },
@@ -81,18 +84,18 @@ export const ALL_PROBLEMS = [
   { id: 'sorting-11', title: 'Comb Sort', route: '/sorting/CombSort', topic: 'sorting', order: 11 },
   { id: 'sorting-12', title: 'Pancake Sort', route: '/sorting/PancakeSort', topic: 'sorting', order: 12 },
 
-  // BINARY SEARCH (9 problems)
-  { id: 'binarysearch-1', title: 'Binary Search Basic', route: '/binarysearch/BinarySearchBasic', topic: 'binarysearch', order: 1 },
-  { id: 'binarysearch-2', title: 'Find First and Last Position', route: '/binarysearch/FindFirstAndLastPosition', topic: 'binarysearch', order: 2 },
-  { id: 'binarysearch-3', title: 'Search in Rotated Array', route: '/binarysearch/SearchInRotatedSortedArray', topic: 'binarysearch', order: 3 },
-  { id: 'binarysearch-4', title: 'Find Peak Element', route: '/binarysearch/FindPeakElement', topic: 'binarysearch', order: 4 },
-  { id: 'binarysearch-5', title: 'Find Min in Rotated Array', route: '/binarysearch/FindMinimumInRotatedSortedArray', topic: 'binarysearch', order: 5 },
-  { id: 'binarysearch-6', title: 'Search 2D Matrix', route: '/binarysearch/Search2DMatrix', topic: 'binarysearch', order: 6 },
-  { id: 'binarysearch-7', title: 'Peak Index Mountain', route: '/binarysearch/PeakIndexInMountainArray', topic: 'binarysearch', order: 7 },
-  { id: 'binarysearch-8', title: 'Min Speed to Arrive', route: '/binarysearch/MinSpeedToArriveOnTime', topic: 'binarysearch', order: 8 },
-  { id: 'binarysearch-9', title: 'Median Two Sorted Arrays', route: '/binarysearch/MedianOfTwoSortedArrays', topic: 'binarysearch', order: 9 },
+  // BINARY SEARCH (9 problems) - path: /binary-search
+  { id: 'binarysearch-1', title: 'Binary Search Basic', route: '/binary-search/BinarySearchBasic', topic: 'binarysearch', order: 1 },
+  { id: 'binarysearch-2', title: 'Find First and Last Position', route: '/binary-search/FindFirstAndLastPosition', topic: 'binarysearch', order: 2 },
+  { id: 'binarysearch-3', title: 'Search in Rotated Array', route: '/binary-search/SearchInRotatedSortedArray', topic: 'binarysearch', order: 3 },
+  { id: 'binarysearch-4', title: 'Find Peak Element', route: '/binary-search/FindPeakElement', topic: 'binarysearch', order: 4 },
+  { id: 'binarysearch-5', title: 'Find Min in Rotated Array', route: '/binary-search/FindMinimumInRotatedSortedArray', topic: 'binarysearch', order: 5 },
+  { id: 'binarysearch-6', title: 'Search 2D Matrix', route: '/binary-search/Search2DMatrix', topic: 'binarysearch', order: 6 },
+  { id: 'binarysearch-7', title: 'Peak Index Mountain', route: '/binary-search/PeakIndexInMountainArray', topic: 'binarysearch', order: 7 },
+  { id: 'binarysearch-8', title: 'Min Speed to Arrive', route: '/binary-search/MinSpeedToArriveOnTime', topic: 'binarysearch', order: 8 },
+  { id: 'binarysearch-9', title: 'Median Two Sorted Arrays', route: '/binary-search/MedianOfTwoSortedArrays', topic: 'binarysearch', order: 9 },
 
-  // RECURSION (6 problems)
+  // RECURSION (6 problems) - path: /recursion
   { id: 'recursion-1', title: 'Factorial', route: '/recursion/Factorial', topic: 'recursion', order: 1 },
   { id: 'recursion-2', title: 'Fibonacci', route: '/recursion/Fibonacci', topic: 'recursion', order: 2 },
   { id: 'recursion-3', title: 'Tower of Hanoi', route: '/recursion/TowerOfHanoi', topic: 'recursion', order: 3 },
@@ -100,10 +103,10 @@ export const ALL_PROBLEMS = [
   { id: 'recursion-5', title: 'Subset Sum', route: '/recursion/SubsetSum', topic: 'recursion', order: 5 },
   { id: 'recursion-6', title: 'N-Queens', route: '/recursion/NQueens', topic: 'recursion', order: 6 },
 
-  // TREES (9 problems)
+  // TREES (9 problems) - path: /trees
   { id: 'trees-1', title: 'AVL Tree', route: '/trees/AVLTree', topic: 'trees', order: 1 },
   { id: 'trees-2', title: 'Validate BST', route: '/trees/ValidateBST', topic: 'trees', order: 2 },
-  { id: 'trees-3', title: 'Symmetric Tree', route: '/trees/SymmetricTree', topic: 'trees', order: 3 },
+  { id: 'trees-3', title: 'Symmetric Tree', route: '/trees/SymmetricTreeVisualizer', topic: 'trees', order: 3 },
   { id: 'trees-4', title: 'Binary Tree Right Side', route: '/trees/BinaryTreeRightSideView', topic: 'trees', order: 4 },
   { id: 'trees-5', title: 'Construct Binary Tree', route: '/trees/ConstructBinaryTree', topic: 'trees', order: 5 },
   { id: 'trees-6', title: 'Flatten Binary Tree', route: '/trees/FlattenBinaryTree', topic: 'trees', order: 6 },
@@ -111,7 +114,7 @@ export const ALL_PROBLEMS = [
   { id: 'trees-8', title: 'Morris Traversal', route: '/trees/MorrisTraversal', topic: 'trees', order: 8 },
   { id: 'trees-9', title: 'Print Binary Tree', route: '/trees/PrintBinaryTree', topic: 'trees', order: 9 },
 
-  // GRAPHS (6 problems)
+  // GRAPHS (6 problems) - path: /graphs
   { id: 'graphs-1', title: 'BFS', route: '/graphs/BFS', topic: 'graphs', order: 1 },
   { id: 'graphs-2', title: 'DFS', route: '/graphs/DFS', topic: 'graphs', order: 2 },
   { id: 'graphs-3', title: "Dijkstra's Algorithm", route: '/graphs/Dijkstra', topic: 'graphs', order: 3 },
@@ -119,55 +122,55 @@ export const ALL_PROBLEMS = [
   { id: 'graphs-5', title: "Kruskal's Algorithm", route: '/graphs/Kruskal', topic: 'graphs', order: 5 },
   { id: 'graphs-6', title: 'Network Flow', route: '/graphs/NetworkFlow', topic: 'graphs', order: 6 },
 
-  // DYNAMIC PROGRAMMING (8 problems)
-  { id: 'dp-1', title: 'Coin Change', route: '/dp/CoinChange', topic: 'dp', order: 1 },
-  { id: 'dp-2', title: 'Longest Common Subsequence', route: '/dp/LongestCommonSubsequence', topic: 'dp', order: 2 },
-  { id: 'dp-3', title: 'Longest Increasing Subseq', route: '/dp/LISubsequence', topic: 'dp', order: 3 },
-  { id: 'dp-4', title: 'Edit Distance', route: '/dp/EditDistance', topic: 'dp', order: 4 },
-  { id: 'dp-5', title: 'Knapsack', route: '/dp/KnapSack', topic: 'dp', order: 5 },
-  { id: 'dp-6', title: 'Unique Paths', route: '/dp/UniquePaths', topic: 'dp', order: 6 },
-  { id: 'dp-7', title: 'Burst Balloons', route: '/dp/BurstBalloons', topic: 'dp', order: 7 },
-  { id: 'dp-8', title: 'Best Time Stock IV', route: '/dp/SellStockIV', topic: 'dp', order: 8 },
+  // DYNAMIC PROGRAMMING (8 problems) - path: /dynamic-programming
+  { id: 'dp-1', title: 'Coin Change', route: '/dynamic-programming/CoinChange', topic: 'dp', order: 1 },
+  { id: 'dp-2', title: 'Longest Common Subsequence', route: '/dynamic-programming/LongestCommonSubsequence', topic: 'dp', order: 2 },
+  { id: 'dp-3', title: 'Longest Increasing Subseq', route: '/dynamic-programming/LISubsequence', topic: 'dp', order: 3 },
+  { id: 'dp-4', title: 'Edit Distance', route: '/dynamic-programming/EditDistance', topic: 'dp', order: 4 },
+  { id: 'dp-5', title: 'Knapsack', route: '/dynamic-programming/KnapSack', topic: 'dp', order: 5 },
+  { id: 'dp-6', title: 'Unique Paths', route: '/dynamic-programming/UniquePaths', topic: 'dp', order: 6 },
+  { id: 'dp-7', title: 'Burst Balloons', route: '/dynamic-programming/BurstBalloons', topic: 'dp', order: 7 },
+  { id: 'dp-8', title: 'Best Time Stock IV', route: '/dynamic-programming/SellStockIV', topic: 'dp', order: 8 },
 
-  // BACKTRACKING (5 problems)
+  // BACKTRACKING (5 problems) - path: /backtracking
   { id: 'backtracking-1', title: 'Permutations', route: '/backtracking/Permutations', topic: 'backtracking', order: 1 },
   { id: 'backtracking-2', title: 'Word Search', route: '/backtracking/WordSearch', topic: 'backtracking', order: 2 },
   { id: 'backtracking-3', title: 'Sudoku Solver', route: '/backtracking/SudokuSolver', topic: 'backtracking', order: 3 },
   { id: 'backtracking-4', title: "Knight's Tour", route: '/backtracking/KnightsTour', topic: 'backtracking', order: 4 },
   { id: 'backtracking-5', title: 'Expression Add Operators', route: '/backtracking/ExpressionAddOperators', topic: 'backtracking', order: 5 },
 
-  // SLIDING WINDOWS (5 problems)
-  { id: 'slidingwindows-1', title: 'Longest Substring', route: '/slidingwindows/LongestSubstring', topic: 'slidingwindows', order: 1 },
-  { id: 'slidingwindows-2', title: 'Minimum Window', route: '/slidingwindows/MinimumWindow', topic: 'slidingwindows', order: 2 },
-  { id: 'slidingwindows-3', title: 'Sliding Window Maximum', route: '/slidingwindows/SlidingWindowMaximum', topic: 'slidingwindows', order: 3 },
-  { id: 'slidingwindows-4', title: 'Fruits Into Baskets', route: '/slidingwindows/FruitsIntoBaskets', topic: 'slidingwindows', order: 4 },
-  { id: 'slidingwindows-5', title: 'Max Consecutive Ones III', route: '/slidingwindows/MaxConsecutiveOnesIII', topic: 'slidingwindows', order: 5 },
+  // SLIDING WINDOWS (5 problems) - path: /sliding-window
+  { id: 'slidingwindows-1', title: 'Longest Substring', route: '/sliding-window/LongestSubstring', topic: 'slidingwindows', order: 1 },
+  { id: 'slidingwindows-2', title: 'Minimum Window', route: '/sliding-window/MinimumWindow', topic: 'slidingwindows', order: 2 },
+  { id: 'slidingwindows-3', title: 'Sliding Window Maximum', route: '/sliding-window/SlidingWindowMaximum', topic: 'slidingwindows', order: 3 },
+  { id: 'slidingwindows-4', title: 'Fruits Into Baskets', route: '/sliding-window/FruitsIntoBaskets', topic: 'slidingwindows', order: 4 },
+  { id: 'slidingwindows-5', title: 'Max Consecutive Ones III', route: '/sliding-window/MaxConsecutiveOnesIII', topic: 'slidingwindows', order: 5 },
 
-  // HEAPS (3 problems)
+  // HEAPS (3 problems) - path: /heaps
   { id: 'heaps-1', title: 'Heapify', route: '/heaps/Heapify', topic: 'heaps', order: 1 },
   { id: 'heaps-2', title: 'Top K Frequent Elements', route: '/heaps/TopKFrequent', topic: 'heaps', order: 2 },
   { id: 'heaps-3', title: 'Task Scheduler', route: '/heaps/TaskScheduler', topic: 'heaps', order: 3 },
 
-  // HASHING (4 problems)
+  // HASHING (4 problems) - path: /hashing
   { id: 'hashing-1', title: 'Valid Anagram', route: '/hashing/ValidAnagram', topic: 'hashing', order: 1 },
   { id: 'hashing-2', title: 'Longest Consecutive Seq', route: '/hashing/LongestConsecutiveSequence', topic: 'hashing', order: 2 },
   { id: 'hashing-3', title: 'Subarray Sum Equals K', route: '/hashing/SubarraySumEqualsK', topic: 'hashing', order: 3 },
   { id: 'hashing-4', title: 'Equal Rows Column Pair', route: '/hashing/EqualRowsColumnPair', topic: 'hashing', order: 4 },
 
-  // BIT MANIPULATION (5 problems)
-  { id: 'bitmanipulation-1', title: 'Single Number', route: '/bitmanipulation/SingleNumber', topic: 'bitmanipulation', order: 1 },
-  { id: 'bitmanipulation-2', title: 'Power of Two', route: '/bitmanipulation/PowerOfTwo', topic: 'bitmanipulation', order: 2 },
-  { id: 'bitmanipulation-3', title: 'Counting Bits', route: '/bitmanipulation/CountingBits', topic: 'bitmanipulation', order: 3 },
-  { id: 'bitmanipulation-4', title: 'Number of 1 Bits', route: '/bitmanipulation/NumberOf1Bits', topic: 'bitmanipulation', order: 4 },
-  { id: 'bitmanipulation-5', title: 'Reverse Bits', route: '/bitmanipulation/ReverseBits', topic: 'bitmanipulation', order: 5 },
+  // BIT MANIPULATION (5 problems) - path: /bit-manipulation
+  { id: 'bitmanipulation-1', title: 'Single Number', route: '/bit-manipulation/SingleNumber', topic: 'bitmanipulation', order: 1 },
+  { id: 'bitmanipulation-2', title: 'Power of Two', route: '/bit-manipulation/PowerOfTwo', topic: 'bitmanipulation', order: 2 },
+  { id: 'bitmanipulation-3', title: 'Counting Bits', route: '/bit-manipulation/CountingBits', topic: 'bitmanipulation', order: 3 },
+  { id: 'bitmanipulation-4', title: 'Number of 1 Bits', route: '/bit-manipulation/NumberOf1Bits', topic: 'bitmanipulation', order: 4 },
+  { id: 'bitmanipulation-5', title: 'Reverse Bits', route: '/bit-manipulation/ReverseBits', topic: 'bitmanipulation', order: 5 },
 
-  // GREEDY (4 problems)
+  // GREEDY (4 problems) - path: /greedy
   { id: 'greedy-1', title: 'Assign Cookies', route: '/greedy/AssignCookies', topic: 'greedy', order: 1 },
   { id: 'greedy-2', title: 'Best Time Stock II', route: '/greedy/BestTimeStockII', topic: 'greedy', order: 2 },
   { id: 'greedy-3', title: 'Job Scheduling', route: '/greedy/JobScheduling', topic: 'greedy', order: 3 },
   { id: 'greedy-4', title: 'Two City Scheduling', route: '/greedy/TwoCityScheduling', topic: 'greedy', order: 4 },
 
-  // SEARCHING (6 problems)
+  // SEARCHING (6 problems) - path: /searching
   { id: 'searching-1', title: 'Linear Search', route: '/searching/LinearSearch', topic: 'searching', order: 1 },
   { id: 'searching-2', title: 'Exponential Search', route: '/searching/ExponentialSearch', topic: 'searching', order: 2 },
   { id: 'searching-3', title: 'Kth Missing Number', route: '/searching/KthMissingNumber', topic: 'searching', order: 3 },
@@ -175,7 +178,7 @@ export const ALL_PROBLEMS = [
   { id: 'searching-5', title: 'Special Array', route: '/searching/SpecialArray', topic: 'searching', order: 5 },
   { id: 'searching-6', title: 'Unknown Size Search', route: '/searching/UnknownSizeSearch', topic: 'searching', order: 6 },
 
-  // DESIGN (6 problems)
+  // DESIGN (6 problems) - path: /design
   { id: 'design-1', title: 'Min Stack', route: '/design/MinStack', topic: 'design', order: 1 },
   { id: 'design-2', title: 'Design HashMap', route: '/design/DesignHashMap', topic: 'design', order: 2 },
   { id: 'design-3', title: 'Design Linked List', route: '/design/DesignLinkedList', topic: 'design', order: 3 },
@@ -183,14 +186,14 @@ export const ALL_PROBLEMS = [
   { id: 'design-5', title: 'LRU Cache', route: '/design/LRUCache', topic: 'design', order: 5 },
   { id: 'design-6', title: 'LFU Cache', route: '/design/LFUCache', topic: 'design', order: 6 },
 
-  // PATHFINDING (5 problems)
+  // PATHFINDING (5 problems) - path: /pathfinding
   { id: 'pathfinding-1', title: 'BFS Pathfinding', route: '/pathfinding/BFS', topic: 'pathfinding', order: 1 },
   { id: 'pathfinding-2', title: 'A* Algorithm', route: '/pathfinding/AStar', topic: 'pathfinding', order: 2 },
   { id: 'pathfinding-3', title: 'Flood Fill', route: '/pathfinding/FloodFill', topic: 'pathfinding', order: 3 },
   { id: 'pathfinding-4', title: 'Color Islands', route: '/pathfinding/ColorIslands', topic: 'pathfinding', order: 4 },
   { id: 'pathfinding-5', title: 'Rat in Maze', route: '/pathfinding/RatInMaze', topic: 'pathfinding', order: 5 },
 
-  // MATHS (5 problems)
+  // MATHS (5 problems) - path: /maths
   { id: 'maths-1', title: 'Count Primes', route: '/maths/CountPrimes', topic: 'maths', order: 1 },
   { id: 'maths-2', title: 'Power', route: '/maths/Power', topic: 'maths', order: 2 },
   { id: 'maths-3', title: 'Factorial Zeroes', route: '/maths/FactorialZeroes', topic: 'maths', order: 3 },

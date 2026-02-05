@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { SearchCode } from "lucide-react";
-import Footer from "../components/Footer.jsx";
+import { SearchCode, Map } from "lucide-react";
 import { CardSpotlight } from "../components/ui/card-spotlight.jsx";
 import categories from "../data/categories";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
@@ -194,6 +193,13 @@ const HomePage = () => {
             <p className="home-lede">
               Master algorithms through clear explanations, interactive walkthroughs, and visual problem guides.
             </p>
+            <button
+              onClick={() => navigate('/map')}
+              className="skill-tree-btn"
+            >
+              <Map size={18} />
+              <span>Open Skill Tree Map</span>
+            </button>
           </section>
 
           <SearchBar

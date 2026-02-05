@@ -1,7 +1,6 @@
  import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import Footer from "../../components/Footer.jsx";
 import "../HomePage.css";
 
 /**
@@ -35,7 +34,6 @@ export function withVisualizerLayout(VisualizerComponent, config) {
             <VisualizerComponent {...props} />
           </div>
         </div>
-        <Footer />
       </>
     );
   };
@@ -69,7 +67,6 @@ const VisualizerPage = ({
           {children}
         </div>
       </div>
-      <Footer />
     </>
   );
 };

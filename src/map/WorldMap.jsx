@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { X, Lock, CheckCircle, Play, RotateCcw, ZoomIn, ZoomOut, Home, MapPin, Bug, ChevronRight, Sparkles } from 'lucide-react';
+import { X, Lock, CheckCircle, Play, RotateCcw, ZoomIn, ZoomOut, Home, MapPin, Bug, ChevronRight, Sparkles, ChevronLeft, PanelLeftClose, PanelLeft } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Map } from './world.svg';
@@ -33,6 +33,7 @@ const WorldMap = () => {
   const [showDebugPanel, setShowDebugPanel] = useState(false);
   const [currentPositionMarker, setCurrentPositionMarker] = useState(null);
   const [isHighRes, setIsHighRes] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   
   // Toggle high resolution mode
   const toggleResolution = useCallback(() => {
@@ -418,7 +419,16 @@ const WorldMap = () => {
       {/* Top Progress Bar */}
       <div className="progress-header">
         <div className="progress-info">
-          <h1 className="progress-title">🗺️ DSA Skill Tree</h1>
+          <div className="progress-title-row">
+            <button 
+              className="home-btn"
+              onClick={() => navigate('/')}
+              title="Back to Home"
+            >
+              <Home size={18} />
+            </button>
+            <h1 className="progress-title">🗺️ DSA Skill Tree</h1>
+          </div>
           <div className="progress-stats">
             <span>{totalProgress.completed}/{totalProgress.total} Problems</span>
             <div className="progress-bar-container">
@@ -463,30 +473,41 @@ const WorldMap = () => {
         </div>
       </div>
 
-      {/* Topic Legend - Scrollable */}
-      <div className="topic-legend">
-        {ROADMAP_ORDER.map((topicKey) => {
-          const topic = TOPICS[topicKey];
-          const progress = getTopicProgress(topicKey);
-          return (
-            <button
-              key={topicKey}
-              className={`topic-btn ${progress.isComplete ? 'complete' : ''}`}
-              style={{ '--topic-color': topic.color }}
-              onClick={() => {
-                const problems = getProblemsByTopic(topicKey);
-                if (problems.length > 0) {
-                  const countryId = getCountryForProblem(problems[0].id);
-                  if (countryId) zoomToCountry(countryId, 3);
-                }
-              }}
-            >
-              <span className="topic-icon">{topic.icon}</span>
-              <span className="topic-name">{topic.name}</span>
-              <span className="topic-progress">{progress.completed}/{progress.total}</span>
-            </button>
-          );
-        })}
+      {/* Topic Legend - Collapsible Sidebar */}
+      <div className={`topic-legend ${sidebarCollapsed ? 'collapsed' : ''}`}>
+        <button 
+          className="sidebar-toggle"
+          onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+          title={sidebarCollapsed ? 'Expand Topics' : 'Collapse Topics'}
+        >
+          {sidebarCollapsed ? <PanelLeft size={18} /> : <PanelLeftClose size={18} />}
+        </button>
+        {!sidebarCollapsed && (
+          <div className="topic-list">
+            {ROADMAP_ORDER.map((topicKey) => {
+              const topic = TOPICS[topicKey];
+              const progress = getTopicProgress(topicKey);
+              return (
+                <button
+                  key={topicKey}
+                  className={`topic-btn ${progress.isComplete ? 'complete' : ''}`}
+                  style={{ '--topic-color': topic.color }}
+                  onClick={() => {
+                    const problems = getProblemsByTopic(topicKey);
+                    if (problems.length > 0) {
+                      const countryId = getCountryForProblem(problems[0].id);
+                      if (countryId) zoomToCountry(countryId, 3);
+                    }
+                  }}
+                >
+                  <span className="topic-icon">{topic.icon}</span>
+                  <span className="topic-name">{topic.name}</span>
+                  <span className="topic-progress">{progress.completed}/{progress.total}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Current Position Indicator */}
