@@ -445,4 +445,63 @@ Edit `src/routes/index.jsx`:
 
 ---
 
-*Last updated: January 2026*
+## DSA Conquest Map (Gamification System)
+
+The application includes a gamified world map that visualizes user progress through a curated 164-problem learning path.
+
+### Overview
+
+| Feature | Description |
+|---------|-------------|
+| **Total Problems** | 164 across 27 stages |
+| **Main Stages** | 24 (numbered 1-24) |
+| **Bonus Stages** | 3 (A, B, C) |
+| **Visualization** | Interactive SVG world map |
+| **Persistence** | LocalStorage via Zustand |
+
+### Component Structure
+
+```
+src/
+├── map/                          # World Map module
+│   ├── index.js                  # Module exports
+│   ├── WorldMap.jsx              # Main interactive map component
+│   ├── WorldMap.css              # Map styling
+│   ├── useProgressStore.js       # Zustand store + data re-exports
+│   ├── world.svg                 # SVG map asset
+│   └── README.md                 # Component documentation
+│
+└── data/
+    └── dsa-conquest-map.js       # Single source of truth for problem data
+```
+
+### Key Concepts
+
+- **Countries = Problems**: Each country represents one DSA problem
+- **Stages = Learning Units**: 27 stages group related problems
+- **Progression**: Sequential within stages, free access to first problem of any stage
+- **Visual States**: locked (gray), available (amber), current (blue pulse), completed (green)
+
+### Data Flow
+
+```
+dsa-conquest-map.js (164 problems, 27 stages)
+         ↓
+useProgressStore.js (Zustand store + re-exports)
+         ↓
+WorldMap.jsx (Interactive UI)
+         ↓
+User completes problem → Store updates → Country turns green
+```
+
+### Route
+
+| Path | Component | Description |
+|------|-----------|-------------|
+| `/world-map` | `WorldMap` | Gamified DSA learning map |
+
+For detailed documentation, see [DSA_CONQUEST_MAP.md](./DSA_CONQUEST_MAP.md).
+
+---
+
+*Last updated: February 2026*

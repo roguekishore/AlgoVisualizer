@@ -22,16 +22,16 @@ A gamified, interactive world map component for tracking progress through Data S
 
 ### Core Features
 - **🌍 Interactive World Map** - SVG-based world map with ~200+ clickable country paths
-- **📊 140 DSA Problems** - Covering 21 topics from Arrays to Dynamic Programming
+- **📊 164 DSA Problems** - Covering 27 stages from Arrays to Dynamic Programming
 - **🎮 Gamified Progression** - Countries light up as you complete problems
-- **🔄 Hybrid Unlocking** - Free topic access + sequential progression within topics
+- **🔄 Hybrid Unlocking** - Free stage access + sequential progression within stages
 - **💾 Persistent Progress** - Local storage saves your journey automatically
 
 ### UI/UX Features
 - **🔍 Smooth Pan & Zoom** - Mouse wheel zoom, click-drag pan, pinch gestures
 - **📍 Position Marker** - Pulsing indicator shows your current problem
 - **🎯 Jump to Current** - One-click navigation to your next challenge
-- **📋 Topic Legend** - Quick overview with progress for each topic
+- **📋 Stage Legend** - Quick overview with progress for each stage
 - **📱 Responsive Design** - Works on desktop and mobile devices
 
 ### Performance Features
@@ -119,76 +119,80 @@ npm start
 
 ```
 map/
-├── WorldMap.jsx          # Main React component (690 lines)
+├── WorldMap.jsx          # Main React component (~700 lines)
 │   ├── Pan/Zoom controls
 │   ├── Country click handling
 │   ├── State management integration
 │   ├── Position marker overlay
-│   ├── Topic legend
+│   ├── Stage legend sidebar
 │   ├── Debug panel
 │   └── Side panel (problem details)
 │
-├── WorldMap.css          # Self-contained styles (550 lines)
+├── WorldMap.css          # Self-contained styles (~550 lines)
 │   ├── CSS Variables (theming)
 │   ├── SVG path state classes
 │   ├── Performance optimizations
 │   └── Responsive breakpoints
 │
-├── useProgressStore.js   # Zustand state management (300 lines)
-│   ├── Problem definitions (140 problems)
-│   ├── Topic configurations (21 topics)
-│   ├── Country-Problem mapping
-│   ├── Progress tracking logic
-│   └── Persistence middleware
+├── useProgressStore.js   # Zustand state management (~220 lines)
+│   ├── Progress tracking state
+│   ├── Re-exports from dsa-conquest-map.js
+│   ├── Persistence middleware
+│   └── Problem state calculations
 │
-├── world.svg             # SVG world map asset
+├── world.svg             # SVG world map asset (~200 countries)
 │
 └── index.js              # Module exports
+
+../data/
+└── dsa-conquest-map.js   # Single source of truth (~800 lines)
+    ├── ALL_PROBLEMS (164 problems)
+    ├── STAGES (27 stage definitions)
+    ├── Country-Problem mappings
+    └── Helper functions
 ```
 
 ---
 
 ## ⚙️ Configuration
 
-### Customizing Problems
+### Problem Data Source
 
-Edit `useProgressStore.js` to modify the problem list:
-
-```javascript
-export const ALL_PROBLEMS = [
-  {
-    id: 'arrays-1',           // Unique identifier
-    title: 'Find Max Element', // Display name
-    route: '/arrays/FindMax',  // Navigation route
-    topic: 'arrays',           // Topic key
-    order: 1                   // Order within topic
-  },
-  // Add more problems...
-];
-```
-
-### Customizing Topics
+All problem data is defined in `src/data/dsa-conquest-map.js`:
 
 ```javascript
-export const TOPICS = {
-  arrays: { 
-    name: 'Arrays',       // Display name
-    color: '#3b82f6',     // Theme color
-    icon: '📊'            // Emoji icon
+export const ALL_PROBLEMS = {
+  'two-sum': {
+    id: 'two-sum',
+    title: 'Two Sum',
+    stage: 1,                    // Stage number (1-24) or letter ('A','B','C')
+    order: 1,                    // Order within stage
+    difficulty: Difficulty.EASY,
+    country: 'United States',
+    countryCode: 'US',
+    route: '/arrays/TwoSum',     // Visualizer route (or null if isNew)
+    leetcode: 1,                 // LeetCode problem number
+    leetcodeSlug: 'two-sum',
+    isNew: false,                // true if no visualizer exists
   },
-  // Add more topics...
+  // ... more problems
 };
 ```
 
-### Customizing the Roadmap Order
+### Stage Definitions
 
 ```javascript
-export const ROADMAP_ORDER = [
-  'arrays',      // Start with arrays
-  'strings',     // Then strings
-  'linkedlist',  // Continue...
-  // Reorder as needed
-];
+export const STAGES = {
+  1: { 
+    name: 'Arrays Fundamentals',
+    color: '#3498db',
+    icon: '📊',
+    pattern: 'solid'
+  },
+  // ... 24 numbered stages + 'A', 'B', 'C' bonus stages
+};
+
+export const STAGE_ORDER = [1, 2, 3, /* ... */ 24, 'A', 'B', 'C'];
 ```
 
 ### Country Assignment
@@ -196,10 +200,19 @@ export const ROADMAP_ORDER = [
 Countries are assigned to problems in geographic sequence:
 
 ```javascript
-export const ALL_COUNTRY_IDS = [
-  // North America → South America → Europe → Asia → Africa → Oceania
-  'US', 'CA', 'MX', 'GT', /* ... */
-];
+// Problem → Country mapping
+export const PROBLEM_TO_COUNTRY = {
+  'two-sum': 'US',
+  'best-time-to-buy-and-sell-stock': 'CA',
+  // ... 164 mappings
+};
+
+// Reverse mapping
+export const COUNTRY_TO_PROBLEM = {
+  'US': 'two-sum',
+  'CA': 'best-time-to-buy-and-sell-stock',
+  // ... 
+};
 ```
 
 ---
@@ -220,33 +233,37 @@ The component is self-contained and manages its own state.
 ### useProgressStore Hook
 
 ```javascript
-import { useProgressStore } from './map';
+import useProgressStore from './map/useProgressStore';
 
 // In your component
 const { 
-  completedProblems,      // string[] - IDs of completed problems
-  completeProblem,        // (id) => { success, nextProblem }
-  getProblemState,        // (id) => 'locked' | 'available' | 'current' | 'completed'
+  completedProblems,        // string[] - IDs of completed problems
+  completeProblem,          // (id) => { success, nextProblem }
+  getProblemState,          // (id) => 'locked' | 'available' | 'current' | 'completed'
   getCurrentRoadmapProblem, // () => Problem | null
-  getTopicProgress,       // (topic) => { completed, total, percentage, isComplete }
-  getTotalProgress,       // () => { completed, total, percentage }
-  resetProgress,          // () => void
+  getStageProgress,         // (stage) => { completed, total, isComplete }
+  getTotalProgress,         // () => { completed, total, percentage }
+  markStageComplete,        // (stage) => void - for testing
+  resetProgress,            // () => void
 } = useProgressStore();
 ```
 
-### Exported Data
+### Exported Data (from useProgressStore)
 
 ```javascript
 import { 
-  ALL_PROBLEMS,           // Problem[] - All 140 problems
-  TOPICS,                 // Record<string, Topic> - Topic configs
-  ROADMAP_ORDER,          // string[] - Ordered topic keys
-  FULL_ROADMAP,           // Problem[] - Flat ordered problem list
+  ALL_PROBLEMS,           // Object - All 164 problems keyed by ID
+  STAGES,                 // Object - Stage configs (27 stages)
+  STAGE_ORDER,            // Array - [1,2,3,...24,'A','B','C']
+  FULL_ROADMAP,           // Array - Flat ordered problem list
   getProblemById,         // (id) => Problem
-  getProblemsByTopic,     // (topic) => Problem[]
+  getProblemsByStage,     // (stage) => Problem[]
+  getStageProgress,       // (stage) => { completed, total, isComplete }
   getCountryForProblem,   // (problemId) => countryCode
   getProblemForCountry,   // (countryCode) => Problem
-} from './map';
+  getLeetCodeUrl,         // (number, slug) => URL string
+  getNewProblems,         // () => Problem[] (problems with isNew: true)
+} from './map/useProgressStore';
 ```
 
 ---

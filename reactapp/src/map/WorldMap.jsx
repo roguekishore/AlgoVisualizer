@@ -4,12 +4,12 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useNavigate } from 'react-router-dom';
 import { ReactComponent as Map } from './world.svg';
 import useProgressStore, {
-  TOPICS,
-  ROADMAP_ORDER,
+  STAGES,
+  STAGE_ORDER,
   FULL_ROADMAP,
   COUNTRY_NAME_TO_CODE,
   CODE_TO_COUNTRY_NAME,
-  getProblemsByTopic,
+  getProblemsByStage,
   getProblemForCountry,
   getCountryForProblem,
 } from './useProgressStore';
@@ -47,10 +47,10 @@ const WorldMap = () => {
     getProblemState,
     getCurrentRoadmapProblem,
     getRoadmapIndex,
-    getTopicProgress,
+    getStageProgress,
     getTotalProgress,
     resetProgress,
-    markTopicComplete,
+    markStageComplete,
   } = useProgressStore();
 
   /**
@@ -217,10 +217,11 @@ const WorldMap = () => {
       }
       
       const state = getProblemState(problem.id);
-      const topicColor = TOPICS[problem.topic]?.color || '#6366f1';
+      // Use stage color instead of topic color
+      const stageColor = STAGES[problem.stage]?.color || '#6366f1';
       
-      // Set topic color as CSS variable for this element
-      path.style.setProperty('--topic-color', topicColor);
+      // Set stage color as CSS variable for this element
+      path.style.setProperty('--topic-color', stageColor);
       
       // Add appropriate state class
       path.classList.add(`country-${state}`);
@@ -484,24 +485,24 @@ const WorldMap = () => {
         </button>
         {!sidebarCollapsed && (
           <div className="topic-list">
-            {ROADMAP_ORDER.map((topicKey) => {
-              const topic = TOPICS[topicKey];
-              const progress = getTopicProgress(topicKey);
+            {STAGE_ORDER.map((stageKey) => {
+              const stage = STAGES[stageKey];
+              const progress = getStageProgress(stageKey);
               return (
                 <button
-                  key={topicKey}
+                  key={stageKey}
                   className={`topic-btn ${progress.isComplete ? 'complete' : ''}`}
-                  style={{ '--topic-color': topic.color }}
+                  style={{ '--topic-color': stage.color }}
                   onClick={() => {
-                    const problems = getProblemsByTopic(topicKey);
+                    const problems = getProblemsByStage(stageKey);
                     if (problems.length > 0) {
                       const countryId = getCountryForProblem(problems[0].id);
                       if (countryId) zoomToCountry(countryId, 3);
                     }
                   }}
                 >
-                  <span className="topic-icon">{topic.icon}</span>
-                  <span className="topic-name">{topic.name}</span>
+                  <span className="topic-icon">{stage.icon}</span>
+                  <span className="topic-name">{stage.name}</span>
                   <span className="topic-progress">{progress.completed}/{progress.total}</span>
                 </button>
               );
@@ -611,20 +612,20 @@ const WorldMap = () => {
       {showDebugPanel && (
         <div className="debug-panel">
           <h3>🐛 Debug Panel</h3>
-          <p>Mark topics complete for testing:</p>
+          <p>Mark stages complete for testing:</p>
           <div className="debug-topics">
-            {ROADMAP_ORDER.map(topicKey => {
-              const topic = TOPICS[topicKey];
-              const progress = getTopicProgress(topicKey);
+            {STAGE_ORDER.map(stageKey => {
+              const stage = STAGES[stageKey];
+              const progress = getStageProgress(stageKey);
               return (
                 <button
-                  key={topicKey}
+                  key={stageKey}
                   className="debug-topic-btn"
-                  style={{ '--topic-color': topic.color }}
-                  onClick={() => markTopicComplete(topicKey)}
+                  style={{ '--topic-color': stage.color }}
+                  onClick={() => markStageComplete(stageKey)}
                   disabled={progress.isComplete}
                 >
-                  {topic.icon} {topic.name}
+                  {stage.icon} {stage.name}
                   {progress.isComplete && ' ✓'}
                 </button>
               );
@@ -660,13 +661,13 @@ const WorldMap = () => {
             <div className="problem-card">
               <div 
                 className="problem-topic"
-                style={{ backgroundColor: TOPICS[selectedProblem.topic]?.color }}
+                style={{ backgroundColor: STAGES[selectedProblem.stage]?.color }}
               >
-                {TOPICS[selectedProblem.topic]?.icon} {TOPICS[selectedProblem.topic]?.name}
+                {STAGES[selectedProblem.stage]?.icon} {STAGES[selectedProblem.stage]?.name}
               </div>
               <h2 className="problem-title">{selectedProblem.title}</h2>
               <div className="problem-meta">
-                <span>Problem #{selectedProblem.order} in topic</span>
+                <span>Problem #{selectedProblem.order} in stage</span>
                 <span>•</span>
                 <span>Roadmap #{FULL_ROADMAP.findIndex(p => p.id === selectedProblem.id) + 1}</span>
               </div>

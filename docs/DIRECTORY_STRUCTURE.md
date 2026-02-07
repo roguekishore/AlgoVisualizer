@@ -18,6 +18,18 @@ src/
 │   ├── Tooltip.jsx
 │   └── VisualizerPointer.jsx
 │
+├── 📂 data/                   # Static Data & Problem Mappings
+│   ├── categories.js         # Homepage category definitions
+│   └── dsa-conquest-map.js   # ⭐ 164-problem learning path (single source of truth)
+│
+├── 📂 map/                    # 🗺️ DSA Conquest Map Module
+│   ├── index.js              # Module exports
+│   ├── WorldMap.jsx          # Interactive SVG world map component
+│   ├── WorldMap.css          # Map styling
+│   ├── useProgressStore.js   # Zustand store for progress tracking
+│   ├── world.svg             # SVG world map asset (~200 countries)
+│   └── README.md             # Component documentation
+│
 ├── 📂 pages/                  # Page Components
 │   ├── 📂 algorithms/        # ⭐ Algorithm visualizer pages (24 categories)
 │   │   ├── Arrays/
@@ -53,7 +65,7 @@ src/
 │   │   └── VisualizerLayout.jsx
 │   │
 │   ├── 📂 special/           # Special feature pages
-│   │   ├── WorldMapPage.jsx
+│   │   ├── WorldMapPage.jsx  # World map wrapper page
 │   │   └── Starred/
 │   │
 │   ├── HomePage.jsx          # Main landing page
@@ -69,11 +81,8 @@ src/
 ├── 📂 hooks/                  # Custom React hooks
 │   └── useModeHistorySwitch.js
 │
-├── 📂 data/                   # Static data
-│   └── categories.js
-│
 ├── 📂 search/                 # Search functionality
-│   └── catalog.js
+│   └── catalog.js            # Master catalog (~130 problems with metadata)
 │
 ├── 📂 utils/                  # Utility functions
 │   └── starredManager.js
@@ -81,6 +90,28 @@ src/
 └── 📂 lib/                    # Library utilities
     └── utils.js
 ```
+
+## 🗺️ DSA Conquest Map Module
+
+The `map/` folder contains the gamified world map system:
+
+| File | Purpose |
+|------|---------|
+| `WorldMap.jsx` | Interactive SVG map with pan/zoom, country click handlers |
+| `WorldMap.css` | Styling for map, sidebar, side panel, tooltips |
+| `useProgressStore.js` | Zustand store for progress + re-exports problem data |
+| `world.svg` | SVG world map with ~200 clickable country paths |
+| `index.js` | Module exports for easy importing |
+
+### Data Source
+
+`src/data/dsa-conquest-map.js` is the **single source of truth** for:
+- 164 DSA problems with full metadata
+- 27 stages (24 main + 3 bonus)
+- Country-to-problem mappings
+- LeetCode numbers and slugs
+- Difficulty ratings
+- Visualizer routes
 
 ## 🎨 Component Organization
 
@@ -123,20 +154,34 @@ src/
 ### To modify routing:
 - Edit: `src/routes/index.jsx` or `src/routes/config.js`
 
+### To add a problem to DSA Conquest Map:
+1. Edit: `src/data/dsa-conquest-map.js`
+2. Add problem object with country mapping
+3. Create visualizer (if `isNew: false`)
+
+### To modify map progress logic:
+- Edit: `src/map/useProgressStore.js`
+
+### To customize map appearance:
+- Edit: `src/map/WorldMap.css` for styling
+- Edit: `src/map/WorldMap.jsx` for behavior
+
 ## 🚀 Benefits
 
 ✨ **Clear Separation** - Pages organized by type (algorithms, categories, visualizer, special)
 ✨ **Easy Navigation** - Logical folder structure
-✨ **Reduced Clutter** - Removed 10+ unused files
+✨ **Gamification** - DSA Conquest Map adds engagement
+✨ **Single Source of Truth** - `dsa-conquest-map.js` for all problem data
 ✨ **Better Maintainability** - Professional organization
-✨ **Cleaner Code** - Simplified App.jsx with only necessary providers
+✨ **Persistent Progress** - LocalStorage saves user journey
 
 ## 📝 Notes
 
 - All algorithm-related pages are under `algorithms/` folder
+- DSA Conquest Map uses 164 problems across 27 stages
 - Import paths have been updated throughout the project
 - No breaking changes - all existing functionality preserved
 - Ready for future enhancements
 
 ---
-**Last Updated:** January 6, 2026
+**Last Updated:** February 7, 2026
