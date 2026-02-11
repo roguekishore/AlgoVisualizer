@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  judge-service:
+    image: roguekishore/judge:latest
+    container_name: judge-service
+    restart: unless-stopped
+    ports:
+      - "${PORT:-9000}:9000"
+    environment:
+      - PORT=9000
+      - MODE=docker
+      - WORKER_POOL_SIZE=${WORKER_POOL_SIZE:-3}
+      - WORKER_MEMORY=${WORKER_MEMORY:-256m}
+      - WORKER_CPU=${WORKER_CPU:-1}
+    volumes:
+      # Mount Docker socket so the judge can create and manage worker containers
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock

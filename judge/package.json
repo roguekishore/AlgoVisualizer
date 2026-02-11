@@ -1,0 +1,22 @@
+{
+  "name": "algovisualizer-judge",
+  "version": "1.0.0",
+  "description": "Online Judge backend for AlgoVisualizer — compiles and runs C++/Java code against test cases",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "MODE=host node --watch src/index.js",
+    "build-sandboxes": "docker build -t algovisualizer-sandbox-cpp sandboxes/cpp && docker build -t algovisualizer-sandbox-java sandboxes/java",
+    "start:docker": "MODE=docker node src/index.js",
+    "docker:build": "docker buildx build --platform linux/amd64,linux/arm64 -t roguekishore/judge .",
+    "docker:push": "docker buildx build --platform linux/amd64,linux/arm64 -t roguekishore/judge --push ."
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "uuid": "^11.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

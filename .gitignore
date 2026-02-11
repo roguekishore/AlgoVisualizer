@@ -186,3 +186,15 @@ bin/
 application-*.yml
 !application.yml
 !application-example.yml
+
+# Environment Variables
+.env
+.env.local
+.env.development.local  
+.env.test.local
+.env.production.local
+
+# API Keys and Secrets (keep these out of version control)
+*.pem
+*.key
+secrets/
