@@ -1,7 +1,5 @@
 package com.backend.springapp.entity;
 
-import java.util.Set;
-
 import com.backend.springapp.enums.Tag;
 
 import jakarta.persistence.*;
@@ -28,4 +26,9 @@ public class Problem {
 
     @Enumerated(EnumType.STRING)
     private Tag tag;
+
+    @Column(nullable = false)
+    private boolean hasVisualizer; 
+
+    private String description;
 }

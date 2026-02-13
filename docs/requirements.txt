@@ -1,0 +1,9 @@
+fetch problem list, and problem description, so one lookup
+add pagination, fetch 200 problems, sort and filter options,
+sort by tag, hasvisualizer, topics
+
+create a dto with all, the id, title, lclug, tag, hasvisualizer,
+description along with topics(which )
+
+
+lc slug = null
