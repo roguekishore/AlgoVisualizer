@@ -7,6 +7,7 @@ import WorldMap from "./map/WorldMap";
 
 const ProblemsPage = lazy(() => import("./pages/judge/ProblemsPage"));
 const JudgePage = lazy(() => import("./pages/judge/JudgePage"));
+const ProblemListPage = lazy(() => import("./pages/problems/ProblemListPage"));
 
 export default function App() {
   return (
@@ -19,6 +20,9 @@ export default function App() {
             
             {/* DSA Skill Tree Map */}
             <Route path="/map" element={<WorldMap />} />
+
+            {/* Problem Bank (Spring Boot API) */}
+            <Route path="/problems" element={<ProblemListPage />} />
 
             {/* Online Judge */}
             <Route path="/judge" element={<ProblemsPage />} />

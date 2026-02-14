@@ -1,20 +1,12 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SearchCode, Map } from "lucide-react";
-import { CardSpotlight } from "../components/ui/card-spotlight.jsx";
 import { ThemeToggle } from "../components/theme-toggle.jsx";
 import categories from "../data/categories";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
 import { categoryConfig, getCategoryByKey } from "../routes/config";
 import "./HomePage.css";
 import CardFlip from "../components/kokonut-ui/card-flip.jsx";
-import { MagicCard } from "../components/magic-ui/magic-card.jsx";
-import { Card } from "../components/ui/card.jsx";
-import { CardHeader } from "../components/ui/card.jsx";
-import { CardTitle } from "../components/ui/card.jsx";
-import { CardDescription } from "../components/ui/card.jsx";
-import { CardContent } from "../components/ui/card.jsx";
-import { CardFooter } from "../components/ui/card.jsx";
 
 const CategoryCard = ({ category }) => {
   const navigate = useNavigate();
@@ -199,13 +191,6 @@ const HomePage = () => {
             <p className="home-lede">
               Master algorithms through clear explanations, interactive walkthroughs, and visual problem guides.
             </p>
-            <button
-              onClick={() => navigate('/map')}
-              className="skill-tree-btn"
-            >
-              <Map size={18} />
-              <span>Open Skill Tree Map</span>
-            </button>
           </section>
 
           <SearchBar

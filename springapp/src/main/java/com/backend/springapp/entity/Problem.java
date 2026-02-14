@@ -18,10 +18,9 @@ public class Problem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pid;
     
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String title;
     
-    @Column(unique = true)
     private String lcslug;
 
     @Enumerated(EnumType.STRING)

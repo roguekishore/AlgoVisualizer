@@ -1,0 +1,29 @@
+body {
+    --rui-colors-yellow: #EDFF66;
+    --rui-colors-purple: #5542FF;
+    --rui-colors-purple-gradient: linear-gradient(to bottom, #5542FF 0%, #B28EF2 100%);
+    --rui-colors-grey: #DFDFF2;
+    --rui-colors-red: #FF264E;
+    --rui-colors-orange: #FF6F2F;
+    --rui-colors-black: #000000;
+    --rui-fonts-base-size: 10px;
+    --rui-fonts-sans-serif: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
+    --rui-fonts-serif: ui-serif, serif;
+    --rui-fonts-mono: Dank Mono, Operator Mono, Inconsolata, Fira Mono, ui-monospace, SF Mono, Monaco, Droid Sans Mono, Source Code Pro, monospace;
+    --rui-spacing-1: 0.5rem;
+    --rui-spacing-2: 1rem;
+    --rui-spacing-3: 1.5rem;
+    --rui-spacing-4: 2rem;
+    --rui-spacing-5: 2.5rem;
+    --rui-z-index-layer1: 10;
+    --rui-z-index-layer2: 20;
+    --rui-z-index-layer3: 30;
+    --rui-z-index-layer4: 40;
+    --rui-z-index-layer5: 50;
+    --rui-z-index-important: 2147483647;
+    --rui-bgColor: #000000;
+    --rui-textColor: #DFDFF2;
+    --rui-textColorInverted: #000000;
+    --rui-accentColor: #EDFF66;
+    --rui-themeName: black;
+}

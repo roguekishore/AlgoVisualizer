@@ -7,3 +7,16 @@ description along with topics(which )
 
 
 lc slug = null
+
+
+
+
+user references in userprogress
+
+status transitions one way, Even if two submissions happen:
+
+If one returns WRONG and one returns ACCEPTED,
+SOLVED must win.
+
+
+an upsert pattern for updating user progress
