@@ -1,11 +1,37 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        "circular-web": ["circular-web", "sans-serif"],
+        general: ["general", "sans-serif"],
+        "robert-medium": ["robert-medium", "sans-serif"],
+        "robert-regular": ["robert-regular", "sans-serif"],
+        zentry: ["zentry", "sans-serif"],
+        body: ["'Roboto Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+        heading: ["'Helvetica Neue'", "Helvetica", "Arial", "sans-serif"],
+        mono: ["'Roboto Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+      },
       colors: {
+        // Zentry color palette
+        blue: {
+          50: "#DFDFF0",
+          75: "#DFDFF2",
+          100: "#F0F2FA",
+          200: "#010101",
+          300: "#4FB7DD",
+        },
+        violet: {
+          300: "#5724FF",
+        },
+        yellow: {
+          100: "#8E983F",
+          300: "#EDFF66",
+        },
         // Shadcn UI color mappings
         background: 'var(--background)',
         foreground: 'var(--foreground)',
