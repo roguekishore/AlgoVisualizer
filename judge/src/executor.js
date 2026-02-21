@@ -5,7 +5,7 @@ const { v4: uuidv4 } = require("uuid");
 const os = require("os");
 const pool = require("./workerPool");
 
-const TEMP_DIR = path.join(os.tmpdir(), "algovisualizer-judge");
+const TEMP_DIR = path.join(os.tmpdir(), "vantage-judge");
 
 // Ensure temp directory exists
 if (!fs.existsSync(TEMP_DIR)) {

@@ -149,7 +149,7 @@ version: "3.8"
 services:
   judge:
     image: roguekishore/judge:latest
-    container_name: algovisualizer-judge
+    container_name: vantage-judge
     restart: unless-stopped
     ports:
       - "9000:9000"

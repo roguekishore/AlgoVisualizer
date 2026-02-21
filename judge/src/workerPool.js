@@ -27,8 +27,8 @@ const CPU_LIMIT = process.env.WORKER_CPU || "1";
 const ACQUIRE_TIMEOUT = parseInt(process.env.ACQUIRE_TIMEOUT || "30000", 10); // ms to wait for a free worker
 
 const IMAGES = {
-  cpp: "algovisualizer-sandbox-cpp",
-  java: "algovisualizer-sandbox-java",
+  cpp: "vantage-sandbox-cpp",
+  java: "vantage-sandbox-java",
 };
 
 /**
