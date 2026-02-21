@@ -1,0 +1,30 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "default",
+  "rsc": false,
+  "tsx": false,
+  "tailwind": {
+    "config": "reactapp/tailwind.config.js",
+    "css": "reactapp/src/index.css",
+    "baseColor": "neutral",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "hooks": "@/hooks",
+    "lib": "@/lib"
+  },
+  "registries": {
+    "@react-bits": "https://reactbits.dev/r/{name}.json",
+    "@magic-ui": "https://magicui.design/r/{name}.json",
+    "@aceternity": "https://ui.aceternity.com/r/{name}.json",
+    "@shadcnblocks": "https://shadcnblocks.com/r/{name}.json",
+    "@cult-ui": "https://cult-ui.com/r/{name}.json",
+    "@kokonutui": "https://kokonutui.com/r/{name}.json",
+    "@v0": "https://v0.dev/chat/b/{name}",
+    "@jolly-ui": "https://jollyui.dev/r/{name}.json",
+    "@origin-ui": "https://originui.com/r/{name}.json"
+  }
+}
