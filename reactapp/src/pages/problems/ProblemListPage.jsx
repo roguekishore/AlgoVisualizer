@@ -114,10 +114,10 @@ export default function ProblemListPage() {
   const to   = Math.min((page + 1) * size, totalElements);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground pt-24 md:pt-28">
 
-      {/* ── HEADER ───────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
+      {/* ── HEADER ─────────────────────────────────────────────────
+      <header className="sticky top-24 md:top-28 z-40 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex h-14 max-w-[1120px] items-center justify-between px-6">
           <div className="flex items-center gap-5">
             <Link to="/" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors">
@@ -133,7 +133,7 @@ export default function ProblemListPage() {
             <ThemeToggle />
           </div>
         </div>
-      </header>
+      </header> */}
 
       <main className="mx-auto max-w-[1120px] px-6 pt-10 pb-16">
 

@@ -200,7 +200,7 @@ export default function JudgePage() {
        RIGHT = Code Editor (full height)
      ════════════════════════════════════════════ */
   return (
-    <div className="judge-root flex h-screen flex-col bg-background text-foreground overflow-hidden">
+    <div className="judge-root flex h-screen flex-col bg-background text-foreground overflow-hidden pt-24 md:pt-28">
       {/* ───── Header ───── */}
       <header className="flex items-center justify-between h-11 px-3 border-b border-border bg-card flex-shrink-0 z-10">
         <div className="flex items-center gap-2 min-w-0">

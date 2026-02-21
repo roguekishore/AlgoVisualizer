@@ -50,8 +50,8 @@ export default function ProblemsPage() {
   });
 
   return (
-    <div className="flex h-screen flex-col bg-background text-foreground">
-      {/* ── Header ── */}
+    <div className="flex h-screen flex-col bg-background text-foreground pt-24 md:pt-28">
+      {/* ── Header ──
       <header className="flex items-center justify-between h-12 px-4 border-b border-border bg-card flex-shrink-0">
         <div className="flex items-center gap-3">
           <Link
@@ -65,7 +65,7 @@ export default function ProblemsPage() {
           <h1 className="text-sm font-semibold">Online Judge</h1>
         </div>
         <ThemeToggle />
-      </header>
+      </header> */}
 
       {/* ── Main Content ── */}
       <div className="flex-1 overflow-hidden">

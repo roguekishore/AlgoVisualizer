@@ -1,16 +1,8 @@
 import React from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { ArrowLeft, Clock, ChevronRight } from "lucide-react";
-import { MagicCard } from "../../components/magic-ui/magic-card.jsx";
+import { ArrowLeft } from "lucide-react";
 import { ThemeToggle } from "../../components/theme-toggle.jsx";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "../../components/ui/card.jsx";
+import ProblemCard from "../../components/ProblemCard.jsx";
 import { problems as PROBLEM_CATALOG } from "../../search/catalog";
 import "../HomePage.css";
 
@@ -43,12 +35,7 @@ const CategoryPage = ({
 
   return (
     <>
-      <div className="home-shell">
-        {/* Theme Toggle - Fixed position */}
-        <div className="fixed top-4 right-4 z-50">
-          <ThemeToggle />
-        </div>
-        
+      <div className="home-shell pt-24 md:pt-28">
         <div className="home-content">
           {/* Back Navigation */}
           <nav className="category-nav">
@@ -78,124 +65,26 @@ const CategoryPage = ({
               </p>
             </div> */}
 
-            {/* Algorithm Grid - Same as HomePage category grid */}
-            <div className="category-grid">
-              {algorithms.map((algo) => {
-                const AlgoIcon = algo.icon || Icon;
-                const gradient = (() => {
-                  switch (algo.difficulty) {
-                    case "Easy":
-                      return {
-                        gradientFrom: "#10B981",
-                        gradientTo: "#34D399",
-                        // gradientColor: "#064e3b",
-                      };
-                    case "Medium":
-                      return {
-                        gradientFrom: "#F59E0B",
-                        gradientTo: "#FCD34D",
-                        // gradientColor: "#92400e",
-                      };
-                    default:
-                      return {
-                        gradientFrom: "#EF4444",
-                        gradientTo: "#F87171",
-                        // gradientColor: "#7f1d1d",
-                      };
-                  }
-                })();
-                return (
-                  <Card
-                    key={algo.subpage}
-                    className="border-none p-0 shadow-none bg-card cursor-pointer group/card min-h-[300px] h-full"
-                    onClick={() => navigate(`${basePath}/${algo.subpage}`)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        navigate(`${basePath}/${algo.subpage}`);
-                      }
-                    }}
-                  >
-                    <MagicCard
-                      className="h-full flex flex-col"
-                      background="bg-card"
-                      gradientSize={200}
-                      gradientColor={gradient.gradientColor}
-                      gradientFrom={gradient.gradientFrom}
-                      gradientTo={gradient.gradientTo}
-                      // texture="dor"
-                      // textureOpacity={100}
-                    >
-                      <CardHeader className="p-4 pb-2">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="flex items-center justify-center w-9 h-9 bg-secondary text-foreground">
-                            <AlgoIcon size={20} />
-                          </span>
-                          <CardTitle className="text-base font-semibold text-foreground">
-                            {algo.label}
-                          </CardTitle>
-                        </div>
-                        <CardDescription className="text-sm text-muted-foreground line-clamp-2">
-                          {algo.description}
-                        </CardDescription>
-                      </CardHeader>
-
-                      <CardContent className="p-4 pt-2 flex-1">
-                        <div className="flex flex-wrap gap-2">
-                          {algo.difficulty && (
-                            <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium ${
-                              algo.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400' :
-                              algo.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400' :
-                              'bg-red-500/20 text-red-400'
-                            }`}>
-                              {algo.difficulty}
-                            </span>
-                          )}
-                          {algo.technique && (
-                            <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium bg-purple-500/20 text-purple-400">
-                              {algo.technique}
-                            </span>
-                          )}
-                        </div>
-                      </CardContent>
-
-                      <CardFooter className="p-4 pt-2 flex items-center justify-between border-t border-border">
-                        {algo.timeComplexity ? (
-                          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-                            <Clock size={12} />
-                            {algo.timeComplexity}
-                          </span>
-                        ) : (
-                          <span />
-                        )}
-                        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground group-hover/card:text-foreground transition-colors">
-                          Explore
-                          <ChevronRight size={14} className="group-hover/card:translate-x-0.5 transition-transform" />
-                        </span>
-                      </CardFooter>
-                    </MagicCard>
-                  </Card>
-                );
-              })}
+            {/* Algorithm List - horizontal row layout */}
+            <div className="flex flex-col gap-2.5">
+              {algorithms.map((algo, index) => (
+                <ProblemCard
+                  key={algo.subpage}
+                  algo={algo}
+                  onClick={() => navigate(`${basePath}/${algo.subpage}`)}
+                  fallbackIcon={Icon}
+                  index={index}
+                />
+              ))}
             </div>
           </section>
 
           {/* Footnote */}
-          <Card className="border-none p-0 shadow-none bg-transparent mt-8">
-            {/* <MagicCard
-              className="p-6 text-center"
-              gradientSize={260}
-              gradientColor="#262626"
-              gradientFrom="#9E7AFF"
-              gradientTo="#FE8BBB"
-            > */}
+          <div className="mt-8 text-center">
               <p className="text-muted-foreground text-sm">
                 Click on any algorithm to explore its interactive visualization.
               </p>
-            {/* </MagicCard> */}
-          </Card>
+          </div>
         </div>
       </div>
     </>

@@ -39,7 +39,7 @@ export default function CardFlip({
 
   return (
     <div
-      className="group relative h-[320px] w-full [perspective:2000px]"
+      className="group relative h-[400px] w-full [perspective:2000px]"
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
@@ -66,7 +66,7 @@ export default function CardFlip({
             isFlipped ? "opacity-0" : "opacity-100"
           )}
         >
-          <div className="relative h-full overflow-hidden bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-black">
+          {/* <div className="relative h-full overflow-hidden bg-gradient-to-b from-zinc-100 to-white dark:from-zinc-900 dark:to-black">
             <div className="absolute inset-0 flex items-start justify-center pt-24">
               <div className="relative flex h-[100px] w-[200px] items-center justify-center">
                 {[...Array(10)].map((_, i) => (
@@ -88,7 +88,7 @@ export default function CardFlip({
                 ))}
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="absolute right-0 bottom-0 left-0 p-5">
             <div className="flex items-center justify-between gap-3">
