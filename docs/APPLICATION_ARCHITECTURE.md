@@ -1,8 +1,8 @@
-# AlgoVisualizer - Application Architecture
+# Vantage - Application Architecture
 
 ## Overview
 
-AlgoVisualizer is a React-based interactive algorithm learning platform that provides visual explanations and step-by-step walkthroughs for various data structures and algorithms.
+Vantage is a React-based interactive algorithm learning platform that provides visual explanations and step-by-step walkthroughs for various data structures and algorithms.
 
 ---
 

@@ -1,4 +1,4 @@
-# 🎯 AlgoVisualizer - Clean Project Structure
+# 🎯 Vantage - Clean Project Structure
 
 ## 📁 Directory Structure Overview
 
