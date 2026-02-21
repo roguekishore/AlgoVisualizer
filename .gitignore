@@ -198,3 +198,6 @@ application-*.yml
 *.pem
 *.key
 secrets/
+
+# Zentry demo folder (excluded from commits)
+zentry/
