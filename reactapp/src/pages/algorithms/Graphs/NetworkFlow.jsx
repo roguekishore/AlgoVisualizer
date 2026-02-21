@@ -6,7 +6,7 @@
  * - Visualize residual graph, augmenting paths, and bottleneck capacity per iteration
  * - Step/play controls with speed adjustment and stats pane
  * @version 1.0
- * @package AlgoVisualizer
+ * @package Vantage
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";

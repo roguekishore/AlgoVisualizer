@@ -3,6 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import { categoryConfig } from "./config";
 import CategoryPage from "../pages/categories/CategoryPage";
 import VisualizerPage from "../pages/visualizer/VisualizerPage";
+import VisualizersPage from "../pages/VisualizersPage";
+import AlgoCards from "../components/AlgoCards";
 
 // Loading fallback component
 const LoadingFallback = () => (
@@ -222,6 +224,10 @@ const AppRoutes = () => {
   return (
     <Suspense fallback={<LoadingFallback />}>
       <Routes>
+        {/* VISUALIZERS PAGE */}
+        <Route path="/visualizers" element={<VisualizersPage />} />
+        <Route path="/explore" element={<AlgoCards />} />
+
         {/* SORTING */}
         <Route path={sorting.path} element={
           <CategoryPage {...sorting} basePath={sorting.path} categoryKey={sorting.key} />

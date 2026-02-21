@@ -8,7 +8,7 @@
  * - Step-by-step algorithm execution
  * - Performance metrics display
  * @version 1.0
- * @package AlgoVisualizer
+ * @package Vantage
  */
 
 import React, { useState, useEffect, useCallback } from "react";
