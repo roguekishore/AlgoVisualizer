@@ -1,7 +1,5 @@
-package com.backend.springapp.controller;
+package com.backend.springapp.user;
 
-import com.backend.springapp.dto.UserProgressResponseDTO;
-import com.backend.springapp.service.UserProgressService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

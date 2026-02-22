@@ -1,4 +1,4 @@
-package com.backend.springapp.dto;
+package com.backend.springapp.problem;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

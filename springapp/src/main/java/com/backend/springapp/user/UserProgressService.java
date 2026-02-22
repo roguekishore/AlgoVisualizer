@@ -1,12 +1,7 @@
-package com.backend.springapp.service;
+package com.backend.springapp.user;
 
-import com.backend.springapp.dto.UserProgressResponseDTO;
-import com.backend.springapp.entity.Problem;
-import com.backend.springapp.entity.User;
-import com.backend.springapp.entity.UserProgress;
-import com.backend.springapp.enums.Status;
-import com.backend.springapp.repository.ProblemRepository;
-import com.backend.springapp.repository.UserProgressRepository;
+import com.backend.springapp.problem.Problem;
+import com.backend.springapp.problem.ProblemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

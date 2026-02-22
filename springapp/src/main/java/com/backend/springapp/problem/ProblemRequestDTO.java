@@ -1,4 +1,4 @@
-package com.backend.springapp.dto;
+package com.backend.springapp.problem;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

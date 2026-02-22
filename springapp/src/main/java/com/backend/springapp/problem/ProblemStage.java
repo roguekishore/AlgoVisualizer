@@ -1,4 +1,4 @@
-package com.backend.springapp.entity;
+package com.backend.springapp.problem;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

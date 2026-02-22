@@ -1,7 +1,5 @@
-package com.backend.springapp.repository;
+package com.backend.springapp.user;
 
-import com.backend.springapp.entity.UserProgress;
-import com.backend.springapp.enums.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

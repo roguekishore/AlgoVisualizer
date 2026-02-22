@@ -1,6 +1,4 @@
-package com.backend.springapp.entity;
-
-import com.backend.springapp.enums.Tag;
+package com.backend.springapp.problem;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

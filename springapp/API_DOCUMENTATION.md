@@ -1,5 +1,10 @@
 # Problem API Documentation
 
+> **Package structure:** Feature-based modules under `com.backend.springapp.*`
+> - Problem endpoints → `com.backend.springapp.problem` (ProblemController, StageController)
+> - Progress endpoints → `com.backend.springapp.user` (UserProgressController)
+> - Shared config → `com.backend.springapp.common` (WebConfig, DataInitializer)
+
 ## Endpoints
 
 ### GET /api/problems

@@ -1,8 +1,5 @@
-package com.backend.springapp.controller;
+package com.backend.springapp.problem;
 
-import com.backend.springapp.dto.ProblemRequestDTO;
-import com.backend.springapp.dto.ProblemResponseDTO;
-import com.backend.springapp.service.ProblemService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

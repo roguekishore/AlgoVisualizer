@@ -1,4 +1,4 @@
-package com.backend.springapp.enums;
+package com.backend.springapp.user;
 
 public enum Status {
     SOLVED,

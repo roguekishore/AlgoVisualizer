@@ -1,6 +1,6 @@
-package com.backend.springapp.entity;
+package com.backend.springapp.user;
 
-import com.backend.springapp.enums.Status;
+import com.backend.springapp.problem.Problem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

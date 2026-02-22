@@ -1,4 +1,4 @@
-package com.backend.springapp.entity;
+package com.backend.springapp.problem;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,19 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "users")
-public class User {
+@Table(name = "stages")
+public class Stage {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long uid;
+    private Long sid;
     
     @Column(nullable = false, unique = true)
-    private String username;
-    
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(unique = true)
-    private String lcusername;
+    private String name;
 }

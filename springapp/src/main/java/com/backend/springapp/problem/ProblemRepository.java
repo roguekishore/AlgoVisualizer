@@ -1,7 +1,5 @@
-package com.backend.springapp.repository;
+package com.backend.springapp.problem;
 
-import com.backend.springapp.entity.Problem;
-import com.backend.springapp.enums.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

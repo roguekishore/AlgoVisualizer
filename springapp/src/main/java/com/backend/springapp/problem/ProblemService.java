@@ -1,14 +1,7 @@
-package com.backend.springapp.service;
+package com.backend.springapp.problem;
 
-import com.backend.springapp.dto.ProblemRequestDTO;
-import com.backend.springapp.dto.ProblemResponseDTO;
-import com.backend.springapp.entity.Problem;
-import com.backend.springapp.entity.ProblemStage;
-import com.backend.springapp.entity.Stage;
-import com.backend.springapp.entity.UserProgress;
-import com.backend.springapp.enums.Tag;
-import com.backend.springapp.repository.ProblemRepository;
-import com.backend.springapp.repository.UserProgressRepository;
+import com.backend.springapp.user.UserProgress;
+import com.backend.springapp.user.UserProgressRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

@@ -1,6 +1,5 @@
-package com.backend.springapp.repository;
+package com.backend.springapp.problem;
 
-import com.backend.springapp.entity.Stage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

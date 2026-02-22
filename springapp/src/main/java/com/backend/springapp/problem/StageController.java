@@ -1,7 +1,5 @@
-package com.backend.springapp.controller;
+package com.backend.springapp.problem;
 
-import com.backend.springapp.entity.Stage;
-import com.backend.springapp.repository.StageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

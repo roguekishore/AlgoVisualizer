@@ -1,4 +1,4 @@
-package com.backend.springapp.enums;
+package com.backend.springapp.problem;
 
 public enum Tag {
     BASIC,

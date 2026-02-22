@@ -1,12 +1,12 @@
-package com.backend.springapp.config;
+package com.backend.springapp.common;
 
-import com.backend.springapp.entity.Problem;
-import com.backend.springapp.entity.ProblemStage;
-import com.backend.springapp.entity.Stage;
-import com.backend.springapp.enums.Tag;
-import com.backend.springapp.repository.ProblemRepository;
-import com.backend.springapp.repository.ProblemStageRepository;
-import com.backend.springapp.repository.StageRepository;
+import com.backend.springapp.problem.Problem;
+import com.backend.springapp.problem.ProblemStage;
+import com.backend.springapp.problem.Stage;
+import com.backend.springapp.problem.Tag;
+import com.backend.springapp.problem.ProblemRepository;
+import com.backend.springapp.problem.ProblemStageRepository;
+import com.backend.springapp.problem.StageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
