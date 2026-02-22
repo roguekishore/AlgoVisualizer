@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUp, ArrowDown, ArrowUpDown, Search, ChevronLeft, ChevronRight,
-  ExternalLink, X, Loader2, Eye
+  ExternalLink, X, Loader2, Eye, Filter, BookOpen, RotateCcw
 } from "lucide-react";
 import { fetchProblems, fetchProblemById, fetchTopics } from "../../services/problemApi";
 import { Badge } from "../../components/ui/badge";
+import { Input } from "../../components/ui/input";
+import { Button } from "../../components/ui/button";
 import {
   Select, SelectTrigger, SelectContent, SelectItem, SelectValue
 } from "../../components/ui/select";
@@ -116,102 +118,114 @@ export default function ProblemListPage() {
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 md:pt-28">
 
-      {/* ── HEADER ─────────────────────────────────────────────────
-      <header className="sticky top-24 md:top-28 z-40 border-b border-border bg-background/80 backdrop-blur-md">
-        <div className="mx-auto flex h-14 max-w-[1120px] items-center justify-between px-6">
-          <div className="flex items-center gap-5">
-            <Link to="/" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors">
-              Home
-            </Link>
-            <div className="h-4 w-px bg-border" />
-            <h1 className="text-[15px] font-semibold tracking-tight">Problems</h1>
-          </div>
-          <div className="flex items-center gap-5">
-            <span className="text-[12px] text-muted-foreground tabular-nums tracking-wide">
-              {totalElements} total
-            </span>
-            <ThemeToggle />
+      <main className="mx-auto max-w-[1120px] px-6 pt-6 pb-16">
+
+        {/* ── PAGE HEADER ────────────────────────────────────────── */}
+        <div className="flex flex-col gap-1 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-primary/10 border border-primary/20">
+                <BookOpen className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-xl font-semibold tracking-tight text-foreground">Problems</h1>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {totalElements} problems · Practice and master DSA
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-      </header> */}
 
-      <main className="mx-auto max-w-[1120px] px-6 pt-10 pb-16">
+        {/* ── SEARCH + FILTERS ───────────────────────────────────── */}
+        <div className="rounded-xl border border-border bg-card p-4 mb-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {/* Search */}
+            <div className="relative flex-1 min-w-0">
+              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search problems..."
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+                className="pl-10 pr-9 h-10 text-sm bg-background"
+              />
+              {searchKeyword && (
+                <button
+                  onClick={() => setSearchKeyword("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
 
-        {/* ── FILTERS ────────────────────────────────────────────── */}
-        <div className="flex flex-wrap items-center gap-3 mb-10">
-          {/* search */}
-          <div className="relative w-60">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search…"
-              value={searchKeyword}
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              className="h-9 w-full border border-border bg-background pl-9 pr-8 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-foreground/30 transition-colors"
-            />
-            {searchKeyword && (
-              <button
-                onClick={() => setSearchKeyword("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            )}
+            {/* Divider (desktop) */}
+            <div className="hidden sm:block w-px h-8 bg-border" />
+
+            {/* Filters */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Filter className="h-3 w-3" />
+                <span className="hidden sm:inline">Filters:</span>
+              </div>
+
+              <Select value={topicFilter} onValueChange={(v) => { setTopicFilter(v === "__all__" ? "" : v); setPage(0); }}>
+                <SelectTrigger className="w-44 h-9 text-xs rounded-lg">
+                  <SelectValue placeholder="All topics" _value={topicFilter || "All topics"} />
+                </SelectTrigger>
+                <SelectContent className="max-h-72 overflow-y-auto">
+                  <SelectItem value="__all__">All topics</SelectItem>
+                  {topics.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              <Select value={tagFilter} onValueChange={(v) => { setTagFilter(v === "__all__" ? "" : v); setPage(0); }}>
+                <SelectTrigger className="w-32 h-9 text-xs rounded-lg">
+                  <SelectValue placeholder="Difficulty" _value={tagFilter ? DIFF_LABEL[tagFilter] : "Difficulty"} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">All levels</SelectItem>
+                  <SelectItem value="EASY">Easy</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HARD">Hard</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={String(size)} onValueChange={(v) => { setSize(Number(v)); setPage(0); }}>
+                <SelectTrigger className="w-[88px] h-9 text-xs rounded-lg">
+                  <SelectValue _value={`${size} rows`} />
+                </SelectTrigger>
+                <SelectContent>
+                  {[10, 20, 50, 100].map(n => (
+                    <SelectItem key={n} value={String(n)}>{n} rows</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              {hasFilters && (
+                <Button variant="ghost" size="sm" onClick={clearAll} className="h-9 px-3 text-xs text-muted-foreground hover:text-foreground gap-1.5">
+                  <RotateCcw className="h-3 w-3" />
+                  Reset
+                </Button>
+              )}
+            </div>
           </div>
-
-          <Select value={topicFilter} onValueChange={(v) => { setTopicFilter(v === "__all__" ? "" : v); setPage(0); }}>
-            <SelectTrigger className="w-48 h-9 text-xs">
-              <SelectValue placeholder="All topics" _value={topicFilter || "All topics"} />
-            </SelectTrigger>
-            <SelectContent className="max-h-72 overflow-y-auto">
-              <SelectItem value="__all__">All topics</SelectItem>
-              {topics.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-            </SelectContent>
-          </Select>
-
-          <Select value={tagFilter} onValueChange={(v) => { setTagFilter(v === "__all__" ? "" : v); setPage(0); }}>
-            <SelectTrigger className="w-32 h-9 text-xs">
-              <SelectValue placeholder="Difficulty" _value={tagFilter ? DIFF_LABEL[tagFilter] : "Difficulty"} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="__all__">All levels</SelectItem>
-              <SelectItem value="EASY">Easy</SelectItem>
-              <SelectItem value="MEDIUM">Medium</SelectItem>
-              <SelectItem value="HARD">Hard</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select value={String(size)} onValueChange={(v) => { setSize(Number(v)); setPage(0); }}>
-            <SelectTrigger className="w-[88px] h-9 text-xs">
-              <SelectValue _value={`${size} rows`} />
-            </SelectTrigger>
-            <SelectContent>
-              {[10, 20, 50, 100].map(n => (
-                <SelectItem key={n} value={String(n)}>{n} rows</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          {hasFilters && (
-            <button
-              onClick={clearAll}
-              className="ml-1 text-[12px] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 decoration-muted-foreground/40"
-            >
-              Reset
-            </button>
-          )}
         </div>
 
         {/* ── ERROR ──────────────────────────────────────────────── */}
         {error && (
-          <div className="mb-8 border border-red-500/20 bg-red-500/5 px-5 py-3 text-sm text-red-400 flex items-center justify-between">
+          <div className="mb-6 rounded-xl border border-red-500/20 bg-red-500/5 px-5 py-3.5 text-sm text-red-400 flex items-center justify-between">
             <span>{error}</span>
-            <button onClick={load} className="text-xs underline underline-offset-4 hover:text-red-300">Retry</button>
+            <Button variant="ghost" size="sm" onClick={load} className="text-xs text-red-400 hover:text-red-300 gap-1">
+              <RotateCcw className="h-3 w-3" />
+              Retry
+            </Button>
           </div>
         )}
 
         {/* ── TABLE ──────────────────────────────────────────────── */}
-        <div className="border border-border overflow-hidden">
+        <div className="rounded-xl border border-border bg-card overflow-hidden">
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-b border-border">
@@ -311,9 +325,9 @@ export default function ProblemListPage() {
 
         {/* ── PAGINATION ─────────────────────────────────────────── */}
         {totalPages > 0 && (
-          <div className="mt-8 flex items-center justify-between">
+          <div className="mt-6 flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
             <p className="text-[12px] text-muted-foreground tabular-nums">
-              {from}–{to} of {totalElements}
+              Showing <span className="font-medium text-foreground">{from}–{to}</span> of {totalElements}
             </p>
             <div className="flex items-center gap-0.5">
               <PgBtn onClick={() => setPage(0)} disabled={page === 0}>First</PgBtn>

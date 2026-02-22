@@ -1,99 +1,196 @@
 /* ========================================
    DSA CONQUEST MAP — Minimal CSS
-   Only SVG state classes & map container
-   UI is fully Tailwind-based now
+   SVG country states + map layout
+   Dual-theme: light (.light) & dark (.dark)
    ======================================== */
 
-/* ── SVG Base ── */
-.skill-tree-wrapper svg path {
+/* ── CSS variables ── */
+.skill-tree-wrapper {
+  --wm-grid: rgba(0, 0, 0, 0.07);
+  --worldmap-icons: #000000;
+  --wm-yellow: #EDFF66;
+  --wm-purple: #5542FF;
+  --wm-purple-light: #B28EF2;
+}
+.dark .skill-tree-wrapper {
+  --wm-grid: rgba(255, 255, 255, 0.06);
+  --worldmap-icons: #ffffff;
+}
+
+.wm-icon {
+  color: var(--worldmap-icons) !important;
+}
+
+/* Purple accent icon (stays purple across themes) */
+.wm-icon-purple {
+  color: var(--wm-purple) !important;
+}
+
+/* Lucide SVG icons: prevent country-fill bleed, force correct icon color */
+.skill-tree-wrapper .lucide {
+  color: var(--worldmap-icons) !important;
+}
+.skill-tree-wrapper .lucide path,
+.skill-tree-wrapper .lucide line,
+.skill-tree-wrapper .lucide circle,
+.skill-tree-wrapper .lucide polyline,
+.skill-tree-wrapper .lucide rect {
+  fill: none !important;
+  stroke: var(--worldmap-icons) !important;
+}
+
+/* ── SVG Base (world map paths only) ── */
+.skill-tree-wrapper .world-svg path {
   contain: layout style;
 }
 
-/* High-res mode — remove perf optimizations */
-.skill-tree-wrapper.high-res-mode svg path {
+/* High-res mode */
+.skill-tree-wrapper.high-res-mode .world-svg path {
   contain: none;
   transition: fill 0.2s ease, opacity 0.2s ease;
 }
-
 .skill-tree-wrapper.high-res-mode .map-container,
 .skill-tree-wrapper.high-res-mode .world-svg {
   transform: none;
   backface-visibility: visible;
 }
-
 .skill-tree-wrapper.high-res-mode .react-transform-wrapper,
 .skill-tree-wrapper.high-res-mode .react-transform-component {
   will-change: auto;
 }
 
-/* ── Country state classes ── */
+/* ═══════════════════════════════════════
+   COUNTRY STATES — DARK THEME (default)
+   ═══════════════════════════════════════ */
 
-/* Placeholder — no problem mapped */
-.skill-tree-wrapper svg path.country-placeholder {
-  fill: #18181b;
-  opacity: 0.5;
-  stroke: #27272a;
-  stroke-width: 0.5;
+/* Placeholder */
+.dark .skill-tree-wrapper .world-svg path.country-placeholder,
+.dark .skill-tree-wrapper .world-svg path:not(.country-placeholder):not(.country-completed):not(.country-current):not(.country-available):not(.country-locked) {
+  fill: #27272a;
+  opacity: 0.8;
+  stroke: #3f3f46;
+  stroke-width: 0.6;
   cursor: default;
 }
 
-/* Default (before classes applied) */
-.skill-tree-wrapper svg path:not(.country-placeholder):not(.country-completed):not(.country-current):not(.country-available):not(.country-locked) {
-  fill: #18181b;
-  opacity: 0.5;
-  stroke: #27272a;
-  stroke-width: 0.5;
-}
-
 /* Completed */
-.skill-tree-wrapper svg path.country-completed {
+.dark .skill-tree-wrapper .world-svg path.country-completed {
   fill: var(--topic-color, #a1a1aa);
-  opacity: 0.85;
+  opacity: 0.95;
   stroke: #09090b;
   stroke-width: 0.8;
   cursor: pointer;
 }
-.skill-tree-wrapper svg path.country-completed:hover {
+.dark .skill-tree-wrapper .world-svg path.country-completed:hover {
   opacity: 1;
-  filter: brightness(1.15);
+  filter: brightness(1.2);
 }
 
 /* Current */
-.skill-tree-wrapper svg path.country-current {
-  fill: #fef08a;
+.dark .skill-tree-wrapper .world-svg path.country-current {
+  fill: var(--wm-yellow);
   opacity: 1;
-  stroke: var(--topic-color, #a1a1aa);
+  stroke: var(--wm-purple);
   stroke-width: 2;
   cursor: pointer;
-  filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.4));
+  filter: drop-shadow(0 0 8px rgba(85, 66, 255, 0.55));
 }
-.skill-tree-wrapper svg path.country-current:hover {
+.dark .skill-tree-wrapper .world-svg path.country-current:hover {
   opacity: 0.9;
 }
 
 /* Available */
-.skill-tree-wrapper svg path.country-available {
-  fill: #e4e4e7;
-  opacity: 0.9;
+.dark .skill-tree-wrapper .world-svg path.country-available {
+  fill: #d4d4d8;
+  opacity: 1;
   stroke: var(--topic-color, #a1a1aa);
-  stroke-width: 1.2;
+  stroke-width: 1.4;
   cursor: pointer;
 }
-.skill-tree-wrapper svg path.country-available:hover {
+.dark .skill-tree-wrapper .world-svg path.country-available:hover {
   opacity: 1;
-  fill: #fafafa;
+  fill: #e4e4e7;
+  filter: brightness(1.1);
 }
 
 /* Locked */
-.skill-tree-wrapper svg path.country-locked {
-  fill: #18181b;
-  opacity: 0.35;
-  stroke: #27272a;
-  stroke-width: 0.5;
+.dark .skill-tree-wrapper .world-svg path.country-locked {
+  fill: #27272a;
+  opacity: 0.65;
+  stroke: #3f3f46;
+  stroke-width: 0.6;
   cursor: not-allowed;
 }
 
-/* ── Map container ── */
+/* ═══════════════════════════════════════
+   COUNTRY STATES — LIGHT THEME
+   ═══════════════════════════════════════ */
+
+/* Placeholder */
+.light .skill-tree-wrapper .world-svg path.country-placeholder,
+.light .skill-tree-wrapper .world-svg path:not(.country-placeholder):not(.country-completed):not(.country-current):not(.country-available):not(.country-locked) {
+  fill: #d4d4d8;
+  opacity: 0.70;
+  stroke: #a1a1aa;
+  stroke-width: 0.5;
+  cursor: default;
+}
+
+/* Completed */
+.light .skill-tree-wrapper .world-svg path.country-completed {
+  fill: var(--topic-color, #71717a);
+  opacity: 0.95;
+  stroke: #ffffff;
+  stroke-width: 1;
+  cursor: pointer;
+  filter: saturate(1.2);
+}
+.light .skill-tree-wrapper .world-svg path.country-completed:hover {
+  opacity: 1;
+  filter: saturate(1.4) brightness(1.1);
+}
+
+/* Current */
+.light .skill-tree-wrapper .world-svg path.country-current {
+  fill: var(--wm-yellow);
+  opacity: 1;
+  stroke: var(--wm-purple);
+  stroke-width: 2.5;
+  cursor: pointer;
+  filter: drop-shadow(0 0 6px rgba(85, 66, 255, 0.45));
+}
+.light .skill-tree-wrapper .world-svg path.country-current:hover {
+  opacity: 0.95;
+  filter: drop-shadow(0 0 10px rgba(85, 66, 255, 0.6));
+}
+
+/* Available */
+.light .skill-tree-wrapper .world-svg path.country-available {
+  fill: #93939e;
+  opacity: 1;
+  stroke: var(--topic-color, #71717a);
+  stroke-width: 1.4;
+  cursor: pointer;
+}
+.light .skill-tree-wrapper .world-svg path.country-available:hover {
+  opacity: 1;
+  fill: #71717a;
+  filter: brightness(0.95);
+}
+
+/* Locked */
+.light .skill-tree-wrapper .world-svg path.country-locked {
+  fill: #e4e4e7;
+  opacity: 0.75;
+  stroke: #a1a1aa;
+  stroke-width: 0.6;
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════
+   MAP CONTAINER
+   ═══════════════════════════════════════ */
+
 .skill-tree-wrapper .map-container {
   flex: 1;
   display: flex;
@@ -113,7 +210,7 @@
   backface-visibility: hidden;
 }
 
-/* GPU accel for smooth transforms */
+/* GPU accel */
 .skill-tree-wrapper .react-transform-wrapper {
   will-change: transform;
 }
@@ -121,13 +218,16 @@
   will-change: transform;
 }
 
-/* Disable transitions during active pan/zoom */
-.skill-tree-wrapper .react-transform-wrapper:active svg path,
-.skill-tree-wrapper .map-container:active svg path {
+/* Kill transitions during active pan/zoom */
+.skill-tree-wrapper .react-transform-wrapper:active .world-svg path,
+.skill-tree-wrapper .map-container:active .world-svg path {
   transition: none !important;
 }
 
-/* ── Position marker animation ── */
+/* ═══════════════════════════════════════
+   POSITION MARKER
+   ═══════════════════════════════════════ */
+
 .skill-tree-wrapper .pulse-ring {
   animation: pulseRing 2s infinite;
 }
@@ -138,7 +238,10 @@
   100% { r: 12; opacity: 0.5; }
 }
 
-/* ── Responsive ── */
+/* ═══════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════ */
+
 @media (max-width: 768px) {
   .skill-tree-wrapper .map-container {
     min-height: 100vh;

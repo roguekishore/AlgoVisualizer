@@ -126,7 +126,7 @@ export default function TopicPixelCard({ category }) {
         />
 
         {/* ── Problem list ── */}
-        <div className="flex-1 space-y-1.5 min-h-0 overflow-hidden rounded-xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-md p-2 border border-zinc-200/40 dark:border-white/[0.06]">
+        <div className="flex-1 space-y-1.5 min-h-0 overflow-hidden rounded-xl bg-white/40 dark:bg-zinc-900/60 backdrop-blur-md p-2 border border-white/70 dark:border-white/[0.06] shadow-inner shadow-white/50 dark:shadow-none">
           {categoryProblems.map((problem, idx) => {
             const styles = difficultyStyles[problem.difficulty] || difficultyStyles.Medium;
             return (
@@ -134,8 +134,8 @@ export default function TopicPixelCard({ category }) {
                 key={problem.subpage}
                 className={cn(
                   "flex items-center gap-2 px-2.5 py-1.5 rounded-lg",
-                  "bg-zinc-100/80 dark:bg-white/[0.06] hover:bg-zinc-200/90 dark:hover:bg-white/[0.1]",
-                  "border border-zinc-300/60 dark:border-white/[0.06] hover:border-zinc-400/80 dark:hover:border-white/[0.12]",
+                  "bg-white/60 dark:bg-white/[0.06] hover:bg-white/90 dark:hover:bg-white/[0.1]",
+                  "border border-white/80 dark:border-white/[0.06] hover:border-zinc-200/80 dark:hover:border-white/[0.12]",
                   "transition-all duration-200 group/problem"
                 )}
                 style={{
@@ -189,8 +189,8 @@ export default function TopicPixelCard({ category }) {
           <div
             className={cn(
               "flex items-center justify-center gap-2 py-2 px-3 rounded-xl",
-              "bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md hover:bg-zinc-200/90 dark:hover:bg-white/[0.1]",
-              "border border-zinc-300/60 dark:border-white/[0.06] hover:border-zinc-400/70 dark:hover:border-white/[0.12]",
+              "bg-white/40 dark:bg-zinc-900/60 backdrop-blur-md hover:bg-white/70 dark:hover:bg-white/[0.1]",
+              "border border-white/70 dark:border-white/[0.06] hover:border-zinc-200/80 dark:hover:border-white/[0.12]",
               "transition-all duration-300 group/cta"
             )}
           >

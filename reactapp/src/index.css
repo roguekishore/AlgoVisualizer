@@ -325,6 +325,11 @@ html {
   --gradient-primary: linear-gradient(to right, var(--color-accent-primary), var(--color-purple));
   --gradient-success: linear-gradient(to right, var(--color-success), var(--color-teal));
   --gradient-warning: linear-gradient(to right, var(--color-orange), var(--color-warning));
+
+  /* ========== WORLD MAP ICON COLORS ========== */
+  --worldmapiconslight: #52525b;   /* zinc-600 — icon color in light theme */
+  --worldmapiconsdark: #d4d4d8;    /* zinc-300 — icon color in dark theme  */
+  --worldmap-icons: var(--worldmapiconslight);
 }
 
 /* ========== DARK THEME (shadcn) ========== */
@@ -374,6 +379,9 @@ html {
   
   --color-border-primary: var(--border);
   --color-border-secondary: var(--border);
+
+  /* World map icons — dark mode override */
+  --worldmap-icons: var(--worldmapiconsdark);
 }
 
 /* ========== LIGHT THEME OVERRIDES ========== */
