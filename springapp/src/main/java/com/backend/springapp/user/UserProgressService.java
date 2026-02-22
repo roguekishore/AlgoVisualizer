@@ -2,6 +2,7 @@ package com.backend.springapp.user;
 
 import com.backend.springapp.problem.Problem;
 import com.backend.springapp.problem.ProblemRepository;
+import com.backend.springapp.problem.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class UserProgressService {
 
     private final UserProgressRepository progressRepository;
     private final ProblemRepository problemRepository;
+    private final UserRepository userRepository;
 
     /**
      * Get all progress for a user (for app startup).
@@ -88,6 +90,8 @@ public class UserProgressService {
         UserProgress progress = progressRepository.findByUserIdAndProblemId(uid, pid)
                 .orElse(null);
 
+        boolean alreadySolved = progress != null && progress.getStatus() == Status.SOLVED;
+
         if (progress == null) {
             // Solved on first try
             progress = new UserProgress();
@@ -104,6 +108,17 @@ public class UserProgressService {
         }
 
         UserProgress saved = progressRepository.save(progress);
+
+        // Increment rating only once per problem
+        if (!alreadySolved) {
+            int points = switch (problem.getTag()) {
+                case HARD   -> 3;
+                case MEDIUM -> 2;
+                default     -> 1; // EASY, BASIC
+            };
+            userRepository.addRating(uid, points);
+        }
+
         return mapToDTO(saved);
     }
 
