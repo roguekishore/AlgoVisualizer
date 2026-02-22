@@ -1,7 +1,6 @@
 import React from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { ThemeToggle } from "../../components/theme-toggle.jsx";
 import ProblemCard from "../../components/ProblemCard.jsx";
 import { problems as PROBLEM_CATALOG } from "../../search/catalog";
 import "../HomePage.css";
@@ -39,10 +38,10 @@ const TopicPage = ({
         <div className="home-content">
           {/* Back Navigation */}
           <nav className="category-nav">
-            <Link to="/" className="category-nav__back">
+            <button onClick={() => navigate(-1)} className="category-nav__back">
               <ArrowLeft className="category-nav__icon" />
-              Back to Home
-            </Link>
+              Back
+            </button>
           </nav>
 
           {/* Hero Section */}
