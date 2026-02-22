@@ -3,8 +3,8 @@ package com.backend.springapp.service;
 import com.backend.springapp.dto.ProblemRequestDTO;
 import com.backend.springapp.dto.ProblemResponseDTO;
 import com.backend.springapp.entity.Problem;
-import com.backend.springapp.entity.ProblemTopic;
-import com.backend.springapp.entity.Topic;
+import com.backend.springapp.entity.ProblemStage;
+import com.backend.springapp.entity.Stage;
 import com.backend.springapp.entity.UserProgress;
 import com.backend.springapp.enums.Tag;
 import com.backend.springapp.repository.ProblemRepository;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 /**
  * Service for managing Problem entities.
- * Handles CRUD operations, filtering, search, and topic associations.
+ * Handles CRUD operations, filtering, search, and stage associations.
  */
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class ProblemService {
     private final EntityManager entityManager;
 
     /**
-     * Create a new problem with topic associations.
+     * Create a new problem with stage associations.
      */
     @Transactional
     public ProblemResponseDTO createProblem(ProblemRequestDTO dto) {
@@ -46,9 +46,9 @@ public class ProblemService {
 
         Problem saved = problemRepository.save(problem);
 
-        // Handle topic associations
-        if (dto.getTopics() != null && !dto.getTopics().isEmpty()) {
-            associateTopics(saved, dto.getTopics());
+        // Handle stage associations
+        if (dto.getStages() != null && !dto.getStages().isEmpty()) {
+            associateStages(saved, dto.getStages());
         }
 
         return mapToResponseDTO(saved, null);
@@ -70,10 +70,10 @@ public class ProblemService {
 
         Problem updated = problemRepository.save(problem);
 
-        // Update topic associations
-        removeExistingTopics(pid);
-        if (dto.getTopics() != null && !dto.getTopics().isEmpty()) {
-            associateTopics(updated, dto.getTopics());
+        // Update stage associations
+        removeExistingStages(pid);
+        if (dto.getStages() != null && !dto.getStages().isEmpty()) {
+            associateStages(updated, dto.getStages());
         }
 
         return mapToResponseDTO(updated, null);
@@ -87,7 +87,7 @@ public class ProblemService {
         if (!problemRepository.existsById(pid)) {
             throw new EntityNotFoundException("Problem not found with id: " + pid);
         }
-        removeExistingTopics(pid);
+        removeExistingStages(pid);
         problemRepository.deleteById(pid);
     }
 
@@ -105,7 +105,7 @@ public class ProblemService {
      * If userId is provided, each problem includes userStatus (NOT_STARTED, ATTEMPTED, SOLVED).
      * If userId is null (guest), userStatus is null.
      */
-    public Page<ProblemResponseDTO> getProblems(Long userId, String topic, String tag,
+    public Page<ProblemResponseDTO> getProblems(Long userId, String stage, String tag,
                                                  String status, Pageable pageable) {
         Page<Problem> problems;
 
@@ -124,11 +124,11 @@ public class ProblemService {
                 default:
                     throw new IllegalArgumentException("Invalid status: " + status);
             }
-        } else if (topic != null && tag != null) {
+        } else if (stage != null && tag != null) {
             Tag tagEnum = parseTag(tag);
-            problems = problemRepository.findByTopicNameAndTag(topic, tagEnum, pageable);
-        } else if (topic != null) {
-            problems = problemRepository.findByTopicName(topic, pageable);
+            problems = problemRepository.findByStageNameAndTag(stage, tagEnum, pageable);
+        } else if (stage != null) {
+            problems = problemRepository.findByStageName(stage, pageable);
         } else if (tag != null) {
             Tag tagEnum = parseTag(tag);
             problems = problemRepository.findByTag(tagEnum, pageable);
@@ -161,42 +161,42 @@ public class ProblemService {
     }
 
     /**
-     * Associate topics with a problem.
+     * Associate stages with a problem.
      */
-    private void associateTopics(Problem problem, List<String> topicNames) {
-        for (String topicName : topicNames) {
-            Topic topic = findOrCreateTopic(topicName);
-            ProblemTopic pt = new ProblemTopic();
-            pt.setProblem(problem);
-            pt.setTopic(topic);
-            entityManager.persist(pt);
+    private void associateStages(Problem problem, List<String> stageNames) {
+        for (String stageName : stageNames) {
+            Stage stage = findOrCreateStage(stageName);
+            ProblemStage ps = new ProblemStage();
+            ps.setProblem(problem);
+            ps.setStage(stage);
+            entityManager.persist(ps);
         }
     }
 
     /**
-     * Find or create a topic by name.
+     * Find or create a stage by name.
      */
-    private Topic findOrCreateTopic(String topicName) {
-        List<Topic> topics = entityManager.createQuery(
-                "SELECT t FROM Topic t WHERE t.topicname = :name", Topic.class)
-                .setParameter("name", topicName)
+    private Stage findOrCreateStage(String stageName) {
+        List<Stage> stages = entityManager.createQuery(
+                "SELECT s FROM Stage s WHERE s.name = :name", Stage.class)
+                .setParameter("name", stageName)
                 .getResultList();
 
-        if (!topics.isEmpty()) {
-            return topics.get(0);
+        if (!stages.isEmpty()) {
+            return stages.get(0);
         }
 
-        Topic newTopic = new Topic();
-        newTopic.setTopicname(topicName);
-        entityManager.persist(newTopic);
-        return newTopic;
+        Stage newStage = new Stage();
+        newStage.setName(stageName);
+        entityManager.persist(newStage);
+        return newStage;
     }
 
     /**
-     * Remove existing topic associations for a problem.
+     * Remove existing stage associations for a problem.
      */
-    private void removeExistingTopics(Long pid) {
-        entityManager.createQuery("DELETE FROM ProblemTopic pt WHERE pt.problem.pid = :pid")
+    private void removeExistingStages(Long pid) {
+        entityManager.createQuery("DELETE FROM ProblemStage ps WHERE ps.problem.pid = :pid")
                 .setParameter("pid", pid)
                 .executeUpdate();
     }
@@ -206,9 +206,9 @@ public class ProblemService {
      * If userId is provided, resolves userStatus. Otherwise leaves it null (guest).
      */
     private ProblemResponseDTO mapToResponseDTO(Problem problem, Long userId) {
-        List<String> topicNames = entityManager.createQuery(
-                "SELECT t.topicname FROM ProblemTopic pt " +
-                "JOIN pt.topic t WHERE pt.problem.pid = :pid", String.class)
+        List<String> stageNames = entityManager.createQuery(
+                "SELECT s.name FROM ProblemStage ps " +
+                "JOIN ps.stage s WHERE ps.problem.pid = :pid", String.class)
                 .setParameter("pid", problem.getPid())
                 .getResultList();
 
@@ -229,7 +229,7 @@ public class ProblemService {
                 problem.getTag() != null ? problem.getTag().name() : null,
                 problem.isHasVisualizer(),
                 problem.getDescription(),
-                topicNames,
+                stageNames,
                 userStatus
         );
     }

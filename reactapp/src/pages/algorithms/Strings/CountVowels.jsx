@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { ArrowLeft, Hash, Play, RotateCcw, Code, Zap, Clock, Cpu, CheckCircle, XCircle, Volume2, SkipBack, SkipForward, Pause, ChevronLeft, ChevronRight } from "lucide-react";
+import { Hash, Play, RotateCcw, Code, Zap, Clock, Cpu, CheckCircle, XCircle, Volume2, SkipBack, SkipForward, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 
-const CountVowels = ({ navigate }) => {
+const CountVowels = () => {
   const [inputString, setInputString] = useState("Hello World");
   const [chars, setChars] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -218,25 +218,6 @@ const CountVowels = ({ navigate }) => {
 
   return (
     <div className="min-h-screen bg-theme-primary text-theme-primary">
-      {/* Top Navigation Bar */}
-      <div className="bg-theme-secondary/80 backdrop-blur-xl border-b border-theme-secondary sticky top-0 z-50 h-16 flex items-center shadow-xl">
-        <div className="max-w-7xl px-6 w-full mx-auto flex items-center justify-between">
-          <button
-            onClick={() => navigate("home")}
-            className="flex items-center gap-2 text-theme-secondary hover:text-theme-primary transition-colors group"
-          >
-            <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-            Back to Problems
-          </button>
-          <div className="flex items-center gap-2">
-            <Hash className="h-5 w-5 text-purple" />
-            <span className="text-sm font-semibold text-theme-secondary">
-              String Algorithms
-            </span>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto p-6">
         {/* Main Title Area */}
         <div className="text-center mb-8">

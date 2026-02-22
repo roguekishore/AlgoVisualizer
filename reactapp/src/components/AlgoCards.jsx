@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import { useNavigate } from "react-router-dom";
 import { ChevronRight, Clock, ArrowLeft } from "lucide-react";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
-import categories from "../data/categories";
-import { categoryConfig, getCategoryByKey } from "../routes/config";
+import topics from "../data/topics";
+import { topicConfig, getTopicByKey } from "../routes/config";
 import { useTheme } from "./theme-provider";
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -155,7 +155,7 @@ const Eyebrow = ({ text, accent }) => (
 );
 
 /* ═══════════════════════════════════════════════════════════════════════
-   CATEGORY TAB ROW
+   TOPIC TAB ROW
    ═══════════════════════════════════════════════════════════════════════ */
 
 const Tabs = ({ items, activeKey, onSelect }) => {
@@ -341,22 +341,22 @@ const AlgoCard = ({ algo, accent, index, basePath, col, row }) => {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════
-   CATEGORY CARD
+   TOPIC CARD
    ═══════════════════════════════════════════════════════════════════════ */
 
-const CatCard = ({ category, index }) => {
+const TopicCard = ({ topic, index }) => {
   const nav = useNavigate();
   const ref = useRef(null);
   const { tiltStyle, onMouseMove, onMouseLeave } = useTilt(ref);
   const [hov, setHov] = useState(false);
 
-  const config = getCategoryByKey(category.page);
-  const routePath = config?.path || `/${category.page.toLowerCase()}`;
-  const accent = ACCENT_MAP[category.page] || "var(--foreground)";
-  const Icon = category.icon;
+  const config = getTopicByKey(topic.page);
+  const routePath = config?.path || `/${topic.page.toLowerCase()}`;
+  const accent = ACCENT_MAP[topic.page] || "var(--foreground)";
+  const Icon = topic.icon;
   const { col, row } = bento(index);
 
-  const count = PROBLEM_CATALOG.filter((p) => p.category === category.page).length;
+  const count = PROBLEM_CATALOG.filter((p) => p.topic === topic.page).length;
 
   return (
     <div ref={ref} className="ac-card"
@@ -419,13 +419,13 @@ const CatCard = ({ category, index }) => {
           fontFamily: "var(--font-heading)", fontWeight: 700,
           fontSize: col === 2 ? 24 : 19, lineHeight: 1.2,
           color: "var(--foreground)", margin: "0 0 6px",
-        }}>{category.name}</h3>
+        }}>{topic.name}</h3>
 
         <p style={{
           fontFamily: "var(--font-mono)", fontSize: 10,
           color: accent, fontWeight: 600, letterSpacing: ".05em",
           margin: "0 0 8px", textTransform: "uppercase", opacity: .7,
-        }}>{category.subtitle}</p>
+        }}>{topic.subtitle}</p>
 
         <p style={{
           fontFamily: "var(--font-body)", fontSize: 11.5,
@@ -433,7 +433,7 @@ const CatCard = ({ category, index }) => {
           margin: 0,
           display: "-webkit-box", WebkitLineClamp: row === 2 ? 4 : 2,
           WebkitBoxOrient: "vertical", overflow: "hidden",
-        }}>{category.description}</p>
+        }}>{topic.description}</p>
       </div>
 
       {/* Bottom */}
@@ -472,26 +472,26 @@ const AlgoCards = () => {
 
   useEffect(() => { injectStyles(); }, []);
 
-  const [activeCategory, setActiveCategory] = useState(categories[0]?.page || "Sorting");
+  const [activeTopic, setactiveTopic] = useState(topics[0]?.page || "Sorting");
   const [fadeKey, setFadeKey] = useState(0);
 
   const tabItems = useMemo(() =>
-    categories.map((c) => ({
+    topics.map((c) => ({
       key: c.page, label: c.name,
-      count: PROBLEM_CATALOG.filter((p) => p.category === c.page).length,
+      count: PROBLEM_CATALOG.filter((p) => p.topic === c.page).length,
     })), []
   );
 
   const activeAlgos = useMemo(
-    () => PROBLEM_CATALOG.filter((p) => p.category === activeCategory),
-    [activeCategory]
+    () => PROBLEM_CATALOG.filter((p) => p.topic === activeTopic),
+    [activeTopic]
   );
 
-  const activeCfg = useMemo(() => getCategoryByKey(activeCategory), [activeCategory]);
-  const accent = ACCENT_MAP[activeCategory] || "var(--foreground)";
+  const activeCfg = useMemo(() => getTopicByKey(activeTopic), [activeTopic]);
+  const accent = ACCENT_MAP[activeTopic] || "var(--foreground)";
 
   const handleTab = (key) => {
-    setActiveCategory(key);
+    setactiveTopic(key);
     setFadeKey((k) => k + 1);
   };
 
@@ -544,7 +544,7 @@ const AlgoCards = () => {
             color: "var(--muted-foreground)", maxWidth: 460,
             lineHeight: 1.7, margin: 0,
           }}>
-            Pick a category and dive into interactive algorithm visualizations.
+            Pick a topic and dive into interactive algorithm visualizations.
           </p>
         </div>
 
@@ -562,11 +562,11 @@ const AlgoCards = () => {
             <span style={{
               fontFamily: "var(--font-mono)", fontSize: 10,
               color: "var(--muted-foreground)", fontWeight: 500,
-            }}>{categories.length} topics</span>
+            }}>{topics.length} topics</span>
           </div>
           <div style={gridCss}>
-            {categories.map((cat, i) => (
-              <CatCard key={cat.page} category={cat} index={i} />
+            {topics.map((cat, i) => (
+              <TopicCard key={cat.page} topic={cat} index={i} />
             ))}
           </div>
         </section>
@@ -581,7 +581,7 @@ const AlgoCards = () => {
         {/* ─── Algorithms section ─── */}
         <section>
           <div style={{ marginBottom: 24 }}>
-            <Eyebrow text={activeCfg?.eyebrow || activeCategory} accent={accent} />
+            <Eyebrow text={activeCfg?.eyebrow || activeTopic} accent={accent} />
             <h2 style={{
               fontFamily: "var(--font-heading)", fontWeight: 700,
               fontSize: "clamp(24px, 3vw, 36px)", lineHeight: 1.15,
@@ -591,10 +591,10 @@ const AlgoCards = () => {
             <p style={{
               fontFamily: "var(--font-body)", fontSize: 11.5,
               color: "var(--muted-foreground)", maxWidth: 400, margin: 0,
-            }}>Switch categories to browse their algorithms.</p>
+            }}>Switch topics to browse their algorithms.</p>
           </div>
 
-          <Tabs items={tabItems} activeKey={activeCategory} onSelect={handleTab} />
+          <Tabs items={tabItems} activeKey={activeTopic} onSelect={handleTab} />
 
           <div key={fadeKey} style={{
             ...gridCss,
@@ -606,14 +606,14 @@ const AlgoCards = () => {
                 color: "var(--muted-foreground)",
                 fontFamily: "var(--font-body)", fontSize: 12.5,
               }}>
-                No algorithms cataloged yet for this category.
+                No algorithms cataloged yet for this topic.
               </div>
             ) : (
               activeAlgos.map((algo, i) => {
                 const { col, row } = bento(i);
                 return (
                   <AlgoCard key={algo.subpage} algo={algo} accent={accent} index={i}
-                    basePath={activeCfg?.path || `/${activeCategory.toLowerCase()}`}
+                    basePath={activeCfg?.path || `/${activeTopic.toLowerCase()}`}
                     col={col} row={row} />
                 );
               })

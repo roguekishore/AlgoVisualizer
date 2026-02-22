@@ -30,12 +30,12 @@ public class ProblemController {
     @GetMapping
     public ResponseEntity<Page<ProblemResponseDTO>> getProblems(
             @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) String topic,
+            @RequestParam(required = false) String stage,
             @RequestParam(required = false) String tag,
             @RequestParam(required = false) String status,
             Pageable pageable) {
         try {
-            Page<ProblemResponseDTO> problems = problemService.getProblems(userId, topic, tag, status, pageable);
+            Page<ProblemResponseDTO> problems = problemService.getProblems(userId, stage, tag, status, pageable);
             return ResponseEntity.ok(problems);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();

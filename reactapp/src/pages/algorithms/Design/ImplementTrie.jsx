@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { ArrowLeft, Play, RotateCw, Pause, SkipBack, SkipForward, Search } from "lucide-react";
+import { Play, RotateCw, Pause, SkipBack, SkipForward, Search } from "lucide-react";
 import useModeHistorySwitch from "../../../hooks/useModeHistorySwitch";
 
 const ImplementTrie = () => {
@@ -150,13 +150,6 @@ const ImplementTrie = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-gray-900 text-theme-primary p-8">
       <header className="mb-8">
-        <button
-          onClick={() => window.history.back()}
-          className="flex items-center gap-2 text-success hover:text-success100 transition-colors mb-4"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          Back to Design
-        </button>
         <div className="flex items-center gap-4 mb-4">
           <div className="p-3 bg-gradient-to-br from-success500 to-teal600 rounded-xl shadow-lg">
             <Search className="h-8 w-8 text-theme-primary" />

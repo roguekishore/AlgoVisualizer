@@ -10,7 +10,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, Play, Pause, RotateCcw, Cpu, Gauge, GitMerge, Info, StepForward } from "lucide-react";
+import { Play, Pause, RotateCcw, Cpu, Gauge, GitMerge, Info, StepForward } from "lucide-react";
 
 const DEFAULT_SPEED_MS = 600;
 const MAX_NODES = 10;
@@ -48,7 +48,7 @@ function bfsAugmentingPath(n, capacity, flow, s, t) {
   return null;
 }
 
-const NetworkFlow = ({ navigate }) => {
+const NetworkFlow = () => {
   const [nodeCount, setNodeCount] = useState(4);
   const [source, setSource] = useState(0);
   const [sink, setSink] = useState(3);
@@ -239,21 +239,6 @@ const NetworkFlow = ({ navigate }) => {
 
   return (
     <div className="bg-theme-primary text-theme-primary min-h-screen">
-      <div className="bg-theme-secondary/80 backdrop-blur-xl border-b border-theme-secondary sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <button
-            onClick={() => navigate("home")}
-            className="flex items-center gap-2 text-theme-secondary bg-theme-tertiary/80 hover:bg-theme-elevated px-4 py-2 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Graphs
-          </button>
-          <div className="flex items-center gap-2">
-            <GitMerge className="h-6 w-6 text-accent-primary" />
-            <h1 className="text-xl font-bold">Max Flow (Edmonds–Karp)</h1>
-          </div>
-        </div>
-      </div>
       {/* Full-width Algorithm Info below editor */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 mt-10 pb-10">
         <div className="bg-theme-secondary/50 rounded-xl p-5 border border-theme-secondary">

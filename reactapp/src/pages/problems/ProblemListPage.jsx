@@ -4,7 +4,7 @@ import {
   ArrowUp, ArrowDown, ArrowUpDown, Search, ChevronLeft, ChevronRight,
   ExternalLink, X, Loader2, Eye, Filter, BookOpen, RotateCcw
 } from "lucide-react";
-import { fetchProblems, fetchProblemById, fetchTopics } from "../../services/problemApi";
+import { fetchProblems, fetchProblemById, fetchStages } from "../../services/problemApi";
 import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
@@ -59,7 +59,7 @@ export default function ProblemListPage() {
   const [totalElements, setTotalElements]   = useState(0);
 
   const [sort, setSort]                     = useState("pid,asc");
-  const [topicFilter, setTopicFilter]       = useState("");
+  const [stageFilter, setStageFilter]       = useState("");
   const [tagFilter, setTagFilter]           = useState("");
   const [searchKeyword, setSearchKeyword]   = useState("");
   const [debounced, setDebounced]           = useState("");
@@ -67,7 +67,7 @@ export default function ProblemListPage() {
   const [selected, setSelected]             = useState(null);
   const [detailLoading, setDetailLoading]   = useState(false);
   const [dialogOpen, setDialogOpen]         = useState(false);
-  const [topics, setTopics]                 = useState([]);
+  const [stages, setStages]                 = useState([]);
 
   /* debounce search ────────────────────────────────────────────────── */
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function ProblemListPage() {
     try {
       const d = await fetchProblems({
         page, size, sort,
-        topic: topicFilter || undefined,
+        stage: stageFilter || undefined,
         tag: tagFilter || undefined,
         keyword: debounced || undefined,
       });
@@ -90,12 +90,12 @@ export default function ProblemListPage() {
       setTotalElements(d.totalElements || 0);
     } catch (e) { setError(e.message); }
     finally { setLoading(false); }
-  }, [page, size, sort, topicFilter, tagFilter, debounced]);
+  }, [page, size, sort, stageFilter, tagFilter, debounced]);
 
   useEffect(() => { load(); }, [load]);
 
-  /* fetch topics once ──────────────────────────────────────────────── */
-  useEffect(() => { fetchTopics().then(setTopics).catch(() => {}); }, []);
+  /* fetch stages once ──────────────────────────────────────────────── */
+  useEffect(() => { fetchStages().then(setStages).catch(() => {}); }, []);
 
   /* open detail ────────────────────────────────────────────────────── */
   const openDetail = async (pid) => {
@@ -107,11 +107,11 @@ export default function ProblemListPage() {
 
   const clearAll = () => {
     setSearchKeyword(""); setDebounced("");
-    setTopicFilter(""); setTagFilter("");
+    setStageFilter(""); setTagFilter("");
     setSort("pid,asc"); setPage(0);
   };
 
-  const hasFilters = topicFilter || tagFilter || debounced;
+  const hasFilters = stageFilter || tagFilter || debounced;
   const from = page * size + 1;
   const to   = Math.min((page + 1) * size, totalElements);
 
@@ -170,13 +170,13 @@ export default function ProblemListPage() {
                 <span className="hidden sm:inline">Filters:</span>
               </div>
 
-              <Select value={topicFilter} onValueChange={(v) => { setTopicFilter(v === "__all__" ? "" : v); setPage(0); }}>
+              <Select value={stageFilter} onValueChange={(v) => { setStageFilter(v === "__all__" ? "" : v); setPage(0); }}>
                 <SelectTrigger className="w-44 h-9 text-xs rounded-lg">
-                  <SelectValue placeholder="All topics" _value={topicFilter || "All topics"} />
+                  <SelectValue placeholder="All stages" _value={stageFilter || "All stages"} />
                 </SelectTrigger>
                 <SelectContent className="max-h-72 overflow-y-auto">
-                  <SelectItem value="__all__">All topics</SelectItem>
-                  {topics.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
+                  <SelectItem value="__all__">All stages</SelectItem>
+                  {stages.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                 </SelectContent>
               </Select>
 
@@ -239,7 +239,7 @@ export default function ProblemListPage() {
                   <SortHeader label="Level" field="tag" current={sort} onSort={(s) => { setSort(s); setPage(0); }} />
                 </TableHead>
                 <TableHead className="hidden lg:table-cell py-3">
-                  <span className="text-[11px] uppercase tracking-widest text-muted-foreground">Topic</span>
+                  <span className="text-[11px] uppercase tracking-widest text-muted-foreground">Stage</span>
                 </TableHead>
                 <TableHead className="w-12 text-center hidden sm:table-cell py-3">
                   <span className="text-[11px] uppercase tracking-widest text-muted-foreground">LC</span>
@@ -295,7 +295,7 @@ export default function ProblemListPage() {
 
                   <TableCell className="hidden lg:table-cell">
                     <span className="text-[12px] text-muted-foreground truncate block max-w-[200px]">
-                      {p.topics?.[0] || ""}
+                      {p.stages?.[0] || ""}
                     </span>
                   </TableCell>
 
@@ -390,10 +390,10 @@ export default function ProblemListPage() {
                   </span>
                 </DetailRow>
 
-                {selected.topics?.length > 0 && (
-                  <DetailRow label="Topics">
+                {selected.stages?.length > 0 && (
+                  <DetailRow label="Stages">
                     <div className="flex flex-wrap gap-1.5">
-                      {selected.topics.map(t => (
+                      {selected.stages.map(t => (
                         <Badge key={t} variant="secondary" className="text-[11px] text-secondary-foreground">{t}</Badge>
                       ))}
                     </div>

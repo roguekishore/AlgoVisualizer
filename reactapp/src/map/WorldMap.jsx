@@ -572,13 +572,22 @@ const WorldMap = () => {
             <div className="flex flex-col gap-2">
               {(selectedProblem.state === 'available' || selectedProblem.state === 'current') && (
                 <>
-                  <button
-                    onClick={goToProblem}
-                    className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
-                    style={{ background: 'linear-gradient(to right, #5542FF, #B28EF2)' }}
-                  >
-                    <Play size={15} /> Start Problem
-                  </button>
+                  {selectedProblem.hasVisualizer ? (
+                    <button
+                      onClick={goToProblem}
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
+                      style={{ background: 'linear-gradient(to right, #5542FF, #B28EF2)' }}
+                    >
+                      <Play size={15} /> Start Problem
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-zinc-400 text-sm font-semibold bg-zinc-100 dark:bg-zinc-800 cursor-not-allowed"
+                    >
+                      <Play size={15} /> Coming Soon
+                    </button>
+                  )}
                   <button
                     onClick={markComplete}
                     className="flex items-center justify-center gap-2 h-10 rounded-lg border border-[#5542FF]/30 text-[#5542FF] dark:text-[#B28EF2] text-sm font-medium hover:bg-[#5542FF]/8 transition-colors"
@@ -589,13 +598,22 @@ const WorldMap = () => {
               )}
               {selectedProblem.state === 'completed' && (
                 <>
-                  <button
-                    onClick={goToProblem}
-                    className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
-                    style={{ background: 'linear-gradient(to right, #5542FF, #B28EF2)' }}
-                  >
-                    <Play size={15} /> Review Problem
-                  </button>
+                  {selectedProblem.hasVisualizer ? (
+                    <button
+                      onClick={goToProblem}
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
+                      style={{ background: 'linear-gradient(to right, #5542FF, #B28EF2)' }}
+                    >
+                      <Play size={15} /> Review Problem
+                    </button>
+                  ) : (
+                    <button
+                      disabled
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-zinc-400 text-sm font-semibold bg-zinc-100 dark:bg-zinc-800 cursor-not-allowed"
+                    >
+                      <Play size={15} /> Coming Soon
+                    </button>
+                  )}
                   <div className="flex items-center justify-center gap-1.5 py-2 text-[#5542FF] dark:text-[#EDFF66] text-xs">
                     <Trophy size={14} /> Challenge conquered!
                   </div>

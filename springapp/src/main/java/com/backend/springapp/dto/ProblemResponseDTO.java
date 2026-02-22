@@ -21,6 +21,6 @@ public class ProblemResponseDTO {
     private String tag; // difficulty enum as string
     private boolean hasVisualizer;
     private String description;
-    private List<String> topics; // flattened topic names
+    private List<String> stages; // flattened stage names
     private String userStatus; // null=guest, NOT_STARTED, ATTEMPTED, SOLVED
 }

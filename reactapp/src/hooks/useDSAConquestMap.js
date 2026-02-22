@@ -160,13 +160,13 @@ export function useLazyVisualizer(problemId) {
  * @returns {Object} Search results
  */
 export function useProblemSearch(query, options = {}) {
-  const { category, difficulty, hasVisualizerOnly } = options;
+  const { topic, difficulty, hasVisualizerOnly } = options;
 
   const results = useMemo(() => {
     let filtered = query ? searchProblems(query) : [];
 
-    if (category) {
-      filtered = filtered.filter((p) => p.category === category);
+    if (topic) {
+      filtered = filtered.filter((p) => p.topic === topic);
     }
 
     if (difficulty) {

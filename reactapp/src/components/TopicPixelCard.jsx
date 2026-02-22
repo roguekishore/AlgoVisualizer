@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowRight, ChevronRight } from "lucide-react";
 import PixelCard from "./PixelCard";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
-import { getCategoryByKey } from "../routes/config";
+import { getTopicByKey } from "../routes/config";
 import { cn } from "../lib/utils";
 
 /**
@@ -38,32 +38,32 @@ function getPixelColors(hex) {
  * TopicPixelCard – A category card built on react-bits PixelCard.
  * Shows the topic name, description, and a list of problems inside.
  *
- * @param {{ category: object }} props
+ * @param {{ topic: object }} props
  */
-export default function TopicPixelCard({ category }) {
+export default function TopicPixelCard({ topic }) {
   const navigate = useNavigate();
-  const Icon = category.icon;
+  const Icon = topic.icon;
 
-  const config = getCategoryByKey(category.page);
-  const routePath = config?.path || `/${category.page.toLowerCase()}`;
+  const config = getTopicByKey(topic.page);
+  const routePath = config?.path || `/${topic.page.toLowerCase()}`;
 
   // Get problems for this category (max 5 shown)
-  const categoryProblems = PROBLEM_CATALOG.filter(
-    (p) => p.category === category.page
+  const topicProblems = PROBLEM_CATALOG.filter(
+    (p) => p.topic === topic.page
   ).slice(0, 5);
 
   const totalCount = PROBLEM_CATALOG.filter(
-    (p) => p.category === category.page
+    (p) => p.topic === topic.page
   ).length;
 
-  const remaining = totalCount - categoryProblems.length;
+  const remaining = totalCount - topicProblems.length;
 
   return (
     <PixelCard
       variant="default"
       gap={7}
       speed={30}
-      colors={getPixelColors(category.spotlightColor)}
+      colors={getPixelColors(topic.spotlightColor)}
       className="!w-full !aspect-auto group cursor-pointer"
     >
       {/* Content flows normally to define card height; canvas is behind as absolute bg */}
@@ -84,21 +84,21 @@ export default function TopicPixelCard({ category }) {
           <div
             className="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl transition-transform duration-300 group-hover:scale-110"
             style={{
-              background: `linear-gradient(135deg, ${category.spotlightColor}30, ${category.spotlightColor}10)`,
-              border: `1px solid ${category.spotlightColor}40`,
+              background: `linear-gradient(135deg, ${topic.spotlightColor}30, ${topic.spotlightColor}10)`,
+              border: `1px solid ${topic.spotlightColor}40`,
             }}
           >
             <Icon
               className="w-5 h-5"
-              style={{ color: category.spotlightColor }}
+              style={{ color: topic.spotlightColor }}
             />
           </div>
           <div className="min-w-0 flex-1">
             <h3 className="text-[15px] font-semibold text-zinc-800 dark:text-zinc-100 leading-tight tracking-tight truncate group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
-              {category.name}
+              {topic.name}
             </h3>
             <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5 line-clamp-2 leading-relaxed group-hover:text-zinc-700 dark:group-hover:text-zinc-300 transition-colors">
-              {category.description}
+              {topic.description}
             </p>
           </div>
         </div>
@@ -108,9 +108,9 @@ export default function TopicPixelCard({ category }) {
           <span
             className="text-[10px] font-medium px-2 py-0.5 rounded-full"
             style={{
-              background: `${category.spotlightColor}15`,
-              color: category.spotlightColor,
-              border: `1px solid ${category.spotlightColor}30`,
+              background: `${topic.spotlightColor}15`,
+              color: topic.spotlightColor,
+              border: `1px solid ${topic.spotlightColor}30`,
             }}
           >
             {totalCount} problem{totalCount !== 1 ? "s" : ""}
@@ -121,13 +121,13 @@ export default function TopicPixelCard({ category }) {
         <div
           className="h-px w-full mb-3 opacity-20"
           style={{
-            background: `linear-gradient(to right, transparent, ${category.spotlightColor}, transparent)`,
+            background: `linear-gradient(to right, transparent, ${topic.spotlightColor}, transparent)`,
           }}
         />
 
         {/* ── Problem list ── */}
         <div className="flex-1 space-y-1.5 min-h-0 overflow-hidden rounded-xl bg-white/40 dark:bg-zinc-900/60 backdrop-blur-md p-2 border border-white/70 dark:border-white/[0.06] shadow-inner shadow-white/50 dark:shadow-none">
-          {categoryProblems.map((problem, idx) => {
+          {topicProblems.map((problem, idx) => {
             const styles = difficultyStyles[problem.difficulty] || difficultyStyles.Medium;
             return (
               <div
@@ -195,11 +195,11 @@ export default function TopicPixelCard({ category }) {
             )}
           >
             <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300 group-hover/cta:text-zinc-900 dark:group-hover/cta:text-white transition-colors">
-              Explore {category.name}
+              Explore {topic.name}
             </span>
             <ArrowRight
               className="w-3.5 h-3.5 transition-all duration-300 group-hover/cta:translate-x-0.5"
-              style={{ color: category.spotlightColor }}
+              style={{ color: topic.spotlightColor }}
             />
           </div>
         </div>

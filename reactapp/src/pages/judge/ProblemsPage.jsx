@@ -42,7 +42,7 @@ export default function ProblemsPage() {
     const matchesSearch =
       !search ||
       p.title.toLowerCase().includes(search.toLowerCase()) ||
-      p.category?.toLowerCase().includes(search.toLowerCase()) ||
+      p.topic?.toLowerCase().includes(search.toLowerCase()) ||
       p.tags?.some((t) => t.toLowerCase().includes(search.toLowerCase()));
     const matchesDifficulty =
       difficultyFilter === "All" || p.difficulty === difficultyFilter;

@@ -29,5 +29,5 @@ public class ProblemRequestDTO {
 
     private String description;
 
-    private List<String> topics; // topic names
+    private List<String> stages; // stage names
 }

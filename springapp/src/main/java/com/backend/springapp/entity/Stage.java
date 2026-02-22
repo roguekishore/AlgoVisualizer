@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "topics")
-public class Topic {
+@Table(name = "stages")
+public class Stage {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long tid;
+    private Long sid;
     
     @Column(nullable = false, unique = true)
-    private String topicname;
+    private String name;
 }

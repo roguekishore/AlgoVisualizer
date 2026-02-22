@@ -3,7 +3,7 @@
  * This file is the single source of truth for all algorithm and problem data.
  */
 
-// --- ✅ Combined Icon Imports for ALL Categories ---
+// --- Combined Icon Imports for ALL Topics ---
 import {
   AlignLeft,
   ArrowLeftRight,
@@ -70,7 +70,7 @@ export const problems = [
   // =================================================================
   {
     label: "Container With Most Water",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "ContainerWithMostWater",
     keywords: ["array", "two pointers", "container", "water", "11"],
     number: "11",
@@ -92,7 +92,7 @@ export const problems = [
   },
   {
     label: "3Sum",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "ThreeSum",
     keywords: ["array", "two pointers", "three sum", "3sum", "triplet", "15"],
     number: "15",
@@ -114,8 +114,8 @@ export const problems = [
   },
   {
     label: "4Sum",
-    category: "Arrays",
-    subpage: "4Sum",
+    topic: "Arrays",
+    subpage: "4-Sum",
     keywords: [
       "array",
       "four sum",
@@ -144,7 +144,7 @@ export const problems = [
   },
   {
     label: "Trapping Rain Water",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "TrappingRainWater",
     keywords: ["array", "two pointers", "rain", "water", "42"],
     number: "42",
@@ -166,7 +166,7 @@ export const problems = [
   },
   {
     label: "Maximum Subarray",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "MaximumSubarray",
     keywords: [
       "array",
@@ -195,7 +195,7 @@ export const problems = [
   },
   {
     label: "Merge Intervals",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "MergeIntervals",
     keywords: ["array", "intervals", "merge", "56", "overlapping", "sorting"],
     number: "56",
@@ -217,8 +217,8 @@ export const problems = [
   },
   {
     label: "Best Time to Buy and Sell Stock",
-    category: "Arrays",
-    subpage: "BestTimeToBuyAndSellStock",
+    topic: "GreedyAlgorithms",
+    subpage: "BestTimeStock",
     keywords: ["array", "stock", "profit", "buy", "sell", "121"],
     number: "121",
     icon: TrendingUp,
@@ -239,7 +239,7 @@ export const problems = [
   },
   {
     label: "Maximum Gap",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "MaximumGap",
     keywords: ["array", "maximum", "gap", "sorting", "bucket sort", "164"],
     number: "164",
@@ -261,7 +261,7 @@ export const problems = [
   },
   {
     label: "Rotate Array",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "RotateArray",
     keywords: ["array", "rotate", "reverse", "in-place", "189"],
     number: "189",
@@ -283,7 +283,7 @@ export const problems = [
   },
   {
     label: "Product of Array Except Self",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "ProductOfArrayExceptSelf",
     keywords: [
       "array",
@@ -313,7 +313,7 @@ export const problems = [
   },
   {
     label: "Move Zeros",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "MoveZeros",
     keywords: ["array", "move", "zeros", "two pointers", "in-place", "283"],
     number: "283",
@@ -335,7 +335,7 @@ export const problems = [
   },
   {
     label: "Split Array Largest Sum",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "SplitArrayLargestSum",
     keywords: [
       "array",
@@ -364,7 +364,7 @@ export const problems = [
   },
   {
     label: "Squares of a Sorted Array",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "SquaresOfSortedArray",
     keywords: ["array", "squares", "sorted", "two pointers", "977"],
     number: "977",
@@ -386,7 +386,7 @@ export const problems = [
   },
   {
     label: "Max Consecutive Ones III",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "MaxConsecutiveOnesIII",
     keywords: ["array", "sliding window", "ones", "1004"],
     number: "1004",
@@ -408,7 +408,7 @@ export const problems = [
   },
   {
     label: "Sum of Subarray Ranges",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "SubarrayRanges",
     keywords: ["array", "ranges", "subarray", "stack", "monotonic", "2104"],
     number: "2104",
@@ -430,7 +430,7 @@ export const problems = [
   },
   {
     label: "Find Maximum Element",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "FindMaxElement",
     keywords: ["array", "max", "find", "largest", "basic"],
     number: "1",
@@ -452,7 +452,7 @@ export const problems = [
   },
   {
     label: "Find Minimum Element",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "FindMinElement",
     keywords: ["array", "min", "find", "smallest", "basic"],
     number: "2",
@@ -474,7 +474,7 @@ export const problems = [
   },
   {
     label: "Array Sum",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "ArraySum",
     keywords: ["array", "sum", "total", "basic"],
     number: "3",
@@ -496,7 +496,7 @@ export const problems = [
   },
   {
     label: "Reverse Array",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "ReverseArray",
     keywords: ["array", "reverse", "two pointers", "in-place", "basic"],
     number: "4",
@@ -518,7 +518,7 @@ export const problems = [
   },
   {
     label: "Two Sum",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "TwoSum",
     keywords: ["array", "two sum", "target", "hashmap", "1"],
     number: "1",
@@ -540,7 +540,7 @@ export const problems = [
   },
   {
     label: "Count Zeros in Array",
-    category: "Arrays",
+    topic: "Arrays",
     subpage: "CountZeros",
     keywords: ["array", "count", "zeros", "basic"],
     number: "3",
@@ -566,7 +566,7 @@ export const problems = [
   // =================================================================
   {
     label: "Sliding Window Maximum",
-    category: "SlidingWindows",
+    topic: "SlidingWindows",
     subpage: "SlidingWindowMaximum",
     keywords: ["sliding window", "maximum", "deque", "monotonic", "239"],
     number: "239",
@@ -587,7 +587,7 @@ export const problems = [
   },
   {
     label: "Max Consecutive Ones III", // Duplicate but kept for category context
-    category: "SlidingWindows",
+    topic: "SlidingWindows",
     subpage: "MaxConsecutiveOnesIII",
     keywords: [
       "sliding window",
@@ -617,8 +617,8 @@ export const problems = [
   },
   {
     label: "Fruit Into Baskets",
-    category: "SlidingWindows",
-    subpage: "FruitIntoBaskets",
+    topic: "SlidingWindows",
+    subpage: "FruitsIntoBaskets",
     keywords: ["sliding window", "fruit", "baskets", "distinct", "904"],
     number: "904",
     icon: ShoppingBasket,
@@ -639,7 +639,7 @@ export const problems = [
   },
   {
     label: "Minimum Window Substring",
-    category: "SlidingWindows",
+    topic: "SlidingWindows",
     subpage: "MinimumWindow",
     keywords: [
       "sliding window",
@@ -670,7 +670,7 @@ export const problems = [
   },
   {
     label: "Longest Substring Without Repeating Characters",
-    category: "SlidingWindows",
+    topic: "SlidingWindows",
     subpage: "LongestSubstring",
     keywords: [
       "sliding window",
@@ -706,7 +706,7 @@ export const problems = [
   // =================================================================
   {
     label: "Basic Binary Search",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "BinarySearchBasic",
     keywords: ["binary search", "basic", "search", "sorted"],
     number: "N/A",
@@ -729,7 +729,7 @@ export const problems = [
   },
   {
     label: "Search a 2D Matrix",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "Search2DMatrix",
     keywords: ["binary search", "matrix", "2d", "74"],
     number: "74",
@@ -752,7 +752,7 @@ export const problems = [
   },
   {
     label: "Find First and Last Position of Element in Sorted Array",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "FindFirstAndLastPosition",
     keywords: ["binary search", "first", "last", "position", "34"],
     number: "34",
@@ -775,7 +775,7 @@ export const problems = [
   },
   {
     label: "Search in Rotated Sorted Array",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "SearchInRotatedSortedArray",
     keywords: ["binary search", "rotated", "sorted array", "33"],
     number: "33",
@@ -797,7 +797,7 @@ export const problems = [
   },
   {
     label: "Find Peak Element",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "FindPeakElement",
     keywords: ["binary search", "peak", "element", "162"],
     number: "162",
@@ -820,7 +820,7 @@ export const problems = [
   },
   {
     label: "Find Minimum in Rotated Sorted Array",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "FindMinimumInRotatedSortedArray",
     keywords: ["binary search", "minimum", "rotated", "sorted array", "153"],
     number: "153",
@@ -842,7 +842,7 @@ export const problems = [
   },
   {
     label: "Peak Index in a Mountain Array",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "PeakIndexInMountainArray",
     keywords: ["binary search", "mountain", "peak", "852"],
     number: "852",
@@ -864,7 +864,7 @@ export const problems = [
   },
   {
     label: "Min Speed to Arrive on Time",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "MinSpeedToArriveOnTime",
     keywords: ["binary search", "speed", "time", "optimization", "1870"],
     number: "1870",
@@ -886,7 +886,7 @@ export const problems = [
   },
   {
     label: "Median of Two Sorted Arrays",
-    category: "BinarySearch",
+    topic: "BinarySearch",
     subpage: "MedianOfTwoSortedArrays",
     keywords: ["binary search", "median", "sorted array", "hard", "4"],
     number: "4",
@@ -912,7 +912,7 @@ export const problems = [
   // =================================================================
   {
     label: "Linked List Cycle",
-    category: "LinkedList",
+    topic: "LinkedList",
     subpage: "LinkedListCycle",
     keywords: [
       "linked list",
@@ -941,7 +941,7 @@ export const problems = [
   },
   {
     label: "Reverse Linked List",
-    category: "LinkedList",
+    topic: "LinkedList",
     subpage: "ReverseLinkedList",
     keywords: ["linked list", "reverse", "iterative", "recursive", "206"],
     number: "206",
@@ -962,7 +962,7 @@ export const problems = [
   },
   {
     label: "Merge Two Sorted Lists",
-    category: "LinkedList",
+    topic: "LinkedList",
     subpage: "MergeTwoSortedLists",
     keywords: [
       "linked list",
@@ -991,7 +991,7 @@ export const problems = [
   },
   {
     label: "Sort List",
-    category: "LinkedList",
+    topic: "LinkedList",
     subpage: "SortList",
     keywords: [
       "linked list",
@@ -1018,7 +1018,7 @@ export const problems = [
   },
   {
     label: "Swap Pairs",
-    category: "LinkedList",
+    topic: "LinkedList",
     subpage: "SwapPairs",
     keywords: ["linked list", "swap pairs", "recursion", "iteration", "24"],
     number: "24",
@@ -1043,8 +1043,8 @@ export const problems = [
   // =================================================================
   {
     label: "Stack Operations",
-    category: "Stack",
-    subpage: "StackOperations",
+    topic: "Stack",
+    subpage: "StackOperation",
     keywords: ["stack", "operations", "push", "pop", "peek", "LIFO", "basic"],
     number: "Basic",
     icon: Layers,
@@ -1064,7 +1064,7 @@ export const problems = [
   },
   {
     label: "Permutation",
-    category: "Stack",
+    topic: "Stack",
     subpage: "Permutation",
     keywords: ["stack", "permutation", "iterative", "backtracking", "46"],
     number: "46",
@@ -1086,7 +1086,7 @@ export const problems = [
   },
   {
     label: "Largest Rectangle in Histogram",
-    category: "Stack",
+    topic: "Stack",
     subpage: "LargestRectangleHistogram",
     keywords: ["stack", "largest", "rectangle", "histogram", "monotonic", "84"],
     number: "84",
@@ -1107,7 +1107,7 @@ export const problems = [
   },
   {
     label: "Remove K Digits",
-    category: "Stack",
+    topic: "Stack",
     subpage: "RemoveKDigits",
     keywords: ["stack", "remove", "k digits", "smallest", "greedy", "402"],
     number: "402",
@@ -1129,7 +1129,7 @@ export const problems = [
   },
   {
     label: "Sum of Subarray Ranges", // Also in Arrays
-    category: "Stack",
+    topic: "Stack",
     subpage: "SubarrayRanges",
     keywords: [
       "stack",
@@ -1158,7 +1158,7 @@ export const problems = [
   },
   {
     label: "Next Greater Element",
-    category: "Stack",
+    topic: "Stack",
     subpage: "NextGreaterElement",
     keywords: [
       "stack",
@@ -1192,7 +1192,7 @@ export const problems = [
   // =================================================================
   {
     label: "Basic Queue (FIFO)",
-    category: "Queue",
+    topic: "Queue",
     subpage: "BasicQueue",
     keywords: [
       "queue",
@@ -1221,7 +1221,7 @@ export const problems = [
   },
   {
     label: "Circular Queue",
-    category: "Queue",
+    topic: "Queue",
     subpage: "CircularQueue",
     keywords: ["queue", "circular", "ring buffer", "array optimization"],
     number: "N/A",
@@ -1242,7 +1242,7 @@ export const problems = [
   },
   {
     label: "Implement Queue using Stacks",
-    category: "Queue",
+    topic: "Queue",
     subpage: "QueueUsingStacks",
     keywords: ["queue", "implement", "stacks", "design", "amortized", "232"],
     number: "232",
@@ -1267,7 +1267,7 @@ export const problems = [
   // =================================================================
   {
     label: "Bubble Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "BubbleSort",
     keywords: ["sorting", "bubble", "swap", "basic"],
     number: "912",
@@ -1288,7 +1288,7 @@ export const problems = [
     tags: ["Basic", "In-place"],
   },
   {
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "BucketSort",
     label: "Bucket Sort",
     keywords: [
@@ -1322,7 +1322,7 @@ export const problems = [
   },
   {
     label: "Merge Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "MergeSort",
     keywords: ["sorting", "merge", "divide and conquer", "stable"],
     number: "N/A",
@@ -1344,7 +1344,7 @@ export const problems = [
   },
   {
     label: "Quick Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "QuickSort",
     keywords: ["sorting", "quick", "partition", "pivot"],
     number: "N/A",
@@ -1366,7 +1366,7 @@ export const problems = [
   },
   {
     label: "Insertion Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "InsertionSort",
     keywords: ["sorting", "insertion", "insert", "stable"],
     number: "N/A",
@@ -1388,7 +1388,7 @@ export const problems = [
   },
   {
     label: "Radix Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "RadixSort",
     keywords: ["sorting", "radix", "digit", "non-comparative"],
     number: "N/A",
@@ -1410,7 +1410,7 @@ export const problems = [
   },
   {
     label: "Counting Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "CountingSort",
     keywords: ["sorting", "counting", "frequency", "non-comparative"],
     number: "N/A",
@@ -1432,7 +1432,7 @@ export const problems = [
   },
   {
     label: "Heap Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "HeapSort",
     keywords: ["sorting", "heap", "priority queue", "binary heap"],
     number: "N/A",
@@ -1454,7 +1454,7 @@ export const problems = [
   },
   {
     label: "Selection Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "SelectionSort",
     keywords: ["sorting", "selection", "select", "minimum"],
     number: "N/A",
@@ -1476,7 +1476,7 @@ export const problems = [
   },
   {
     label: "Shell Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "ShellSort",
     keywords: ["sorting", "shell", "gap", "insertion sort"],
     number: "N/A",
@@ -1498,7 +1498,7 @@ export const problems = [
   },
   {
     label: "Comb Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "CombSort",
     keywords: ["sorting", "comb", "gap", "bubble sort"],
     number: "N/A",
@@ -1520,7 +1520,7 @@ export const problems = [
   },
   {
     label: "Pancake Sort",
-    category: "Sorting",
+    topic: "Sorting",
     subpage: "PancakeSort",
     keywords: ["sorting", "pancake", "flip", "reversal", "comparative"],
     number: "N/A",
@@ -1544,7 +1544,7 @@ export const problems = [
   // HEAPS // =================================================================
   // =================================================================
   {
-    category: "Heaps",
+    topic: "Heaps",
     subpage: "Heapify", // <-- This MUST match the 'case' in HeapsPage
     label: "Heapify (Build Heap)",
     number: "H-01", // Custom ID for a concept
@@ -1566,7 +1566,7 @@ export const problems = [
     platforms: ["Concept"],
   },
   {
-    category: "Heaps",
+    topic: "Heaps",
     subpage: "TopKFrequent", // <-- This MUST match the 'case' in HeapsPage
     label: "Top K Frequent Elements",
     number: "347",
@@ -1588,7 +1588,7 @@ export const problems = [
     platforms: ["LeetCode #347"],
   },
   {
-    category: "Heaps",
+    topic: "Heaps",
     subpage: "TaskScheduler", // <-- Este será o nome do nosso novo arquivo/componente
     label: "Task Scheduler",
     number: "621",
@@ -1624,7 +1624,7 @@ export const problems = [
   // =================================================================
   {
     label: "Construct Tree from Traversal",
-    category: "Trees",
+    topic: "Trees",
     subpage: "ConstructBinaryTree",
     keywords: [
       "tree",
@@ -1654,7 +1654,7 @@ export const problems = [
   },
   {
     label: "LCA of Deepest Leaves",
-    category: "Trees",
+    topic: "Trees",
     subpage: "LCAofDeepestLeaves",
     keywords: [
       "tree",
@@ -1683,7 +1683,7 @@ export const problems = [
   },
   {
     label: "Validate Binary Search Tree",
-    category: "Trees",
+    topic: "Trees",
     subpage: "ValidateBST",
     keywords: ["tree", "validate", "bst", "binary search tree", "dfs", "98"],
     number: "98",
@@ -1705,7 +1705,7 @@ export const problems = [
   },
   {
     label: "AVL Tree Visualizer",
-    category: "Trees",
+    topic: "Trees",
     subpage: "AVLTree",
     keywords: [
       "tree",
@@ -1733,8 +1733,8 @@ export const problems = [
   },
   {
     label: "Symmetric Tree",
-    category: "Trees",
-    subpage: "SymmetricTreeVisualizer",
+    topic: "Trees",
+    subpage: "SymmetricTree",
     keywords: [
       "tree",
       "symmetric",
@@ -1767,7 +1767,7 @@ export const problems = [
   // =================================================================
   {
     label: "LRU Cache",
-    category: "Design",
+    topic: "Design",
     subpage: "LRUCache",
     keywords: [
       "design",
@@ -1797,7 +1797,7 @@ export const problems = [
   },
   {
     label: "LFU Cache",
-    category: "Design",
+    topic: "Design",
     subpage: "LFUCache",
     keywords: [
       "design",
@@ -1826,7 +1826,7 @@ export const problems = [
   },
   {
     label: "Design HashMap",
-    category: "Design",
+    topic: "Design",
     subpage: "DesignHashMap",
     keywords: ["design", "hashmap", "hashtable", "hash function", "706"],
     number: "706",
@@ -1848,7 +1848,7 @@ export const problems = [
   },
   {
     label: "Design Linked List",
-    category: "Design",
+    topic: "Design",
     subpage: "DesignLinkedList",
     keywords: ["design", "linked list", "pointers", "707"],
     number: "707",
@@ -1870,7 +1870,7 @@ export const problems = [
   },
   {
     label: "Min Stack",
-    category: "Design",
+    topic: "Design",
     subpage: "MinStack",
     keywords: ["design", "min stack", "stack", "minimum", "155"],
     number: "155",
@@ -1892,7 +1892,7 @@ export const problems = [
   },
   {
     label: "Implement Trie (Prefix Tree)",
-    category: "Design",
+    topic: "Design",
     subpage: "ImplementTrie",
     keywords: ["design", "trie", "prefix tree", "strings", "208"],
     number: "208",
@@ -1918,7 +1918,7 @@ export const problems = [
   // =================================================================
   {
     label: "A* Pathfinding",
-    category: "Pathfinding",
+    topic: "Pathfinding",
     subpage: "AStar",
     keywords: [
       "pathfinding",
@@ -1950,7 +1950,7 @@ export const problems = [
   },
   {
     label: "Rat in a Maze",
-    category: "Pathfinding",
+    topic: "Pathfinding",
     subpage: "RatInMaze",
     keywords: [
       "pathfinding",
@@ -1980,7 +1980,7 @@ export const problems = [
   },
   {
     label: "Flood Fill",
-    category: "Pathfinding",
+    topic: "Pathfinding",
     subpage: "FloodFill",
     keywords: [
       "pathfinding",
@@ -2012,7 +2012,7 @@ export const problems = [
   },
   {
     label: "Color Islands",
-    category: "Pathfinding",
+    topic: "Pathfinding",
     subpage: "ColorIslands",
     keywords: [
       "pathfinding",
@@ -2044,8 +2044,8 @@ export const problems = [
   // =================================================================
   {
     label: "Subset Sum",
-    category: "Recursion",
-    subpage: "SubsetSumVisualizer",
+    topic: "Recursion",
+    subpage: "SubsetSum",
     keywords: [
       "recursion",
       "subset",
@@ -2071,8 +2071,8 @@ export const problems = [
   },
   {
     label: "Tower of Hanoi",
-    category: "Recursion",
-    subpage: "TowerOfHanoiVisualizer",
+    topic: "Recursion",
+    subpage: "TowerOfHanoi",
     keywords: ["recursion", "tower", "hanoi", "puzzle", "divide and conquer"],
     number: "26",
     icon: Container,
@@ -2093,8 +2093,8 @@ export const problems = [
   },
   {
     label: "Fibonacci",
-    category: "Recursion",
-    subpage: "FibonacciVisualizer",
+    topic: "Recursion",
+    subpage: "Fibonacci",
     keywords: ["recursion", "fibonacci", "memoization", "dynamic programming"],
     number: "27",
     icon: Zap,
@@ -2115,8 +2115,8 @@ export const problems = [
   },
   {
     label: "Factorial",
-    category: "Recursion",
-    subpage: "FactorialVisualizer",
+    topic: "Recursion",
+    subpage: "Factorial",
     keywords: ["recursion", "factorial", "linear recursion", "call stack"],
     number: "28",
     icon: Hash,
@@ -2137,8 +2137,8 @@ export const problems = [
   },
   {
     label: "N-Queens",
-    category: "Recursion",
-    subpage: "NQueensVisualizer",
+    topic: "Recursion",
+    subpage: "NQueens",
     keywords: ["recursion", "n-queens", "backtracking", "chessboard", "puzzle"],
     number: "29",
     icon: Crown,
@@ -2159,8 +2159,8 @@ export const problems = [
   },
   {
     label: "Binary Search (Recursive)",
-    category: "Recursion",
-    subpage: "BinarySearchRecursiveVisualizer",
+    topic: "Recursion",
+    subpage: "BinarySearchRecursive",
     keywords: [
       "recursion",
       "binary search",
@@ -2189,7 +2189,7 @@ export const problems = [
   // =================================================================
   {
     label: "Check Palindrome",
-    category: "Strings",
+    topic: "Strings",
     subpage: "PalindromeCheck",
     keywords: ["string", "palindrome", "two pointers", "reverse", "basic"],
     number: "1",
@@ -2211,7 +2211,7 @@ export const problems = [
   },
   {
     label: "Reverse String",
-    category: "Strings",
+    topic: "Strings",
     subpage: "ReverseString",
     keywords: ["string", "reverse", "in-place", "two pointers", "344"],
     number: "344",
@@ -2233,7 +2233,7 @@ export const problems = [
   },
   {
     label: "Count Vowels",
-    category: "Strings",
+    topic: "Strings",
     subpage: "CountVowels",
     keywords: ["string", "count", "vowels", "basic", "traversal"],
     number: "3",
@@ -2255,8 +2255,7 @@ export const problems = [
   },
   {
     label: "First Unique Character",
-    category: "Strings",
-    subpage: "FirstUniqueChar",
+    topic: "Strings",
     keywords: ["string", "first", "unique", "character", "hash map", "387"],
     number: "387",
     icon: CheckCircle2,
@@ -2277,7 +2276,7 @@ export const problems = [
   },
   {
     label: "Valid Anagram", // Also in Hashing
-    category: "Strings",
+    topic: "Strings",
     subpage: "ValidAnagram",
     keywords: ["string", "anagram", "hashing", "frequency", "242"],
     number: "242",
@@ -2299,8 +2298,8 @@ export const problems = [
   },
   {
     label: "Longest Common Prefix",
-    category: "Strings",
-    subpage: "LongestCommonPrefix",
+    topic: "Strings",
+    subpage: "LongestCP",
     keywords: ["string", "longest", "common", "prefix", "14"],
     number: "14",
     icon: AlignLeft,
@@ -2321,7 +2320,7 @@ export const problems = [
   },
   {
     label: "String Compression",
-    category: "Strings",
+    topic: "Strings",
     subpage: "StringCompression",
     keywords: ["string", "compression", "two pointers", "in-place", "443"],
     number: "443",
@@ -2343,7 +2342,7 @@ export const problems = [
   },
   {
     label: "Reverse Words",
-    category: "Strings",
+    topic: "Strings",
     subpage: "ReverseWords",
     keywords: ["string", "reverse", "words", "parsing", "151"],
     number: "151",
@@ -2365,8 +2364,7 @@ export const problems = [
   },
   {
     label: "Longest Palindromic Substring",
-    category: "Strings",
-    subpage: "LongestPalindrome",
+    topic: "Strings",
     keywords: [
       "string",
       "longest",
@@ -2394,8 +2392,7 @@ export const problems = [
   },
   {
     label: "Group Anagrams",
-    category: "Strings",
-    subpage: "GroupAnagrams",
+    topic: "Strings",
     keywords: ["string", "group", "anagrams", "hashing", "49"],
     number: "49",
     icon: Repeat,
@@ -2416,7 +2413,7 @@ export const problems = [
   },
   {
     label: "Is Subsequence",
-    category: "Strings",
+    topic: "Strings",
     subpage: "IsSubSequence", // <-- Combinando com seu arquivo
     keywords: ["string", "subsequence", "two pointers", "leetcode", "392"],
     number: "392",
@@ -2442,7 +2439,7 @@ export const problems = [
   // =================================================================
   {
     label: "Valid Anagram", // Also in Strings
-    category: "Hashing",
+    topic: "Hashing",
     subpage: "ValidAnagram",
     keywords: [
       "hashing",
@@ -2470,7 +2467,7 @@ export const problems = [
   },
   {
     label: "Subarray Sum Equals K",
-    category: "Hashing",
+    topic: "Hashing",
     subpage: "SubarraySumEqualsK",
     keywords: ["hashing", "subarray", "sum", "equals k", "prefix sum", "560"],
     number: "560",
@@ -2492,7 +2489,7 @@ export const problems = [
   },
   {
     label: "Longest Consecutive Sequence",
-    category: "Hashing",
+    topic: "Hashing",
     subpage: "LongestConsecutiveSequence",
     keywords: [
       "hashing",
@@ -2521,8 +2518,8 @@ export const problems = [
   },
   {
     label: "Equal Rows and Columns",
-    category: "Hashing",
-    subpage: "EqualRowsColumnPairs",
+    topic: "Hashing",
+    subpage: "EqualRowsColumnPair",
     keywords: [
       "hashing",
       "equal",
@@ -2556,7 +2553,7 @@ export const problems = [
   // =================================================================
   {
     label: "Best Time to Buy and Sell Stock II",
-    category: "GreedyAlgorithms",
+    topic: "GreedyAlgorithms",
     subpage: "BestTimeStockII",
     keywords: ["greedy", "stocks", "buy", "sell", "profit", "122"],
     number: "122",
@@ -2579,7 +2576,7 @@ export const problems = [
   },
   {
     label: "Two City Scheduling",
-    category: "GreedyAlgorithms",
+    topic: "GreedyAlgorithms",
     subpage: "TwoCityScheduling",
     keywords: [
       "greedy",
@@ -2609,8 +2606,7 @@ export const problems = [
   },
   {
     label: "Jump Game II",
-    category: "GreedyAlgorithms",
-    subpage: "JumpGameII",
+    topic: "GreedyAlgorithms",
     keywords: ["greedy", "jump game", "bfs", "array", "45"],
     number: "45",
     icon: Target,
@@ -2632,8 +2628,7 @@ export const problems = [
   },
   {
     label: "Gas Station",
-    category: "GreedyAlgorithms",
-    subpage: "GasStation",
+    topic: "GreedyAlgorithms",
     keywords: ["greedy", "gas station", "circular", "route", "circuit", "134"],
     number: "134",
     icon: Circle,
@@ -2655,7 +2650,7 @@ export const problems = [
   },
   {
     label: "Job Scheduling",
-    category: "GreedyAlgorithms",
+    topic: "GreedyAlgorithms",
     subpage: "JobScheduling",
     keywords: ["greedy", "dp", "scheduling", "profit", "1235"],
     number: "1235",
@@ -2678,11 +2673,508 @@ export const problems = [
   },
 
   // =================================================================
+  // SEARCHING
+  // =================================================================
+  {
+    label: "Linear Search",
+    topic: "Searching",
+    subpage: "LinearSearch",
+    keywords: ["search", "linear", "sequential", "basic"],
+    number: "N/A",
+    icon: Search,
+    description: "Sequentially check each element until a match is found or the list is exhausted.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-success600 to-success700",
+    iconColor: "text-success",
+    iconBg: "bg-success-light",
+    borderColor: "border-success/30",
+    technique: "Sequential Scan",
+    timeComplexity: "O(n)",
+    tags: ["Basic", "Search"],
+  },
+  {
+    label: "Exponential Search",
+    topic: "Searching",
+    subpage: "ExponentialSearch",
+    keywords: ["search", "exponential", "binary search", "sorted"],
+    number: "N/A",
+    icon: SearchCode,
+    description: "Find the range where the element lies by doubling the index, then binary search within that range.",
+    difficulty: "Medium",
+    tier: "Tier 2",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-accent-primary500 to-accent-primary700",
+    iconColor: "text-accent-primary",
+    iconBg: "bg-accent-primary-light",
+    borderColor: "border-accent-primary/30",
+    technique: "Exponential + Binary Search",
+    timeComplexity: "O(log n)",
+    tags: ["Search", "Divide and Conquer"],
+  },
+  {
+    label: "Kth Missing Positive Number",
+    topic: "Searching",
+    subpage: "KthMissingNumber",
+    keywords: ["search", "missing", "kth", "binary search", "1539"],
+    number: "1539",
+    icon: Search,
+    description: "Find the kth missing positive integer from a sorted array.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-teal-500 to-teal-700",
+    iconColor: "text-teal",
+    iconBg: "bg-teal-light",
+    borderColor: "border-teal/30",
+    technique: "Binary Search",
+    timeComplexity: "O(log n)",
+    platforms: ["LeetCode #1539"],
+    tags: ["Binary Search", "Math"],
+  },
+  {
+    label: "Find Smallest Letter Greater Than Target",
+    topic: "Searching",
+    subpage: "SmallestLetter",
+    keywords: ["search", "smallest", "letter", "binary search", "744"],
+    number: "744",
+    icon: Search,
+    description: "Find the smallest letter in a sorted array that is greater than the given target.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-success500 to-teal-600",
+    iconColor: "text-success",
+    iconBg: "bg-success-light",
+    borderColor: "border-success/30",
+    technique: "Binary Search",
+    timeComplexity: "O(log n)",
+    platforms: ["LeetCode #744"],
+    tags: ["Binary Search", "Array"],
+  },
+  {
+    label: "Special Array With X Elements Greater",
+    topic: "Searching",
+    subpage: "SpecialArray",
+    keywords: ["search", "special", "array", "binary search", "1608"],
+    number: "1608",
+    icon: Search,
+    description: "Find x such that there are exactly x elements greater than or equal to x.",
+    difficulty: "Easy",
+    tier: "Tier 2",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-purple500 to-accent-primary600",
+    iconColor: "text-purple",
+    iconBg: "bg-purplelight",
+    borderColor: "border-purple/30",
+    technique: "Binary Search / Sorting",
+    timeComplexity: "O(n log n)",
+    platforms: ["LeetCode #1608"],
+    tags: ["Binary Search", "Sorting"],
+  },
+  {
+    label: "Search in a Sorted Array of Unknown Size",
+    topic: "Searching",
+    subpage: "UnknownSizeSearch",
+    keywords: ["search", "unknown", "size", "binary search", "702"],
+    number: "702",
+    icon: SearchCode,
+    description: "Search in a sorted array where you cannot access the length, using exponential bounds.",
+    difficulty: "Medium",
+    tier: "Tier 2",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-orange500 to-orange700",
+    iconColor: "text-orange",
+    iconBg: "bg-orangelight",
+    borderColor: "border-orange/30",
+    technique: "Exponential + Binary Search",
+    timeComplexity: "O(log n)",
+    platforms: ["LeetCode #702"],
+    tags: ["Binary Search", "Interactive"],
+  },
+
+  // =================================================================
+  // BIT MANIPULATION
+  // =================================================================
+  {
+    label: "Single Number",
+    topic: "BitManipulation",
+    subpage: "SingleNumber",
+    keywords: ["bit", "xor", "single", "136"],
+    number: "136",
+    icon: ToggleRight,
+    description: "Find the element that appears only once using XOR.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-slate-500 to-slate-700",
+    iconColor: "text-slate",
+    iconBg: "bg-slate-light",
+    borderColor: "border-slate/30",
+    technique: "XOR",
+    timeComplexity: "O(n)",
+    platforms: ["LeetCode #136"],
+    tags: ["XOR", "Bit Manipulation"],
+  },
+  {
+    label: "Number of 1 Bits",
+    topic: "BitManipulation",
+    subpage: "NumberOf1Bits",
+    keywords: ["bit", "hamming", "weight", "popcount", "191"],
+    number: "191",
+    icon: ToggleRight,
+    description: "Count the number of set bits (1s) in the binary representation of an integer.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-slate-600 to-zinc-700",
+    iconColor: "text-slate",
+    iconBg: "bg-slate-light",
+    borderColor: "border-slate/30",
+    technique: "Bit Counting (Brian Kernighan)",
+    timeComplexity: "O(k) where k = number of set bits",
+    platforms: ["LeetCode #191"],
+    tags: ["Bit Manipulation", "Hamming Weight"],
+  },
+  {
+    label: "Counting Bits",
+    topic: "BitManipulation",
+    subpage: "CountingBits",
+    keywords: ["bit", "counting", "dp", "338"],
+    number: "338",
+    icon: BarChart3,
+    description: "For every number from 0 to n, count the number of 1s in their binary representation.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-zinc-500 to-slate-700",
+    iconColor: "text-zinc",
+    iconBg: "bg-zinc-light",
+    borderColor: "border-zinc/30",
+    technique: "DP + Bit Manipulation",
+    timeComplexity: "O(n)",
+    platforms: ["LeetCode #338"],
+    tags: ["DP", "Bit Manipulation"],
+  },
+  {
+    label: "Power of Two",
+    topic: "BitManipulation",
+    subpage: "PowerOfTwo",
+    keywords: ["bit", "power", "two", "231"],
+    number: "231",
+    icon: ToggleRight,
+    description: "Determine if a given integer is a power of two using bit manipulation.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-slate-500 to-zinc-600",
+    iconColor: "text-slate",
+    iconBg: "bg-slate-light",
+    borderColor: "border-slate/30",
+    technique: "Bit Trick (n & n-1)",
+    timeComplexity: "O(1)",
+    platforms: ["LeetCode #231"],
+    tags: ["Bit Manipulation", "Math"],
+  },
+  {
+    label: "Reverse Bits",
+    topic: "BitManipulation",
+    subpage: "ReverseBits",
+    keywords: ["bit", "reverse", "190"],
+    number: "190",
+    icon: RefreshCw,
+    description: "Reverse the bits of a 32-bit unsigned integer.",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-zinc-600 to-slate-700",
+    iconColor: "text-zinc",
+    iconBg: "bg-zinc-light",
+    borderColor: "border-zinc/30",
+    technique: "Bit Reversal",
+    timeComplexity: "O(1)",
+    platforms: ["LeetCode #190"],
+    tags: ["Bit Manipulation"],
+  },
+
+  // =================================================================
+  // BACKTRACKING
+  // =================================================================
+  {
+    label: "N-Queens (via Backtracking)",
+    topic: "Backtracking",
+    subpage: "SudokuSolver",
+    keywords: ["backtracking", "sudoku", "constraint", "37"],
+    number: "37",
+    icon: Grid,
+    description: "Fill in a 9×9 Sudoku board using constraint-based backtracking.",
+    difficulty: "Hard",
+    tier: "Tier 1",
+    difficultyColor: "text-danger",
+    difficultyBg: "bg-danger/10",
+    difficultyBorder: "border-danger/30",
+    gradient: "from-orange500 to-danger600",
+    iconColor: "text-orange",
+    iconBg: "bg-orangelight",
+    borderColor: "border-orange/30",
+    technique: "Constraint Propagation + Backtracking",
+    timeComplexity: "O(9^(n²))",
+    platforms: ["LeetCode #37"],
+    tags: ["Backtracking", "Constraint Satisfaction"],
+  },
+  {
+    label: "Sudoku Solver",
+    topic: "Backtracking",
+    subpage: "SudokuSolver",
+    keywords: ["backtracking", "sudoku", "constraint", "37"],
+    number: "37",
+    icon: Grid,
+    description: "Fill in a 9×9 Sudoku board using constraint-based backtracking.",
+    difficulty: "Hard",
+    tier: "Tier 1",
+    difficultyColor: "text-danger",
+    difficultyBg: "bg-danger/10",
+    difficultyBorder: "border-danger/30",
+    gradient: "from-orange500 to-danger600",
+    iconColor: "text-orange",
+    iconBg: "bg-orangelight",
+    borderColor: "border-orange/30",
+    technique: "Constraint Propagation + Backtracking",
+    timeComplexity: "O(9^(n²))",
+    platforms: ["LeetCode #37"],
+    tags: ["Backtracking", "Constraint Satisfaction"],
+  },
+  {
+    label: "Permutations",
+    topic: "Backtracking",
+    subpage: "Permutations",
+    keywords: ["backtracking", "permutation", "46"],
+    number: "46",
+    icon: Shuffle,
+    description: "Generate all possible permutations of a collection of distinct integers.",
+    difficulty: "Medium",
+    tier: "Tier 1",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-accent-primary500 to-purple600",
+    iconColor: "text-accent-primary",
+    iconBg: "bg-accent-primary-light",
+    borderColor: "border-accent-primary/30",
+    technique: "Backtracking",
+    timeComplexity: "O(n × n!)",
+    platforms: ["LeetCode #46"],
+    tags: ["Backtracking", "Recursion"],
+  },
+  {
+    label: "Word Search",
+    topic: "Backtracking",
+    subpage: "WordSearch",
+    keywords: ["backtracking", "word", "search", "grid", "79"],
+    number: "79",
+    icon: Search,
+    description: "Search for a word in a 2D grid by exploring adjacent cells with backtracking.",
+    difficulty: "Medium",
+    tier: "Tier 1",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-purple500 to-pink-600",
+    iconColor: "text-purple",
+    iconBg: "bg-purplelight",
+    borderColor: "border-purple/30",
+    technique: "DFS + Backtracking",
+    timeComplexity: "O(m × n × 4^L)",
+    platforms: ["LeetCode #79"],
+    tags: ["Backtracking", "DFS", "Grid"],
+  },
+  {
+    label: "Knight's Tour",
+    topic: "Backtracking",
+    subpage: "KnightsTour",
+    keywords: ["backtracking", "knight", "chess", "tour", "hamiltonian"],
+    number: "N/A",
+    icon: Crown,
+    description: "Find a sequence of moves for a knight to visit every square on a chessboard exactly once.",
+    difficulty: "Hard",
+    tier: "Tier 2",
+    difficultyColor: "text-danger",
+    difficultyBg: "bg-danger/10",
+    difficultyBorder: "border-danger/30",
+    gradient: "from-danger500 to-purple600",
+    iconColor: "text-danger",
+    iconBg: "bg-danger-light",
+    borderColor: "border-danger/30",
+    technique: "Backtracking (Warnsdorff's Heuristic)",
+    timeComplexity: "O(8^(n²))",
+    tags: ["Backtracking", "Chess", "Hamiltonian Path"],
+  },
+  {
+    label: "Expression Add Operators",
+    topic: "Backtracking",
+    subpage: "ExpressionAddOperators",
+    keywords: ["backtracking", "expression", "operators", "282"],
+    number: "282",
+    icon: Calculator,
+    description: "Add +, -, or * between digits to reach a target value.",
+    difficulty: "Hard",
+    tier: "Tier 2",
+    difficultyColor: "text-danger",
+    difficultyBg: "bg-danger/10",
+    difficultyBorder: "border-danger/30",
+    gradient: "from-danger600 to-orange700",
+    iconColor: "text-danger",
+    iconBg: "bg-danger-light",
+    borderColor: "border-danger/30",
+    technique: "Backtracking + Math",
+    timeComplexity: "O(4^n)",
+    platforms: ["LeetCode #282"],
+    tags: ["Backtracking", "Math", "String"],
+  },
+
+  // =================================================================
+  // MATHEMATICAL & MISCELLANEOUS
+  // =================================================================
+  {
+    label: "Count Primes",
+    topic: "MathematicalMiscellaneous",
+    subpage: "CountPrimes",
+    keywords: ["math", "primes", "sieve", "eratosthenes", "204"],
+    number: "204",
+    icon: Calculator,
+    description: "Count the number of prime numbers less than n using the Sieve of Eratosthenes.",
+    difficulty: "Medium",
+    tier: "Tier 1",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-teal-500 to-teal-700",
+    iconColor: "text-teal",
+    iconBg: "bg-teal-light",
+    borderColor: "border-teal/30",
+    technique: "Sieve of Eratosthenes",
+    timeComplexity: "O(n log log n)",
+    platforms: ["LeetCode #204"],
+    tags: ["Math", "Sieve", "Primes"],
+  },
+  {
+    label: "Excel Sheet Column Title",
+    topic: "MathematicalMiscellaneous",
+    subpage: "ExcelSheetColumnTitle",
+    keywords: ["math", "excel", "column", "base26", "168"],
+    number: "168",
+    icon: Text,
+    description: "Convert a column number to its corresponding Excel column title (A, B, ..., Z, AA, AB, ...).",
+    difficulty: "Easy",
+    tier: "Tier 1",
+    difficultyColor: "text-success",
+    difficultyBg: "bg-success/10",
+    difficultyBorder: "border-success/30",
+    gradient: "from-success500 to-success700",
+    iconColor: "text-success",
+    iconBg: "bg-success-light",
+    borderColor: "border-success/30",
+    technique: "Base-26 Conversion",
+    timeComplexity: "O(log n)",
+    platforms: ["LeetCode #168"],
+    tags: ["Math", "String"],
+  },
+  {
+    label: "Factorial Trailing Zeroes",
+    topic: "MathematicalMiscellaneous",
+    subpage: "FactorialZeroes",
+    keywords: ["math", "factorial", "trailing", "zeroes", "172"],
+    number: "172",
+    icon: Calculator,
+    description: "Count the number of trailing zeroes in n! by counting factors of 5.",
+    difficulty: "Medium",
+    tier: "Tier 1",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-orange500 to-orange700",
+    iconColor: "text-orange",
+    iconBg: "bg-orangelight",
+    borderColor: "border-orange/30",
+    technique: "Math (Factor Counting)",
+    timeComplexity: "O(log₅ n)",
+    platforms: ["LeetCode #172"],
+    tags: ["Math", "Factorial"],
+  },
+  {
+    label: "Pow(x, n)",
+    topic: "MathematicalMiscellaneous",
+    subpage: "Power",
+    keywords: ["math", "power", "exponentiation", "fast", "50"],
+    number: "50",
+    icon: TrendingUp,
+    description: "Calculate x raised to the power n using fast exponentiation (binary method).",
+    difficulty: "Medium",
+    tier: "Tier 1",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-accent-primary500 to-accent-primary700",
+    iconColor: "text-accent-primary",
+    iconBg: "bg-accent-primary-light",
+    borderColor: "border-accent-primary/30",
+    technique: "Fast Exponentiation",
+    timeComplexity: "O(log n)",
+    platforms: ["LeetCode #50"],
+    tags: ["Math", "Binary Exponentiation"],
+  },
+  {
+    label: "Prime Palindrome",
+    topic: "MathematicalMiscellaneous",
+    subpage: "PrimePalindrome",
+    keywords: ["math", "prime", "palindrome", "866"],
+    number: "866",
+    icon: Calculator,
+    description: "Find the smallest prime palindrome greater than or equal to n.",
+    difficulty: "Medium",
+    tier: "Tier 2",
+    difficultyColor: "text-warning",
+    difficultyBg: "bg-warning/10",
+    difficultyBorder: "border-warning/30",
+    gradient: "from-purple500 to-purple700",
+    iconColor: "text-purple",
+    iconBg: "bg-purplelight",
+    borderColor: "border-purple/30",
+    technique: "Palindrome Generation + Primality",
+    timeComplexity: "O(n)",
+    platforms: ["LeetCode #866"],
+    tags: ["Math", "Palindrome", "Primes"],
+  },
+
+  // =================================================================
   // DYNAMIC PROGRAMMING
   // =================================================================
   {
     label: "0/1 Knapsack",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "KnapSack",
     keywords: [
       "dp",
@@ -2712,7 +3204,7 @@ export const problems = [
   },
   {
     label: "Longest Common Subsequence",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "LongestCommonSubsequence",
     keywords: ["dp", "lcs", "string", "subsequence", "1143"],
     number: "1143",
@@ -2735,7 +3227,7 @@ export const problems = [
   },
   {
     label: "Coin Change",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "CoinChange",
     keywords: ["dp", "coin change", "minimum coins", "322"],
     number: "322",
@@ -2758,7 +3250,7 @@ export const problems = [
   },
   {
     label: "Edit Distance",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "EditDistance",
     keywords: ["dp", "edit distance", "string", "72"],
     number: "72",
@@ -2781,7 +3273,7 @@ export const problems = [
   },
   {
     label: "Longest Increasing Subsequence",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "LISubsequence",
     keywords: ["dp", "lis", "array", "300"],
     number: "300",
@@ -2804,7 +3296,7 @@ export const problems = [
   },
   {
     label: "Burst Balloons",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "BurstBalloons", // This MUST match the case in DynamicProgramming.jsx
     keywords: [
       "dp",
@@ -2834,7 +3326,7 @@ export const problems = [
   },
   {
     label: "Buy/Sell Stock IV",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "SellStockIV", // This MUST match the case in DynamicProgramming.jsx
     keywords: [
       "dp",
@@ -2865,7 +3357,7 @@ export const problems = [
   },
   {
     label: "Unique Paths",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "UniquePaths", // MUST match your navigate() case
     keywords: [
       "dp",
@@ -2897,7 +3389,7 @@ export const problems = [
   // Graphs
   {
     label: "Max Flow (Edmonds–Karp, Dinic)",
-    category: "Graphs",
+    topic: "Graphs",
     subpage: "NetworkFlow",
     keywords: [
       "graphs",
@@ -2931,7 +3423,7 @@ export const problems = [
   },
   {
   label: "Binary Tree Right Side View",
-  category: "Trees",
+  topic: "Trees",
   subpage: "BinaryTreeRightSideView",
   keywords: [
     "binary tree",
@@ -2968,7 +3460,7 @@ export const problems = [
 },
 {
     label: "Burst Balloons Top Down",
-    category: "Dynamic Programming",
+    topic: "DynamicProgramming",
     subpage: "BurstBalloonsTopDown", // This MUST match the case in DynamicProgramming.jsx
     keywords: [
       "dp",
@@ -2998,7 +3490,7 @@ export const problems = [
   },
   {
   label: "Print Binary Tree",
-  category: "Trees",
+  topic: "Trees",
   subpage: "PrintBinaryTree", // This MUST match the case in your routing/components
   keywords: [
     "tree",
@@ -3029,7 +3521,7 @@ export const problems = [
 },
 {
   label: "Morris Traversal (Inorder)",
-  category: "Trees",
+  topic: "Trees",
   subpage: "MorrisTraversal", // This MUST match the case in your routing/components
   keywords: [
     "tree",
@@ -3060,7 +3552,7 @@ export const problems = [
 },
 {
   label: "Flatten Binary Tree to Linked List",
-  category: "Trees",
+  topic: "Trees",
   subpage: "FlattenBinaryTree", // This MUST match the case in your routing/components
   keywords: [
     "tree",

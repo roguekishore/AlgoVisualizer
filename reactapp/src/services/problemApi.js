@@ -12,12 +12,12 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:8080";
  * @param {number} params.page - Page number (0-indexed)
  * @param {number} params.size - Page size
  * @param {string} params.sort - Sort field and direction e.g. "title,asc"
- * @param {string} [params.topic] - Filter by topic name
+ * @param {string} [params.stage] - Filter by stage name
  * @param {string} [params.tag] - Filter by difficulty (EASY, MEDIUM, HARD)
  * @param {string} [params.keyword] - Search by title keyword
  * @returns {Promise<Object>} Spring Boot Page response
  */
-export async function fetchProblems({ page = 0, size = 20, sort = "pid,asc", topic, tag, keyword } = {}) {
+export async function fetchProblems({ page = 0, size = 20, sort = "pid,asc", stage, tag, keyword } = {}) {
   // If keyword is provided, use the search endpoint
   if (keyword && keyword.trim()) {
     const params = new URLSearchParams({ keyword: keyword.trim(), page, size, sort });
@@ -27,7 +27,7 @@ export async function fetchProblems({ page = 0, size = 20, sort = "pid,asc", top
   }
 
   const params = new URLSearchParams({ page, size, sort });
-  if (topic) params.append("topic", topic);
+  if (stage) params.append("stage", stage);
   if (tag) params.append("tag", tag);
 
   const res = await fetch(`${API_BASE_URL}/api/problems?${params}`);
@@ -47,11 +47,11 @@ export async function fetchProblemById(id) {
 }
 
 /**
- * Fetch all topic names.
- * @returns {Promise<string[]>} Sorted list of topic names
+ * Fetch all stage names.
+ * @returns {Promise<string[]>} Sorted list of stage names
  */
-export async function fetchTopics() {
-  const res = await fetch(`${API_BASE_URL}/api/topics`);
-  if (!res.ok) throw new Error("Failed to fetch topics");
+export async function fetchStages() {
+  const res = await fetch(`${API_BASE_URL}/api/stages`);
+  if (!res.ok) throw new Error("Failed to fetch stages");
   return res.json();
 }

@@ -1,12 +1,12 @@
 package com.backend.springapp.config;
 
 import com.backend.springapp.entity.Problem;
-import com.backend.springapp.entity.ProblemTopic;
-import com.backend.springapp.entity.Topic;
+import com.backend.springapp.entity.ProblemStage;
+import com.backend.springapp.entity.Stage;
 import com.backend.springapp.enums.Tag;
 import com.backend.springapp.repository.ProblemRepository;
-import com.backend.springapp.repository.ProblemTopicRepository;
-import com.backend.springapp.repository.TopicRepository;
+import com.backend.springapp.repository.ProblemStageRepository;
+import com.backend.springapp.repository.StageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -19,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Seeds the database with topics (from DSA Conquest Map stages) and
- * all 164 problems with their topic associations on application startup.
- * Only runs if the database is empty (no existing topics).
+ * Seeds the database with stages (from DSA Conquest Map) and
+ * all 164 problems with their stage associations on application startup.
+ * Only runs if the database is empty (no existing stages).
  */
 @Component
 @Order(1)
@@ -29,34 +29,34 @@ import java.util.Map;
 @Slf4j
 public class DataInitializer implements CommandLineRunner {
 
-    private final TopicRepository topicRepository;
+    private final StageRepository stageRepository;
     private final ProblemRepository problemRepository;
-    private final ProblemTopicRepository problemTopicRepository;
+    private final ProblemStageRepository problemStageRepository;
 
     @Override
     @Transactional
     public void run(String... args) {
-        if (topicRepository.count() > 0) {
+        if (stageRepository.count() > 0) {
             log.info("Database already seeded. Skipping data initialization.");
             return;
         }
 
         log.info("Starting database seeding...");
 
-        // 1. Seed all 27 topics (stages)
-        Map<String, Topic> topicMap = seedTopics();
+        // 1. Seed all 27 stages
+        Map<String, Stage> stageMap = seedStages();
 
-        // 2. Seed all 164 problems with topic associations
-        seedProblems(topicMap);
+        // 2. Seed all 164 problems with stage associations
+        seedProblems(stageMap);
 
         log.info("Database seeding completed successfully.");
     }
 
     /**
-     * Seeds the 27 stages as topics.
-     * Returns a map of stageKey -> Topic entity for association.
+     * Seeds the 27 stages.
+     * Returns a map of stageKey -> Stage entity for association.
      */
-    private Map<String, Topic> seedTopics() {
+    private Map<String, Stage> seedStages() {
         // LinkedHashMap preserves insertion order
         Map<String, String> stages = new LinkedHashMap<>();
         stages.put("1", "Absolute Programming Basics");
@@ -87,23 +87,23 @@ public class DataInitializer implements CommandLineRunner {
         stages.put("B", "Mathematical & Miscellaneous");
         stages.put("C", "Hashing Patterns");
 
-        Map<String, Topic> topicMap = new LinkedHashMap<>();
+        Map<String, Stage> stageMap = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : stages.entrySet()) {
-            Topic topic = new Topic();
-            topic.setTopicname(entry.getValue());
-            topic = topicRepository.save(topic);
-            topicMap.put(entry.getKey(), topic);
-            log.debug("Seeded topic: Stage {} - {}", entry.getKey(), entry.getValue());
+            Stage stage = new Stage();
+            stage.setName(entry.getValue());
+            stage = stageRepository.save(stage);
+            stageMap.put(entry.getKey(), stage);
+            log.debug("Seeded stage: {} - {}", entry.getKey(), entry.getValue());
         }
 
-        log.info("Seeded {} topics (stages).", topicMap.size());
-        return topicMap;
+        log.info("Seeded {} stages.", stageMap.size());
+        return stageMap;
     }
 
     /**
-     * Seeds all 164 problems and creates ProblemTopic associations.
+     * Seeds all 164 problems and creates ProblemStage associations.
      */
-    private void seedProblems(Map<String, Topic> topicMap) {
+    private void seedProblems(Map<String, Stage> stageMap) {
         List<ProblemSeed> seeds = buildProblemSeeds();
         int count = 0;
 
@@ -117,19 +117,19 @@ public class DataInitializer implements CommandLineRunner {
 
             problem = problemRepository.save(problem);
 
-            // Create ProblemTopic association
-            Topic topic = topicMap.get(seed.stageKey);
-            if (topic != null) {
-                ProblemTopic pt = new ProblemTopic();
-                pt.setProblem(problem);
-                pt.setTopic(topic);
-                problemTopicRepository.save(pt);
+            // Create ProblemStage association
+            Stage stage = stageMap.get(seed.stageKey);
+            if (stage != null) {
+                ProblemStage ps = new ProblemStage();
+                ps.setProblem(problem);
+                ps.setStage(stage);
+                problemStageRepository.save(ps);
             }
 
             count++;
         }
 
-        log.info("Seeded {} problems with topic associations.", count);
+        log.info("Seeded {} problems with stage associations.", count);
     }
 
     /**

@@ -1,18 +1,18 @@
 import React, { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X, Layers } from "lucide-react";
-import categories from "../data/categories";
+import topics from "../data/topics";
 import { problems as PROBLEM_CATALOG } from "../search/catalog";
-import { categoryConfig, getCategoryByKey } from "../routes/config";
+import { topicConfig, getTopicByKey } from "../routes/config";
 import "./HomePage.css";
 import TopicPixelCard from "../components/TopicPixelCard";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 
-const CategoryGrid = () => (
+const TopicGrid = () => (
   <div className="category-grid">
-    {categories.map((category) => (
-      <TopicPixelCard key={category.name} category={category} />
+    {topics.map((topic) => (
+      <TopicPixelCard key={topic.name} topic={topic} />
     ))}
   </div>
 );
@@ -38,7 +38,7 @@ const SearchBar = ({
           }}
           onFocus={() => setOpen(true)}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
-          placeholder="Search problems, topics, or categories..."
+          placeholder="Search problems or topics..."
           className="h-12 pl-11 pr-10 text-sm rounded-xl border-border bg-card shadow-sm focus-visible:ring-1 focus-visible:ring-ring"
           aria-label="Search problems or topics"
         />
@@ -76,12 +76,12 @@ const SearchBar = ({
                     <p className="text-sm font-medium text-foreground truncate">{item.label}</p>
                     {item.type === "problem" && (
                       <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                        {item.category}
+                        {item.topic}
                         {item.platforms?.length ? ` · ${item.platforms.join(", ")}` : ""}
                       </p>
                     )}
-                    {item.type === "category" && (
-                      <p className="text-xs text-muted-foreground mt-0.5">{item.category}</p>
+                    {item.type === "topic" && (
+                      <p className="text-xs text-muted-foreground mt-0.5">{item.topic}</p>
                     )}
                   </div>
                 </button>
@@ -94,33 +94,35 @@ const SearchBar = ({
   );
 };
 
-const VisualizersPage = () => {
+const TopicsPage = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
 
   const searchIndex = useMemo(() => {
-    const categoryItems = categories.map((category) => {
-      const config = getCategoryByKey(category.page);
+    const topicItems = topics.map((topic) => {
+      const config = getTopicByKey(topic.page);
       return {
-        type: "category",
-        label: category.name,
-        category: category.page,
-        path: config?.path || `/${category.page.toLowerCase()}`,
-        keywords: [category.name.toLowerCase()],
+        type: "topic",
+        label: topic.name,
+        topic: topic.page,
+        path: config?.path || `/${topic.page.toLowerCase()}`,
+        keywords: [topic.name.toLowerCase()],
       };
     });
 
-    const problemItems = PROBLEM_CATALOG.map((problem) => {
-      const config = getCategoryByKey(problem.category);
-      return {
-        type: "problem",
-        ...problem,
-        categoryPath: config?.path || `/${problem.category.toLowerCase()}`,
-      };
-    }).filter((problem) => problem.category && problem.subpage);
+    const problemItems = PROBLEM_CATALOG
+      .filter((problem) => problem.topic && problem.subpage)
+      .map((problem) => {
+        const config = getTopicByKey(problem.topic);
+        return {
+          type: "problem",
+          ...problem,
+          topicPath: config?.path || `/${problem.topic.toLowerCase()}`,
+        };
+      });
 
-    return [...categoryItems, ...problemItems];
+    return [...topicItems, ...problemItems];
   }, []);
 
   const results = useMemo(() => {
@@ -131,7 +133,7 @@ const VisualizersPage = () => {
     const matches = searchIndex.filter((item) => {
       const haystack = [
         item.label?.toLowerCase?.() || "",
-        item.category?.toLowerCase?.() || "",
+        item.topic?.toLowerCase?.() || "",
         ...(item.keywords || []),
       ].join(" ");
       return tokens.every((token) => haystack.includes(token));
@@ -141,10 +143,10 @@ const VisualizersPage = () => {
   }, [query, searchIndex]);
 
   const handleSelect = (item) => {
-    if (item.type === "category") {
+    if (item.type === "topic") {
       navigate(item.path);
     } else {
-      navigate(`${item.categoryPath}/${item.subpage}`);
+      navigate(`${item.topicPath}/${item.subpage}`);
     }
     setOpen(false);
     setQuery("");
@@ -164,13 +166,13 @@ const VisualizersPage = () => {
         <section className="flex flex-col items-center gap-4 pt-4 pb-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary border border-border text-xs font-medium text-muted-foreground">
             <Layers className="h-3 w-3" />
-            {categories.length} topics available
+            {topics.length} topics available
           </div>
           <h1 className="font-zentry font-black uppercase text-3xl sm:text-5xl md:text-6xl text-foreground text-center tracking-tight">
             Expl<b className="special-font">o</b>re Topics
           </h1>
           <p className="max-w-lg text-center text-muted-foreground text-sm sm:text-base leading-relaxed">
-            Pick a category and dive into interactive algorithm visualizations.
+            Pick a topic and dive into interactive algorithm visualizations.
           </p>
         </section>
 
@@ -187,13 +189,13 @@ const VisualizersPage = () => {
           />
         </section>
 
-        {/* ── Category Grid ── */}
+        {/* ── Topic Grid ── */}
         <section>
-          <CategoryGrid />
+          <TopicGrid />
         </section>
       </div>
     </div>
   );
 };
 
-export default VisualizersPage;
+export default TopicsPage;

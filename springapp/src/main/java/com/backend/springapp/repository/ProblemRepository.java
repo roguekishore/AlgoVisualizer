@@ -16,14 +16,14 @@ import org.springframework.stereotype.Repository;
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
     /**
-     * Find problems by topic name.
+     * Find problems by stage name.
      * Uses DISTINCT to avoid duplicates from join.
      */
     @Query("SELECT DISTINCT p FROM Problem p " +
-           "JOIN ProblemTopic pt ON pt.problem.pid = p.pid " +
-           "JOIN Topic t ON pt.topic.tid = t.tid " +
-           "WHERE t.topicname = :topicName")
-    Page<Problem> findByTopicName(@Param("topicName") String topicName, Pageable pageable);
+           "JOIN ProblemStage ps ON ps.problem.pid = p.pid " +
+           "JOIN Stage s ON ps.stage.sid = s.sid " +
+           "WHERE s.name = :stageName")
+    Page<Problem> findByStageName(@Param("stageName") String stageName, Pageable pageable);
 
     /**
      * Find problems by tag (difficulty).
@@ -31,14 +31,14 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {
     Page<Problem> findByTag(Tag tag, Pageable pageable);
 
     /**
-     * Find problems by both topic name and tag.
+     * Find problems by both stage name and tag.
      * Uses DISTINCT to avoid duplicates.
      */
     @Query("SELECT DISTINCT p FROM Problem p " +
-           "JOIN ProblemTopic pt ON pt.problem.pid = p.pid " +
-           "JOIN Topic t ON pt.topic.tid = t.tid " +
-           "WHERE t.topicname = :topicName AND p.tag = :tag")
-    Page<Problem> findByTopicNameAndTag(@Param("topicName") String topicName, 
+           "JOIN ProblemStage ps ON ps.problem.pid = p.pid " +
+           "JOIN Stage s ON ps.stage.sid = s.sid " +
+           "WHERE s.name = :stageName AND p.tag = :tag")
+    Page<Problem> findByStageNameAndTag(@Param("stageName") String stageName, 
                                          @Param("tag") Tag tag, 
                                          Pageable pageable);
 

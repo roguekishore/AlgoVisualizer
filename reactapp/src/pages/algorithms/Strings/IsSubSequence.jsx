@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  ArrowLeft,
   ArrowLeftRight,
   Play,
   RotateCcw,
@@ -12,7 +11,7 @@ import {
   XCircle
 } from "lucide-react";
 
-const IsSubsequence = ({ navigate }) => {
+const IsSubsequence = () => {
   const [sInput, setSInput] = useState("abc");
   const [tInput, setTInput] = useState("ahbgdc");
   const [chars, setChars] = useState([]);
@@ -113,14 +112,6 @@ const IsSubsequence = ({ navigate }) => {
   return (
     <div className="min-h-screen bg-theme-primary text-theme-primary p-6">
       <div className="max-w-6xl mx-auto mb-8">
-        <button
-          onClick={() => navigate("home")}
-          className="flex items-center gap-2 text-theme-secondary hover:text-theme-primary transition-colors mb-6 group"
-        >
-          <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-          Back to String Problems
-        </button>
-
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
             <ArrowLeftRight className="h-12 w-12 text-success" />

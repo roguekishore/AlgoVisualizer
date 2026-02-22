@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProblemTopic {
+public class ProblemStage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,6 @@ public class ProblemTopic {
     private Problem problem;
 
     @ManyToOne
-    @JoinColumn(name = "tid")
-    private Topic topic;
+    @JoinColumn(name = "sid")
+    private Stage stage;
 }

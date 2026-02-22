@@ -13,7 +13,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { 
-  ArrowLeft, 
   Play, 
   Pause, 
   RotateCcw, 
@@ -91,7 +90,7 @@ const GridNode = ({
   );
 };
 
-const AStarVisualizer = ({ navigate }) => {
+const AStarVisualizer = () => {
   const [grid, setGrid] = useState([]);
   const [mouseIsPressed, setMouseIsPressed] = useState(false);
   const [placingNode, setPlacingNode] = useState("wall");
@@ -465,13 +464,6 @@ const AStarVisualizer = ({ navigate }) => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <button
-                onClick={() => navigate("home")}
-                className="flex items-center gap-2 text-theme-secondary bg-theme-tertiary/80 hover:bg-theme-elevated px-4 py-2 rounded-lg transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Pathfinding
-              </button>
               <div className="flex items-center gap-2">
                 <Brain className="h-6 w-6 text-accent-primary" />
                 <h1 className="text-xl font-bold">A* Pathfinding Algorithm</h1>

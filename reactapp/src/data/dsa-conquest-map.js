@@ -168,7 +168,7 @@ export const ALL_PROBLEMS = [
   // =================================================================
   { id: 'stage4-1', title: 'Two Sum', route: '/arrays/TwoSum', stage: 4, order: 1, lcNumber: 1, lcSlug: 'two-sum', countryId: 'PE', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'TwoSum', note: 'Classic problem #1' },
   { id: 'stage4-2', title: '3Sum', route: '/arrays/ThreeSum', stage: 4, order: 2, lcNumber: 15, lcSlug: '3sum', countryId: 'BO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ThreeSum' },
-  { id: 'stage4-3', title: '4Sum', route: '/arrays/FourSum', stage: 4, order: 3, lcNumber: 18, lcSlug: '4sum', countryId: 'PY', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'FourSum' },
+  { id: 'stage4-3', title: '4Sum', route: '/arrays/4-Sum', stage: 4, order: 3, lcNumber: 18, lcSlug: '4sum', countryId: 'PY', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'FourSum' },
   { id: 'stage4-4', title: 'Container With Most Water', route: '/arrays/ContainerWithMostWater', stage: 4, order: 4, lcNumber: 11, lcSlug: 'container-with-most-water', countryId: 'AR', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ContainerWithMostWater' },
   { id: 'stage4-5', title: 'Trapping Rain Water', route: '/arrays/TrappingRainWater', stage: 4, order: 5, lcNumber: 42, lcSlug: 'trapping-rain-water', countryId: 'CL', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'TrappingRainWater', note: 'Iconic Hard Problem' },
 
@@ -192,7 +192,7 @@ export const ALL_PROBLEMS = [
   { id: 'stage6-2', title: 'Reverse String', route: '/strings/ReverseString', stage: 6, order: 2, lcNumber: 344, lcSlug: 'reverse-string', countryId: 'CG', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ReverseString' },
   { id: 'stage6-3', title: 'Count Vowels', route: '/strings/CountVowels', stage: 6, order: 3, lcNumber: null, lcSlug: null, countryId: 'CD', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'CountVowels' },
   { id: 'stage6-4', title: 'Valid Anagram', route: '/hashing/ValidAnagram', stage: 6, order: 4, lcNumber: 242, lcSlug: 'valid-anagram', countryId: 'AO', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ValidAnagram' },
-  { id: 'stage6-5', title: 'First Unique Character', route: '/strings/FirstUniqueCharacter', stage: 6, order: 5, lcNumber: 387, lcSlug: 'first-unique-character-in-a-string', countryId: 'ZM', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'FirstUniqueCharacter' },
+  { id: 'stage6-5', title: 'First Unique Character', route: '/strings/FirstUniqueCharacter', stage: 6, order: 5, lcNumber: 387, lcSlug: 'first-unique-character-in-a-string', countryId: 'ZM', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true },
 
   // =================================================================
   // STAGE 7: Advanced Strings (6 problems)
@@ -203,17 +203,17 @@ export const ALL_PROBLEMS = [
   { id: 'stage7-2', title: 'String Compression', route: '/strings/StringCompression', stage: 7, order: 2, lcNumber: 443, lcSlug: 'string-compression', countryId: 'BW', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'StringCompression' },
   { id: 'stage7-3', title: 'Reverse Words in a String', route: '/strings/ReverseWords', stage: 7, order: 3, lcNumber: 151, lcSlug: 'reverse-words-in-a-string', countryId: 'NA', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ReverseWords' },
   { id: 'stage7-4', title: 'Is Subsequence', route: '/strings/IsSubSequence', stage: 7, order: 4, lcNumber: 392, lcSlug: 'is-subsequence', countryId: 'ZA', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'IsSubsequence' },
-  { id: 'stage7-5', title: 'Group Anagrams', route: '/strings/GroupAnagrams', stage: 7, order: 5, lcNumber: 49, lcSlug: 'group-anagrams', countryId: 'MZ', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'GroupAnagrams' },
-  { id: 'stage7-6', title: 'Longest Palindromic Substring', route: '/strings/LongestPalindrome', stage: 7, order: 6, lcNumber: 5, lcSlug: 'longest-palindromic-substring', countryId: 'MG', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'LongestPalindrome' },
+  { id: 'stage7-5', title: 'Group Anagrams', route: '/strings/GroupAnagrams', stage: 7, order: 5, lcNumber: 49, lcSlug: 'group-anagrams', countryId: 'MZ', difficulty: Difficulty.MEDIUM, hasVisualizer: false, isNew: true },
+  { id: 'stage7-6', title: 'Longest Palindromic Substring', route: '/strings/LongestPalindrome', stage: 7, order: 6, lcNumber: 5, lcSlug: 'longest-palindromic-substring', countryId: 'MG', difficulty: Difficulty.MEDIUM, hasVisualizer: false, isNew: true },
 
   // =================================================================
   // STAGE 8: Binary Search – Core (5 problems)
   // Pattern: Divide and Conquer (Search)
   // Countries: North Africa + Mediterranean
   // =================================================================
-  { id: 'stage8-1', title: 'Binary Search Basic', route: '/binary-search/BinarySearch', stage: 8, order: 1, lcNumber: 704, lcSlug: 'binary-search', countryId: 'MA', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'BinarySearch' },
-  { id: 'stage8-2', title: 'Peak Index in Mountain Array', route: '/binary-search/PeakMountain', stage: 8, order: 2, lcNumber: 852, lcSlug: 'peak-index-in-a-mountain-array', countryId: 'DZ', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'PeakMountain' },
-  { id: 'stage8-3', title: 'Find First and Last Position', route: '/binary-search/FirstLastPosition', stage: 8, order: 3, lcNumber: 34, lcSlug: 'find-first-and-last-position-of-element-in-sorted-array', countryId: 'TN', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'FirstLastPosition' },
+  { id: 'stage8-1', title: 'Binary Search Basic', route: '/binary-search/BinarySearchBasic', stage: 8, order: 1, lcNumber: 704, lcSlug: 'binary-search', countryId: 'MA', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'BinarySearch' },
+  { id: 'stage8-2', title: 'Peak Index in Mountain Array', route: '/binary-search/PeakIndexInMountainArray', stage: 8, order: 2, lcNumber: 852, lcSlug: 'peak-index-in-a-mountain-array', countryId: 'DZ', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'PeakMountain' },
+  { id: 'stage8-3', title: 'Find First and Last Position', route: '/binary-search/FindFirstAndLastPosition', stage: 8, order: 3, lcNumber: 34, lcSlug: 'find-first-and-last-position-of-element-in-sorted-array', countryId: 'TN', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'FirstLastPosition' },
   { id: 'stage8-4', title: 'Kth Missing Positive Number', route: '/searching/KthMissingNumber', stage: 8, order: 4, lcNumber: 1539, lcSlug: 'kth-missing-positive-number', countryId: 'LY', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'KthMissingNumber' },
   { id: 'stage8-5', title: 'Find Smallest Letter Greater Than Target', route: '/searching/SmallestLetter', stage: 8, order: 5, lcNumber: 744, lcSlug: 'find-smallest-letter-greater-than-target', countryId: 'EG', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'SmallestLetter' },
 
@@ -222,12 +222,12 @@ export const ALL_PROBLEMS = [
   // Pattern: Search Space Reduction
   // Countries: Middle East + Eastern Mediterranean
   // =================================================================
-  { id: 'stage9-1', title: 'Search in Rotated Sorted Array', route: '/binary-search/SearchRotatedArray', stage: 9, order: 1, lcNumber: 33, lcSlug: 'search-in-rotated-sorted-array', countryId: 'SD', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SearchRotatedArray' },
-  { id: 'stage9-2', title: 'Find Minimum in Rotated Sorted Array', route: '/binary-search/MinRotatedArray', stage: 9, order: 2, lcNumber: 153, lcSlug: 'find-minimum-in-rotated-sorted-array', countryId: 'ET', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MinRotatedArray' },
+  { id: 'stage9-1', title: 'Search in Rotated Sorted Array', route: '/binary-search/SearchInRotatedSortedArray', stage: 9, order: 1, lcNumber: 33, lcSlug: 'search-in-rotated-sorted-array', countryId: 'SD', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SearchRotatedArray' },
+  { id: 'stage9-2', title: 'Find Minimum in Rotated Sorted Array', route: '/binary-search/FindMinimumInRotatedSortedArray', stage: 9, order: 2, lcNumber: 153, lcSlug: 'find-minimum-in-rotated-sorted-array', countryId: 'ET', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MinRotatedArray' },
   { id: 'stage9-3', title: 'Find Peak Element', route: '/binary-search/FindPeakElement', stage: 9, order: 3, lcNumber: 162, lcSlug: 'find-peak-element', countryId: 'ER', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'FindPeakElement' },
   { id: 'stage9-4', title: 'Search a 2D Matrix', route: '/binary-search/Search2DMatrix', stage: 9, order: 4, lcNumber: 74, lcSlug: 'search-a-2d-matrix', countryId: 'DJ', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'Search2DMatrix' },
-  { id: 'stage9-5', title: 'Min Speed to Arrive on Time', route: '/binary-search/MinSpeed', stage: 9, order: 5, lcNumber: 1870, lcSlug: 'minimum-speed-to-arrive-on-time', countryId: 'SO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MinSpeed' },
-  { id: 'stage9-6', title: 'Median of Two Sorted Arrays', route: '/binary-search/MedianTwoArrays', stage: 9, order: 6, lcNumber: 4, lcSlug: 'median-of-two-sorted-arrays', countryId: 'SA', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'MedianTwoArrays' },
+  { id: 'stage9-5', title: 'Min Speed to Arrive on Time', route: '/binary-search/MinSpeedToArriveOnTime', stage: 9, order: 5, lcNumber: 1870, lcSlug: 'minimum-speed-to-arrive-on-time', countryId: 'SO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MinSpeed' },
+  { id: 'stage9-6', title: 'Median of Two Sorted Arrays', route: '/binary-search/MedianOfTwoSortedArrays', stage: 9, order: 6, lcNumber: 4, lcSlug: 'median-of-two-sorted-arrays', countryId: 'SA', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'MedianTwoArrays' },
   { id: 'stage9-7', title: 'Special Array With X Elements', route: '/searching/SpecialArray', stage: 9, order: 7, lcNumber: 1608, lcSlug: 'special-array-with-x-elements-greater-than-or-equal-x', countryId: 'YE', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'SpecialArray' },
   { id: 'stage9-8', title: 'Search in Sorted Array of Unknown Size', route: '/searching/UnknownSizeSearch', stage: 9, order: 8, lcNumber: 702, lcSlug: 'search-in-a-sorted-array-of-unknown-size', countryId: 'OM', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'UnknownSizeSearch' },
   { id: 'stage9-9', title: 'Exponential Search', route: '/searching/ExponentialSearch', stage: 9, order: 9, lcNumber: null, lcSlug: null, countryId: 'AE', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ExponentialSearch' },
@@ -276,7 +276,7 @@ export const ALL_PROBLEMS = [
   { id: 'stage13-1', title: 'Next Greater Element', route: '/stack/NextGreaterElement', stage: 13, order: 1, lcNumber: 496, lcSlug: 'next-greater-element-i', countryId: 'KZ', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'NextGreaterElement' },
   { id: 'stage13-2', title: 'Remove K Digits', route: '/stack/RemoveKDigits', stage: 13, order: 2, lcNumber: 402, lcSlug: 'remove-k-digits', countryId: 'AF', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'RemoveKDigits' },
   { id: 'stage13-3', title: 'Largest Rectangle in Histogram', route: '/stack/LargestRectangleHistogram', stage: 13, order: 3, lcNumber: 84, lcSlug: 'largest-rectangle-in-histogram', countryId: 'PK', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'LargestRectangleHistogram' },
-  { id: 'stage13-4', title: 'Sum of Subarray Ranges (Stack)', route: '/stack/SubarrayRangesStack', stage: 13, order: 4, lcNumber: 2104, lcSlug: 'sum-of-subarray-ranges', countryId: 'IN', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SubarrayRangesStack', note: 'Monotonic stack application' },
+  { id: 'stage13-4', title: 'Sum of Subarray Ranges (Stack)', route: '/stack/SubarrayRanges', stage: 13, order: 4, lcNumber: 2104, lcSlug: 'sum-of-subarray-ranges', countryId: 'IN', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SubarrayRangesStack', note: 'Monotonic stack application' },
 
   // =================================================================
   // STAGE 14: Queue (4 problems)
@@ -294,8 +294,8 @@ export const ALL_PROBLEMS = [
   // Pattern: Ordering & Comparison
   // Countries: Southeast Asia
   // =================================================================
-  { id: 'stage15-1', title: 'Quadratic Sorting (Bubble, Selection, Insertion)', route: '/sorting/QuadraticSorting', stage: 15, order: 1, lcNumber: null, lcSlug: null, countryId: 'TH', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'QuadraticSorting', note: 'Compressed: O(n²) algorithms' },
-  { id: 'stage15-2', title: 'Efficient Sorting (Merge, Quick, Heap)', route: '/sorting/EfficientSorting', stage: 15, order: 2, lcNumber: 912, lcSlug: 'sort-an-array', countryId: 'VN', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'EfficientSorting', note: 'Compressed: O(n log n) algorithms' },
+  { id: 'stage15-1', title: 'Quadratic Sorting (Bubble, Selection, Insertion)', route: '/sorting/QuadraticSorting', stage: 15, order: 1, lcNumber: null, lcSlug: null, countryId: 'TH', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true, note: 'Compressed: O(n²) algorithms' },
+  { id: 'stage15-2', title: 'Efficient Sorting (Merge, Quick, Heap)', route: '/sorting/EfficientSorting', stage: 15, order: 2, lcNumber: 912, lcSlug: 'sort-an-array', countryId: 'VN', difficulty: Difficulty.MEDIUM, hasVisualizer: false, isNew: true, note: 'Compressed: O(n log n) algorithms' },
   { id: 'stage15-3', title: 'Counting Sort', route: '/sorting/CountingSort', stage: 15, order: 3, lcNumber: null, lcSlug: null, countryId: 'LA', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'CountingSort' },
   { id: 'stage15-4', title: 'Radix Sort', route: '/sorting/RadixSort', stage: 15, order: 4, lcNumber: null, lcSlug: null, countryId: 'KH', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'RadixSort' },
   { id: 'stage15-5', title: 'Bucket Sort', route: '/sorting/BucketSort', stage: 15, order: 5, lcNumber: null, lcSlug: null, countryId: 'MY', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'BucketSort' },
@@ -333,7 +333,7 @@ export const ALL_PROBLEMS = [
   { id: 'stage18-1', title: 'Morris Traversal (Inorder)', route: '/trees/MorrisTraversal', stage: 18, order: 1, lcNumber: 94, lcSlug: 'binary-tree-inorder-traversal', countryId: 'BY', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MorrisTraversal' },
   { id: 'stage18-2', title: 'Validate Binary Search Tree', route: '/trees/ValidateBST', stage: 18, order: 2, lcNumber: 98, lcSlug: 'validate-binary-search-tree', countryId: 'UA', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ValidateBST' },
   { id: 'stage18-3', title: 'AVL Tree Visualizer', route: '/trees/AVLTree', stage: 18, order: 3, lcNumber: 110, lcSlug: 'balanced-binary-tree', countryId: 'PL', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'AVLTree' },
-  { id: 'stage18-4', title: 'Symmetric Tree', route: '/trees/SymmetricTreeVisualizer', stage: 18, order: 4, lcNumber: 101, lcSlug: 'symmetric-tree', countryId: 'MD', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'SymmetricTree' },
+  { id: 'stage18-4', title: 'Symmetric Tree', route: '/trees/SymmetricTree', stage: 18, order: 4, lcNumber: 101, lcSlug: 'symmetric-tree', countryId: 'MD', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'SymmetricTree' },
   { id: 'stage18-5', title: 'Implement Trie (Prefix Tree)', route: '/design/ImplementTrie', stage: 18, order: 5, lcNumber: 208, lcSlug: 'implement-trie-prefix-tree', countryId: 'RO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ImplementTrie' },
 
   // =================================================================
@@ -374,7 +374,7 @@ export const ALL_PROBLEMS = [
   { id: 'stage21-5', title: 'Tower of Hanoi', route: '/recursion/TowerOfHanoi', stage: 21, order: 5, lcNumber: null, lcSlug: null, countryId: 'SI', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'TowerOfHanoi' },
   { id: 'stage21-6', title: 'Subset Sum', route: '/recursion/SubsetSum', stage: 21, order: 6, lcNumber: null, lcSlug: null, countryId: 'HR', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SubsetSum' },
   { id: 'stage21-7', title: 'Permutations', route: '/backtracking/Permutations', stage: 21, order: 7, lcNumber: 46, lcSlug: 'permutations', countryId: 'BA', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'Permutations' },
-  { id: 'stage21-8', title: 'N-Queens', route: '/backtracking/NQueens', stage: 21, order: 8, lcNumber: 51, lcSlug: 'n-queens', countryId: 'RS', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'NQueens' },
+  { id: 'stage21-8', title: 'N-Queens', route: '/recursion/NQueens', stage: 21, order: 8, lcNumber: 51, lcSlug: 'n-queens', countryId: 'RS', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'NQueens' },
   { id: 'stage21-9', title: 'Rat in a Maze', route: '/pathfinding/RatInMaze', stage: 21, order: 9, lcNumber: null, lcSlug: null, countryId: 'ME', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'RatInMaze' },
   { id: 'stage21-10', title: 'Word Search', route: '/backtracking/WordSearch', stage: 21, order: 10, lcNumber: 79, lcSlug: 'word-search', countryId: 'AL', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'WordSearch' },
   { id: 'stage21-11', title: 'Sudoku Solver', route: '/backtracking/SudokuSolver', stage: 21, order: 11, lcNumber: 37, lcSlug: 'sudoku-solver', countryId: 'MK', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'SudokuSolver' },
@@ -407,8 +407,8 @@ export const ALL_PROBLEMS = [
   { id: 'stage23-4', title: 'Two City Scheduling', route: '/greedy/TwoCityScheduling', stage: 23, order: 4, lcNumber: 1029, lcSlug: 'two-city-scheduling', countryId: 'VU', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'TwoCityScheduling' },
   { id: 'stage23-5', title: 'Maximum Profit in Job Scheduling', route: '/greedy/JobScheduling', stage: 23, order: 5, lcNumber: 1235, lcSlug: 'maximum-profit-in-job-scheduling', countryId: 'NC', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'JobScheduling' },
   { id: 'stage23-6', title: 'Merge Intervals', route: '/arrays/MergeIntervals', stage: 23, order: 6, lcNumber: 56, lcSlug: 'merge-intervals', countryId: 'SB', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MergeIntervals' },
-  { id: 'stage23-7', title: 'Jump Game II', route: '/greedy/JumpGameII', stage: 23, order: 7, lcNumber: 45, lcSlug: 'jump-game-ii', countryId: 'WS', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'JumpGameII' },
-  { id: 'stage23-8', title: 'Gas Station', route: '/greedy/GasStation', stage: 23, order: 8, lcNumber: 134, lcSlug: 'gas-station', countryId: 'TO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'GasStation' },
+  { id: 'stage23-7', title: 'Jump Game II', route: '/greedy/JumpGameII', stage: 23, order: 7, lcNumber: 45, lcSlug: 'jump-game-ii', countryId: 'WS', difficulty: Difficulty.MEDIUM, hasVisualizer: false, isNew: true },
+  { id: 'stage23-8', title: 'Gas Station', route: '/greedy/GasStation', stage: 23, order: 8, lcNumber: 134, lcSlug: 'gas-station', countryId: 'TO', difficulty: Difficulty.MEDIUM, hasVisualizer: false, isNew: true },
 
   // =================================================================
   // STAGE 24: Design & Systems (4 problems)

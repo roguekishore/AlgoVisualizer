@@ -1,9 +1,9 @@
 /**
  * Routes Configuration
- * Centralized route definitions for all algorithm categories and visualizers
+ * Centralized route definitions for all algorithm topics and visualizers
  */
 
-// Import category icons
+// Import topic icons
 import {
   ArrowDownUp,
   Brackets,
@@ -28,10 +28,10 @@ import {
 } from "lucide-react";
 
 /**
- * Category configuration
- * Maps category keys to their display information
+ * Topic configuration
+ * Maps topic keys to their display information
  */
-export const categoryConfig = {
+export const topicConfig = {
   sorting: {
     key: "Sorting",
     title: "Sorting Algorithms",
@@ -203,15 +203,15 @@ export const categoryConfig = {
 };
 
 /**
- * Get category config by path segment
+ * Get topic config by path segment
  */
-export function getCategoryByPath(pathSegment) {
-  return Object.values(categoryConfig).find(c => c.path === `/${pathSegment}`) || null;
+export function getTopicByPath(pathSegment) {
+  return Object.values(topicConfig).find(c => c.path === `/${pathSegment}`) || null;
 }
 
 /**
- * Get category config by key
+ * Get topic config by key
  */
-export function getCategoryByKey(key) {
-  return Object.values(categoryConfig).find(c => c.key === key) || null;
+export function getTopicByKey(key) {
+  return Object.values(topicConfig).find(c => c.key === key) || null;
 }

@@ -1,4 +1,4 @@
-import {
+﻿import {
   Star,
   ArrowDownUp,
   Brackets,
@@ -24,30 +24,30 @@ import {
 import { problems } from "../search/catalog";
 
 /**
- * Utility function to extract unique problem names (topics) for a given category
- * @param {string} categoryName - The category name (e.g., "Arrays", "Sorting")
- * @returns {string[]} Array of problem labels from that category (max 5)
+ * Utility function to extract problem names for a given topic
+ * @param {string} topicKey - The topic key (e.g., "Arrays", "Sorting")
+ * @returns {string[]} Array of problem labels from that topic (max 4)
  */
-function getTopicsForCategory(categoryName) {
+function getProblemsForTopic(topicKey) {
   return problems
-    .filter((problem) => problem.category === categoryName)
+    .filter((problem) => problem.topic === topicKey)
     .slice(0, 4)
     .map((problem) => problem.label);
 }
 
 /**
- * Algorithm Categories Data
+ * Topics Data â€” Algorithm browsing groups for /visualizers
  * 
- * Each category contains:
+ * Each topic contains:
  * - name: Display name
  * - icon: Lucide icon component
- * - description: Brief description of the category
- * - page: Route identifier for navigation
+ * - description: Brief description of the topic
+ * - page: Route identifier / key for navigation
  * - spotlightColor: Color for the CardSpotlight effect (hex or rgb)
  * - subtitle: Short subtitle for CardFlip
- * - topics: Array of problem names/topics in this category (from catalog)
+ * - problems: Array of problem labels in this topic (from catalog)
  */
-export const categories = [
+export const topics = [
   // {
   //   name: "Starred Topics",
   //   icon: Star,
@@ -65,7 +65,7 @@ export const categories = [
     page: "Sorting",
     spotlightColor: "#f97316",
     subtitle: "Master sorting algorithms",
-    topics: getTopicsForCategory("Sorting"),
+    problems: getProblemsForTopic("Sorting"),
   },
   {
     name: "Arrays",
@@ -74,7 +74,7 @@ export const categories = [
     page: "Arrays",
     spotlightColor: "#3b82f6",
     subtitle: "Explore array techniques",
-    topics: getTopicsForCategory("Arrays"),
+    problems: getProblemsForTopic("Arrays"),
   },
   {
     name: "BinarySearch",
@@ -83,7 +83,7 @@ export const categories = [
     page: "BinarySearch",
     spotlightColor: "#14b8a6",
     subtitle: "Efficient searching",
-    topics: getTopicsForCategory("BinarySearch"),
+    problems: getProblemsForTopic("BinarySearch"),
   },
   {
     name: "Strings",
@@ -93,7 +93,7 @@ export const categories = [
     page: "Strings",
     spotlightColor: "#a855f7",
     subtitle: "String manipulation mastery",
-    topics: getTopicsForCategory("Strings"),
+    problems: getProblemsForTopic("Strings"),
   },
   {
     name: "Searching",
@@ -102,7 +102,7 @@ export const categories = [
     page: "Searching",
     spotlightColor: "#10b981",
     subtitle: "Search algorithm techniques",
-    topics: getTopicsForCategory("Searching"),
+    problems: getProblemsForTopic("Searching"),
   },
   {
     name: "Hashing",
@@ -111,7 +111,7 @@ export const categories = [
     page: "Hashing",
     spotlightColor: "#ef4444",
     subtitle: "Hash-based data structures",
-    topics: getTopicsForCategory("Hashing"),
+    problems: getProblemsForTopic("Hashing"),
   },
   {
     name: "Linked List",
@@ -120,7 +120,7 @@ export const categories = [
     page: "LinkedList",
     spotlightColor: "#6366f1",
     subtitle: "Linked list structures",
-    topics: getTopicsForCategory("LinkedList"),
+    problems: getProblemsForTopic("LinkedList"),
   },
   {
     name: "Recursion",
@@ -129,7 +129,7 @@ export const categories = [
     page: "Recursion",
     spotlightColor: "#8b5cf6",
     subtitle: "Recursive problem solving",
-    topics: getTopicsForCategory("Recursion"),
+    problems: getProblemsForTopic("Recursion"),
   },
   {
     name: "Bit Manipulation",
@@ -139,7 +139,7 @@ export const categories = [
     page: "BitManipulation",
     spotlightColor: "#64748b",
     subtitle: "Binary operations",
-    topics: getTopicsForCategory("BitManipulation"),
+    problems: getProblemsForTopic("BitManipulation"),
   },
   {
     name: "Stack",
@@ -149,7 +149,7 @@ export const categories = [
     page: "Stack",
     spotlightColor: "#7c3aed",
     subtitle: "Stack data structures",
-    topics: getTopicsForCategory("Stack"),
+    problems: getProblemsForTopic("Stack"),
   },
   {
     name: "Queue",
@@ -158,7 +158,7 @@ export const categories = [
     page: "Queue",
     spotlightColor: "#ec4899",
     subtitle: "Queue operations",
-    topics: getTopicsForCategory("Queue"),
+    problems: getProblemsForTopic("Queue"),
   },
   {
     name: "Sliding Window",
@@ -167,7 +167,7 @@ export const categories = [
     page: "SlidingWindows",
     spotlightColor: "#0d9488",
     subtitle: "Window-based techniques",
-    topics: getTopicsForCategory("SlidingWindows"),
+    problems: getProblemsForTopic("SlidingWindows"),
   },
   {
     name: "Heaps",
@@ -177,7 +177,7 @@ export const categories = [
     page: "Heaps",
     spotlightColor: "#ea580c",
     subtitle: "Priority queue mastery",
-    topics: getTopicsForCategory("Heaps"),
+    problems: getProblemsForTopic("Heaps"),
   },
   {
     name: "Trees",
@@ -187,7 +187,7 @@ export const categories = [
     page: "Trees",
     spotlightColor: "#22c55e",
     subtitle: "Tree traversals",
-    topics: getTopicsForCategory("Trees"),
+    problems: getProblemsForTopic("Trees"),
   },
   {
     name: "Graphs",
@@ -197,7 +197,7 @@ export const categories = [
     page: "Graphs",
     spotlightColor: "#0ea5e9",
     subtitle: "Graph algorithms",
-    topics: getTopicsForCategory("Graphs"),
+    problems: getProblemsForTopic("Graphs"),
   },
   {
     name: "Pathfinding",
@@ -207,7 +207,7 @@ export const categories = [
     page: "Pathfinding",
     spotlightColor: "#d946ef",
     subtitle: "Navigation techniques",
-    topics: getTopicsForCategory("Pathfinding"),
+    problems: getProblemsForTopic("Pathfinding"),
   },
   {
     name: "Greedy Algorithms",
@@ -217,7 +217,7 @@ export const categories = [
     page: "GreedyAlgorithms",
     spotlightColor: "#f43f5e",
     subtitle: "Greedy optimization",
-    topics: getTopicsForCategory("GreedyAlgorithms"),
+    problems: getProblemsForTopic("GreedyAlgorithms"),
   },
   {
     name: "Backtracking",
@@ -227,7 +227,7 @@ export const categories = [
     page: "Backtracking",
     spotlightColor: "#fb923c",
     subtitle: "Backtracking exploration",
-    topics: getTopicsForCategory("Backtracking"),
+    problems: getProblemsForTopic("Backtracking"),
   },
   {
     name: "Dynamic Programming",
@@ -236,7 +236,7 @@ export const categories = [
     page: "DynamicProgramming",
     spotlightColor: "#c026d3",
     subtitle: "Memoization mastery",
-    topics: getTopicsForCategory("DynamicProgramming"),
+    problems: getProblemsForTopic("DynamicProgramming"),
   },
   {
     name: "Design",
@@ -246,7 +246,7 @@ export const categories = [
     page: "Design",
     spotlightColor: "#06b6d4",
     subtitle: "System design patterns",
-    topics: getTopicsForCategory("Design"),
+    problems: getProblemsForTopic("Design"),
   },
   {
     name: "Mathematical & Miscellaneous",
@@ -256,8 +256,8 @@ export const categories = [
     page: "MathematicalMiscellaneous",
     spotlightColor: "#2dd4bf",
     subtitle: "Mathematical foundations",
-    topics: getTopicsForCategory("MathematicalMiscellaneous"),
+    problems: getProblemsForTopic("MathematicalMiscellaneous"),
   },
 ];
 
-export default categories;
+export default topics;

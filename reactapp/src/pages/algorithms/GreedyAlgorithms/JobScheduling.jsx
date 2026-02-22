@@ -7,13 +7,12 @@ import {
   Play,
   Pause,
   RotateCcw,
-  ArrowLeft,
   SkipBack,
   SkipForward,
   Clock,
 } from "lucide-react";
 
-const JobScheduling = ({ navigate }) => {
+const JobScheduling = () => {
   const [history, setHistory] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [jobsInput, setJobsInput] = useState("1,3,50,2,5,20,4,6,70,6,7,60,5,8,30,7,9,40");
@@ -512,15 +511,6 @@ const generateNewJobs = () => {
             </div>
           </div>
         )}
-        <div className="mt-8 text-center">
-          <button
-            onClick={() => navigate && navigate("home")}
-            className="flex items-center gap-2 text-theme-secondary bg-theme-tertiary/80 hover:bg-theme-elevated active:bg-theme-elevated px-5 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 border border-theme-primary mx-auto"
-          >
-            <ArrowLeft size={20} />
-            Back to Problems
-          </button>
-        </div>
       </div>
     </div>
   );
