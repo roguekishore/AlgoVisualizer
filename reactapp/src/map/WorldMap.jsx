@@ -70,11 +70,20 @@ const WorldMap = () => {
 
   /* ── zustand store ── */
   const completedProblems = useProgressStore(s => s.completedProblems);
+  const isLoading = useProgressStore(s => s.isLoading);
   const {
     completeProblem, getProblemState, getCurrentRoadmapProblem,
     getRoadmapIndex, getStageProgress, getTotalProgress,
-    resetProgress, markStageComplete,
+    resetProgress, markStageComplete, loadProgress,
   } = useProgressStore();
+
+  /* ── load progress from backend on mount ── */
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user?.uid) loadProgress(user.uid);
+    } catch { /* not logged in */ }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ───────────────────────────────────────────────
      COUNTRY HELPERS
@@ -199,9 +208,9 @@ const WorldMap = () => {
 
   const goToProblem = useCallback(() => { if (selectedProblem) navigate(selectedProblem.route); }, [selectedProblem, navigate]);
 
-  const markComplete = useCallback(() => {
+  const markComplete = useCallback(async () => {
     if (!selectedProblem) return;
-    const result = completeProblem(selectedProblem.id);
+    const result = await completeProblem(selectedProblem.id);
     if (result.success) {
       if (result.nextProblem) {
         const nid = getCountryForProblem(result.nextProblem.id);

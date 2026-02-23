@@ -5,6 +5,9 @@ import ZentryNavbar from "./components/zentry/ZentryNavbar";
 import HomePage from "./pages/HomePage";
 import AppRoutes from "./routes";
 import WorldMap from "./map/WorldMap";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const ProblemsPage = lazy(() => import("./pages/judge/ProblemsPage"));
 const JudgePage = lazy(() => import("./pages/judge/JudgePage"));
@@ -12,6 +15,8 @@ const ProblemListPage = lazy(() => import("./pages/problems/ProblemListPage"));
 
 const NAVBAR_HIDDEN_PATHS = [
   '/map',
+  '/login',
+  '/signup',
 ];
 
 const TRANSPARENT_NAVBAR_PATHS = [
@@ -67,6 +72,9 @@ function AppContent() {
       <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#888' }}>Loading...</div>}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/map" element={<WorldMap />} />
           <Route path="/problems" element={<ProblemListPage />} />
           <Route path="/judge" element={<ProblemsPage />} />
