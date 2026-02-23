@@ -1,30 +1,284 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body { width: 250px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 15px; background: #f4f7f6; }
-        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-        h3 { color: #333; margin-bottom: 5px; font-size: 16px; }
-        p { font-size: 12px; color: #666; margin-bottom: 15px; }
-        button { 
-            background: linear-gradient(135deg, #00b8a3 0%, #009686 100%);
-            color: white; border: none; padding: 10px 15px; border-radius: 5px;
-            font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
-        }
-        button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,184,163,0.3); }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        #status { margin-top: 12px; font-size: 11px; font-weight: bold; }
-        .sync-icon { font-size: 24px; margin-bottom: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <style>
+    :root {
+      --bg:         #f4f4f5;
+      --fg:         #09090b;
+      --card:       #ffffff;
+      --muted:      #f4f4f5;
+      --muted-fg:   #71717a;
+      --primary:    #18181b;
+      --primary-fg: #fafafa;
+      --border:     #e4e4e7;
+      --ring:       #a1a1aa;
+      --radius:     0.5rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brand { display: flex; align-items: center; gap: 8px; }
+
+    .brand-mark {
+      width: 26px;
+      height: 26px;
+      background: var(--primary);
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--primary-fg);
+      letter-spacing: -0.05em;
+      font-family: Georgia, serif;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+    }
+
+    .chip {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--muted-fg);
+      background: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px 8px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    /* Body */
+    .body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    /* Account card */
+    .account-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .account-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-fg);
+      margin-bottom: 3px;
+    }
+
+    .account-value {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--fg);
+    }
+
+    .account-value.empty {
+      color: var(--muted-fg);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .lc-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    .lc-indicator.on {
+      background: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
+    }
+
+    /* Description */
+    .desc {
+      font-size: 11.5px;
+      color: var(--muted-fg);
+      line-height: 1.65;
+    }
+
+    /* Button */
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: var(--radius);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: var(--primary);
+      color: var(--primary-fg);
+      font-family: inherit;
+      letter-spacing: -0.005em;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:hover:not(:disabled)  { opacity: 0.85; }
+    .btn:active:not(:disabled) { transform: scale(0.985); }
+    .btn:disabled              { opacity: 0.45; cursor: not-allowed; }
+    .btn:focus-visible { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ring); }
+
+    .btn-spin {
+      width: 12px;
+      height: 12px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Status box */
+    .status {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      padding: 9px 11px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      font-size: 11.5px;
+      line-height: 1.55;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .status.idle { background: var(--muted);  border-color: var(--border); color: var(--muted-fg); }
+    .status.busy { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+    .status.ok   { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+    .status.fail { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
+
+    .status-dot {
+      flex-shrink: 0;
+      margin-top: 4px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.65;
+    }
+
+    .status-spin {
+      flex-shrink: 0;
+      margin-top: 2px;
+      width: 10px;
+      height: 10px;
+      border: 1.5px solid currentColor;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+      display: none;
+    }
+
+    .status.busy .status-dot  { display: none; }
+    .status.busy .status-spin { display: block; }
+
+    /* Footer */
+    .footer {
+      padding: 9px 14px;
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted-fg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      letter-spacing: 0.01em;
+    }
+
+    .footer a { color: var(--muted-fg); text-decoration: none; transition: color 0.15s; }
+    .footer a:hover { color: var(--fg); }
+  </style>
 </head>
 <body>
-    <div class="card">
-        <div class="sync-icon">🌍</div>
-        <h3>World Map Sync</h3>
-        <p>Sync your LeetCode history to conquer new territories.</p>
-        <button id="syncBtn">Sync History Now</button>
-        <div id="status">Status: Ready</div>
+
+  <div class="header">
+    <div class="brand">
+      <div class="brand-mark">AV</div>
+      <span class="brand-name">Vantage</span>
     </div>
-    <script src="popup.js"></script>
+    <span class="chip">LC Sync</span>
+  </div>
+
+  <div class="body">
+
+    <div class="account-card">
+      <div>
+        <div class="account-label">LeetCode Account</div>
+        <div class="account-value empty" id="lcUser">Not detected</div>
+      </div>
+      <div class="lc-indicator" id="lcDot"></div>
+    </div>
+
+    <p class="desc">
+      Sync your accepted LeetCode solutions to Vantage to unlock conquered territories on your world map.
+    </p>
+
+    <button class="btn" id="syncBtn">
+      <div class="btn-spin" id="btnSpinner" style="display:none;"></div>
+      <svg id="btnIcon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+      </svg>
+      <span id="btnLabel">Sync Now</span>
+    </button>
+
+    <div class="status idle" id="statusBox">
+      <div class="status-dot"></div>
+      <div class="status-spin"></div>
+      <span id="statusText">Ready to sync</span>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <span>AlgoVisualizer &middot; Vantage</span>
+    <a href="http://localhost:5173" target="_blank">Open App &#x2197;</a>
+  </div>
+
+  <script src="popup.js"></script>
 </body>
 </html>
