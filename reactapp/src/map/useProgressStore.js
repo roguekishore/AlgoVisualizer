@@ -135,12 +135,13 @@ const useProgressStore = create((set, get) => ({
    */
   loadProgress: async (userId) => {
     if (!userId) return;
-    set({ isLoading: true });
+    // Clear stale data immediately — backend is always the source of truth
+    set({ isLoading: true, completedProblems: [] });
     try {
       const progressMap = await apiFetchProgress(userId);
       const solvedFrontendIds = Object.values(progressMap)
         .filter(p => p.status === 'SOLVED')
-        .map(p => toFrontendId(p.problemId))
+        .map(p => toFrontendId(p.pid))
         .filter(Boolean);
       set({ completedProblems: solvedFrontendIds });
     } catch (err) {
@@ -203,20 +204,36 @@ const useProgressStore = create((set, get) => ({
   },
 
   isProblemUnlocked: (problemId) => {
+    const { completedProblems } = get();
     const problem = getProblemById(problemId);
     if (!problem) return false;
+
+    // A solved problem is always considered unlocked
+    if (completedProblems.includes(problemId)) return true;
+
+    // First problem in any stage is always unlocked
     if (problem.order === 1) return true;
+
     const stageProblems = getProblemsByStage(problem.stage);
+
+    // Standard rule: previous problem in the stage must be completed
     const prevProblem = stageProblems.find(p => p.order === problem.order - 1);
-    if (!prevProblem) return true;
-    return get().completedProblems.includes(prevProblem.id);
+    if (prevProblem && completedProblems.includes(prevProblem.id)) return true;
+
+    // LC-sync rule: if ANY later problem in this stage is already solved,
+    // all earlier problems in the stage are unlocked (user jumped ahead)
+    const hasLaterSolve = stageProblems.some(
+      p => p.order > problem.order && completedProblems.includes(p.id)
+    );
+    if (hasLaterSolve) return true;
+
+    return false;
   },
 
   getProblemState: (problemId) => {
-    const { completedProblems, isProblemUnlocked, getCurrentRoadmapProblem } = get();
+    const { completedProblems, isProblemUnlocked } = get();
+    // Completed always takes priority (even if the sequential lock says otherwise)
     if (completedProblems.includes(problemId)) return 'completed';
-    const currentProblem = getCurrentRoadmapProblem();
-    if (currentProblem && currentProblem.id === problemId) return 'current';
     if (isProblemUnlocked(problemId)) return 'available';
     return 'locked';
   },

@@ -132,11 +132,18 @@ public class UserService {
         if (userRepository.existsByUsername(dto.getUsername())) {
             throw new IllegalArgumentException("Username already taken: " + dto.getUsername());
         }
+        if (dto.getLcusername() != null && !dto.getLcusername().isBlank()
+                && userRepository.existsByLcusername(dto.getLcusername())) {
+            throw new IllegalArgumentException("LeetCode username already linked to another account: " + dto.getLcusername());
+        }
 
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
+        if (dto.getLcusername() != null && !dto.getLcusername().isBlank()) {
+            user.setLcusername(dto.getLcusername().trim());
+        }
         user.setGraduationYear(dto.getGraduationYear());
         if (dto.getInstitutionId() != null) {
             Institution institution = institutionRepository.findById(dto.getInstitutionId())

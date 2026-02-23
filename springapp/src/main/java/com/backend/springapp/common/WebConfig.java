@@ -16,6 +16,12 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
+                // Allow all origins for the sync endpoint (used by the browser extension)
+                registry.addMapping("/api/sync/**")
+                        .allowedOriginPatterns("*")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*");
+
                 registry.addMapping("/api/**")
                         .allowedOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:5173")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { width: 250px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 15px; background: #f4f7f6; }
+        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        h3 { color: #333; margin-bottom: 5px; font-size: 16px; }
+        p { font-size: 12px; color: #666; margin-bottom: 15px; }
+        button { 
+            background: linear-gradient(135deg, #00b8a3 0%, #009686 100%);
+            color: white; border: none; padding: 10px 15px; border-radius: 5px;
+            font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,184,163,0.3); }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        #status { margin-top: 12px; font-size: 11px; font-weight: bold; }
+        .sync-icon { font-size: 24px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="sync-icon">🌍</div>
+        <h3>World Map Sync</h3>
+        <p>Sync your LeetCode history to conquer new territories.</p>
+        <button id="syncBtn">Sync History Now</button>
+        <div id="status">Status: Ready</div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

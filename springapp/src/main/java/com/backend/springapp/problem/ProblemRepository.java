@@ -1,5 +1,7 @@
 package com.backend.springapp.problem;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +14,11 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
+
+    /**
+     * Find a problem by its LeetCode slug.
+     */
+    Optional<Problem> findByLcslug(String lcslug);
 
     /**
      * Find problems by stage name.

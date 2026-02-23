@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "DSA Skill Tree Sync",
+  "version": "1.0",
+  "description": "Real-time DSA World Map progress tracker.",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "https://leetcode.com/graphql",
+    "http://localhost:8080/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/problems/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

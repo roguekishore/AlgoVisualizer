@@ -15,9 +15,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByUsername(String username);
 
+    Optional<User> findByLcusername(String lcusername);
+
     boolean existsByEmail(String email);
 
     boolean existsByUsername(String username);
+
+    boolean existsByLcusername(String lcusername);
 
     /**
      * Atomically increments the stored rating of a user by the given points.

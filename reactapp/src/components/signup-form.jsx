@@ -23,7 +23,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { Check, ChevronsUpDown, User, Mail, KeyRound, ShieldCheck, Building2, GraduationCap, UserPlus } from "lucide-react"
+import { Check, ChevronsUpDown, User, Mail, KeyRound, ShieldCheck, Building2, GraduationCap, UserPlus, Code2, Wand2 } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
 
 const API_BASE = "http://localhost:8080"
@@ -36,6 +36,7 @@ export function SignupForm({ className, ...props }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const [lcusername, setLcusername] = useState("")
   const [graduationYear, setGraduationYear] = useState("")
 
   // institution autocomplete
@@ -48,6 +49,25 @@ export function SignupForm({ className, ...props }) {
   // status
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  async function fillDemo() {
+    setUsername("rogue")
+    setEmail("rogue@gmail.com")
+    setPassword("demodemo")
+    setConfirmPassword("demodemo")
+    setLcusername("the-maverick")
+    setGraduationYear("2027")
+    // Search and auto-select the institution
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/institutions/search?q=${encodeURIComponent("Sri krishna college of technology")}&limit=5`
+      )
+      if (res.ok) {
+        const data = await res.json()
+        if (data.length > 0) setSelectedInstitution(data[0])
+      }
+    } catch { /* ignore */ }
+  }
 
   // Debounced fetch of institution suggestions whenever popover is open
   useEffect(() => {
@@ -86,6 +106,7 @@ export function SignupForm({ className, ...props }) {
         username,
         email,
         password,
+        ...(lcusername.trim() && { lcusername: lcusername.trim() }),
         ...(selectedInstitution && { institutionId: selectedInstitution.id }),
         ...(graduationYear && { graduationYear: parseInt(graduationYear, 10) }),
       }
@@ -123,6 +144,16 @@ export function SignupForm({ className, ...props }) {
               {error && (
                 <p className="text-sm text-destructive text-center">{error}</p>
               )}
+
+              {/* Dev autofill */}
+              <button
+                type="button"
+                onClick={fillDemo}
+                className="flex items-center justify-center gap-1.5 w-full text-xs text-muted-foreground border border-dashed border-border rounded-md py-1.5 hover:border-[#5542FF]/50 hover:text-[#5542FF] transition-colors"
+              >
+                <Wand2 size={12} />
+                Fill demo account
+              </button>
 
               {/* Username */}
               <div className="grid gap-2">
@@ -187,6 +218,25 @@ export function SignupForm({ className, ...props }) {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
+              </div>
+
+              {/* LeetCode Username (optional) */}
+              <div className="grid gap-2">
+                <Label htmlFor="lcusername" className="flex items-center gap-1.5">
+                  <Code2 size={14} className="text-muted-foreground" />
+                  LeetCode Username{" "}
+                  <span className="text-muted-foreground font-normal">(optional)</span>
+                </Label>
+                <Input
+                  id="lcusername"
+                  type="text"
+                  placeholder="e.g. john_doe"
+                  value={lcusername}
+                  onChange={(e) => setLcusername(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Links your account for one-click LeetCode sync via the browser extension.
+                </p>
               </div>
 
               {/* Institution – autocomplete combobox (optional) */}

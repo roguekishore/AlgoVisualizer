@@ -59,7 +59,7 @@ const ProfilePage = () => {
 
     async function load() {
       try {
-        // Load progress from backend into store + fetch profile & stats
+        // Always fetch fresh from backend — no caching
         const [profileData, statsData] = await Promise.all([
           fetchUserProfile(user.uid),
           fetchUserStats(user.uid),

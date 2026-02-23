@@ -19,6 +19,9 @@ public class SignupRequestDTO {
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
+    /** Optional – LeetCode username for extension sync */
+    private String lcusername;
+
     /** Optional – institution id */
     private Long institutionId;
 
