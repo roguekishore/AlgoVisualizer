@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "DSA Skill Tree Sync",
-  "version": "1.0",
-  "description": "Real-time DSA World Map progress tracker.",
+  "version": "1.1",
+  "description": "Real-time DSA World Map progress tracker with auto-sync and account verification.",
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
-    "https://leetcode.com/graphql",
+    "https://leetcode.com/*",
     "http://localhost:8080/*"
   ],
   "action": {
@@ -16,7 +16,19 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://leetcode.com/problems/*"],
+      "matches": [
+        "https://leetcode.com/problems/*",
+        "https://leetcode.com/submissions/*"
+      ],
+      "js": ["injected.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": [
+        "https://leetcode.com/problems/*",
+        "https://leetcode.com/submissions/*"
+      ],
       "js": ["content-script.js"],
       "run_at": "document_idle"
     }

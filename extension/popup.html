@@ -89,9 +89,21 @@
       border-radius: var(--radius);
       padding: 10px 12px;
       display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .account-row {
+      display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+    }
+
+    .account-sep {
+      height: 1px;
+      background: var(--border);
+      margin: 7px 0;
     }
 
     .account-label {
@@ -127,6 +139,31 @@
     .lc-indicator.on {
       background: #22c55e;
       box-shadow: 0 0 0 3px rgba(34,197,94,0.18);
+    }
+
+    .auth-chip {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--muted-fg);
+      background: var(--muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .auth-chip.match {
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #15803d;
+    }
+
+    .auth-chip.mismatch {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #b91c1c;
     }
 
     /* Description */
@@ -247,11 +284,27 @@
   <div class="body">
 
     <div class="account-card">
-      <div>
-        <div class="account-label">LeetCode Account</div>
-        <div class="account-value empty" id="lcUser">Not detected</div>
+
+      <!-- Row 1: currently active LeetCode session -->
+      <div class="account-row">
+        <div>
+          <div class="account-label">LC Session</div>
+          <div class="account-value empty" id="lcUser">Checking...</div>
+        </div>
+        <div class="lc-indicator" id="lcDot"></div>
       </div>
-      <div class="lc-indicator" id="lcDot"></div>
+
+      <div class="account-sep"></div>
+
+      <!-- Row 2: lcusername the app has on file -->
+      <div class="account-row">
+        <div>
+          <div class="account-label">App Linked</div>
+          <div class="account-value empty" id="appLinkedUser">Not synced</div>
+        </div>
+        <div class="auth-chip" id="authChip">&mdash;</div>
+      </div>
+
     </div>
 
     <p class="desc">

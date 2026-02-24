@@ -95,4 +95,61 @@ public class SyncService {
         log.info("Sync complete for {}: matched={}, updated={}, notFound={}", lcusername, matched, updated, notFound.size());
         return new SyncResponseDTO(matched, updated, notFound);
     }
+
+    /**
+     * Records a single ATTEMPTED status for a problem identified by its LeetCode slug.
+     * Idempotent — skips if the problem is already marked SOLVED (no downgrade).
+     * Called by the browser extension for every non-accepted submission.
+     *
+     * @return true if a new record was created or an existing one was incremented,
+     *         false if the slug wasn't in our problem set or was already SOLVED.
+     */
+    @Transactional
+    public boolean markAttempted(String lcusername, String lcslug) {
+
+        User user = userRepository.findByLcusername(lcusername)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "No user with lcusername '" + lcusername + "'. " +
+                        "Make sure your LeetCode username is saved in your profile."));
+
+        Optional<Problem> problemOpt = problemRepository.findByLcslug(lcslug);
+        if (problemOpt.isEmpty()) {
+            log.debug("Attempt ignored — slug '{}' not in problem set", lcslug);
+            return false;
+        }
+
+        Problem problem = problemOpt.get();
+        Long uid = user.getUid();
+        Long pid = problem.getPid();
+
+        Optional<UserProgress> existingOpt = progressRepository.findByUserIdAndProblemId(uid, pid);
+
+        // Never downgrade a SOLVED problem to ATTEMPTED
+        if (existingOpt.isPresent() && existingOpt.get().getStatus() == Status.SOLVED) {
+            log.debug("Attempt ignored — problem {} already SOLVED for user {}", lcslug, lcusername);
+            return false;
+        }
+
+        UserProgress progress;
+        if (existingOpt.isPresent()) {
+            // Existing ATTEMPTED record — increment the counter
+            progress = existingOpt.get();
+        } else {
+            // First attempt — create a new record
+            progress = new UserProgress();
+            progress.setUser(user);
+            progress.setProblem(problem);
+            progress.setAttemptCount(0);       // explicit; field initialiser may not run on proxy
+            progress.setFirstAttemptedAt(LocalDateTime.now());
+        }
+
+        progress.setStatus(Status.ATTEMPTED);
+        // Null-safe increment — guards against legacy rows with a NULL attempt_count
+        int prev = (progress.getAttemptCount() != null) ? progress.getAttemptCount() : 0;
+        progress.setAttemptCount(prev + 1);
+
+        progressRepository.save(progress);
+        log.info("Attempt recorded: user={} slug={} attempts={}", lcusername, lcslug, progress.getAttemptCount());
+        return true;
+    }
 }
