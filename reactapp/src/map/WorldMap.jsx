@@ -75,13 +75,19 @@ const WorldMap = () => {
     completeProblem, getProblemState, getCurrentRoadmapProblem,
     getRoadmapIndex, getStageProgress, getTotalProgress,
     resetProgress, markStageComplete, loadProgress,
+    subscribeToLiveUpdates,
   } = useProgressStore();
 
   /* ── load progress from backend on mount ── */
   useEffect(() => {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
-      if (user?.uid) loadProgress(user.uid);
+      if (user?.uid) {
+        loadProgress(user.uid);
+        // Open SSE stream for live updates from the extension / other tabs
+        const cleanup = subscribeToLiveUpdates(user.uid);
+        return cleanup; // close SSE on unmount
+      }
     } catch { /* not logged in */ }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

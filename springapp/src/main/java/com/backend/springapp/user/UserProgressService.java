@@ -3,6 +3,8 @@ package com.backend.springapp.user;
 import com.backend.springapp.problem.Problem;
 import com.backend.springapp.problem.ProblemRepository;
 import com.backend.springapp.problem.Tag;
+import com.backend.springapp.sse.ProgressEvent;
+import com.backend.springapp.sse.ProgressEventService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class UserProgressService {
     private final UserProgressRepository progressRepository;
     private final ProblemRepository problemRepository;
     private final UserRepository userRepository;
+    private final ProgressEventService progressEventService;
 
     /**
      * Get all progress for a user (for app startup).
@@ -75,6 +78,12 @@ public class UserProgressService {
         }
 
         UserProgress saved = progressRepository.save(progress);
+
+        // Push live update to any open React tabs
+        progressEventService.publish(uid, new ProgressEvent(
+                pid, saved.getStatus().name(),
+                problem.getLcslug(), saved.getAttemptCount()));
+
         return mapToDTO(saved);
     }
 
@@ -118,6 +127,11 @@ public class UserProgressService {
             };
             userRepository.addRating(uid, points);
         }
+
+        // Push live update to any open React tabs
+        progressEventService.publish(uid, new ProgressEvent(
+                pid, "SOLVED", problem.getLcslug(),
+                saved.getAttemptCount() != null ? saved.getAttemptCount() : 1));
 
         return mapToDTO(saved);
     }

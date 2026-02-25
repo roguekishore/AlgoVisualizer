@@ -2,6 +2,8 @@ package com.backend.springapp.sync;
 
 import com.backend.springapp.problem.Problem;
 import com.backend.springapp.problem.ProblemRepository;
+import com.backend.springapp.sse.ProgressEvent;
+import com.backend.springapp.sse.ProgressEventService;
 import com.backend.springapp.user.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -29,6 +31,7 @@ public class SyncService {
     private final UserRepository userRepository;
     private final UserProgressRepository progressRepository;
     private final ProblemRepository problemRepository;
+    private final ProgressEventService progressEventService;
 
     @Transactional
     public SyncResponseDTO syncProgress(String lcusername, List<String> slugs) {
@@ -87,6 +90,11 @@ public class SyncService {
                 default     -> 1; // EASY, BASIC
             };
             userRepository.addRating(uid, points);
+
+            // Push live update to any open React tabs
+            progressEventService.publish(uid, new ProgressEvent(
+                    pid, "SOLVED", slug,
+                    progress.getAttemptCount() != null ? progress.getAttemptCount() : 1));
 
             updated++;
             log.info("Synced: user={} problem={} ({})", lcusername, slug, problem.getTag());
@@ -149,6 +157,11 @@ public class SyncService {
         progress.setAttemptCount(prev + 1);
 
         progressRepository.save(progress);
+
+        // Push live update to any open React tabs
+        progressEventService.publish(uid, new ProgressEvent(
+                pid, "ATTEMPTED", lcslug, progress.getAttemptCount()));
+
         log.info("Attempt recorded: user={} slug={} attempts={}", lcusername, lcslug, progress.getAttemptCount());
         return true;
     }

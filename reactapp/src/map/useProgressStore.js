@@ -151,6 +151,88 @@ const useProgressStore = create((set, get) => ({
     }
   },
 
+  // ─── Live SSE subscription ─────────────────────────────────────────
+
+  /** @type {EventSource|null} */
+  _eventSource: null,
+
+  /**
+   * Open an SSE connection to receive real-time progress updates.
+   * Call once on map mount; the stream auto-reconnects on disconnect.
+   * Returns a cleanup function for useEffect teardown.
+   */
+  subscribeToLiveUpdates: (userId) => {
+    if (!userId) return () => {};
+
+    // Tear down any previous connection
+    get()._eventSource?.close();
+
+    const es = new EventSource(`${API_BASE}/progress/stream?userId=${userId}`);
+    set({ _eventSource: es });
+
+    es.addEventListener('connected', () => {
+      console.log('[ProgressStore] SSE connected for userId', userId);
+    });
+
+    es.addEventListener('progress-update', (e) => {
+      try {
+        const event = JSON.parse(e.data);
+        const frontendId = toFrontendId(event.pid);
+        if (!frontendId) return;
+
+        const { completedProblems } = get();
+
+        if (event.status === 'SOLVED') {
+          // Add to completed if not already there
+          if (!completedProblems.includes(frontendId)) {
+            console.log('[ProgressStore] Live update: SOLVED', frontendId, event.slug);
+            set({ completedProblems: [...completedProblems, frontendId] });
+
+            // Also refresh user rating in localStorage
+            try {
+              const user = JSON.parse(localStorage.getItem('user'));
+              if (user?.uid) {
+                fetch(`${API_BASE}/users/${user.uid}`)
+                  .then(r => r.ok ? r.json() : null)
+                  .then(profile => {
+                    if (profile) {
+                      localStorage.setItem('user', JSON.stringify({ ...user, rating: profile.rating }));
+                    }
+                  })
+                  .catch(() => {});
+              }
+            } catch { /* non-critical */ }
+          }
+        } else if (event.status === 'ATTEMPTED') {
+          console.log('[ProgressStore] Live update: ATTEMPTED', frontendId, event.slug, 'x' + event.attemptCount);
+          // ATTEMPTED doesn't add to completedProblems (only SOLVED does),
+          // but components can listen to the store's state if we want to show attempt badges later.
+        }
+      } catch (err) {
+        console.warn('[ProgressStore] Failed to parse SSE event:', err);
+      }
+    });
+
+    es.onerror = () => {
+      console.warn('[ProgressStore] SSE connection error — will auto-reconnect');
+    };
+
+    // Return cleanup function
+    return () => {
+      es.close();
+      set({ _eventSource: null });
+      console.log('[ProgressStore] SSE disconnected');
+    };
+  },
+
+  /**
+   * Close the SSE connection. Call on unmount or logout.
+   */
+  unsubscribeFromLiveUpdates: () => {
+    get()._eventSource?.close();
+    set({ _eventSource: null });
+  },
+
   // ─── Mark complete (calls backend, then updates cache) ─────────────
 
   /**
@@ -300,6 +382,7 @@ const useProgressStore = create((set, get) => ({
   },
 
   clearForLogout: () => {
+    get().unsubscribeFromLiveUpdates();
     set({ completedProblems: [] });
   },
 }));
