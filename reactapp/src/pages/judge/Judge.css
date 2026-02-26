@@ -1,15 +1,46 @@
 /* ============================================
-   ONLINE JUDGE — Minimal Styles
-   Tailwind handles most styling; this file 
-   provides overrides & component-level detail.
+   ONLINE JUDGE — Professional IDE Theme
+   Inspired by VS Code / LeetCode Pro
    ============================================ */
 
-/* ── Judge root: full-height shell ── */
+/* ── Root shell ── */
 .judge-root {
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  --judge-panel-bg: var(--card);
+  --judge-surface: color-mix(in oklch, var(--background) 92%, var(--foreground) 8%);
+  --judge-surface-elevated: color-mix(in oklch, var(--card) 95%, var(--foreground) 5%);
+  --judge-accent: var(--color-accent-primary);
+  --judge-accent-hover: var(--color-accent-primary-hover);
+  --judge-accent-subtle: var(--color-accent-primary-light);
+  --judge-border: var(--border);
+  --judge-border-subtle: color-mix(in oklch, var(--border) 60%, transparent 40%);
+  --judge-radius: 8px;
+  --judge-radius-sm: 6px;
+  --judge-radius-xs: 4px;
+  --judge-font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'SF Mono', Consolas, monospace;
+  --judge-shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.06);
+  --judge-shadow-md: 0 2px 4px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.08);
+  --judge-shadow-lg: 0 4px 12px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.1);
+  --judge-transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ── Tab trigger underline style ── */
+.dark .judge-root {
+  --judge-surface: color-mix(in oklch, var(--background) 97%, var(--foreground) 3%);
+  --judge-surface-elevated: color-mix(in oklch, var(--card) 97%, var(--foreground) 3%);
+  --judge-shadow-sm: 0 1px 2px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.2);
+  --judge-shadow-md: 0 2px 4px rgba(0,0,0,0.15), 0 4px 8px rgba(0,0,0,0.25);
+  --judge-shadow-lg: 0 4px 12px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.3);
+}
+
+/* ── Header bar ── */
+.judge-header {
+  background: var(--judge-panel-bg);
+  border-bottom: 1px solid var(--judge-border);
+  backdrop-filter: blur(16px) saturate(1.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
+}
+
+/* ── Tab trigger: underline variant ── */
 .judge-tab-trigger {
   position: relative;
   border-radius: 0 !important;
@@ -17,100 +48,484 @@
   box-shadow: none !important;
   background: transparent !important;
   height: 2.5rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  padding: 0 0.875rem;
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--muted-foreground);
-  transition: color 0.15s, border-color 0.15s;
+  transition: color var(--judge-transition), border-color var(--judge-transition);
+  gap: 0.5rem;
+  letter-spacing: 0.01em;
 }
-
 .judge-tab-trigger:hover {
   color: var(--foreground);
 }
-
 .judge-tab-trigger[data-state="active"] {
-  color: var(--color-accent-primary) !important;
-  border-bottom-color: var(--color-accent-primary) !important;
+  color: var(--judge-accent) !important;
+  border-bottom-color: var(--judge-accent) !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 
-/* ── Resizable handles styling ── */
-[data-separator] {
-  transition: background-color 0.15s ease;
+/* ── Panels ── */
+.judge-panel {
+  background: var(--judge-panel-bg);
 }
 
-[data-separator]:hover,
-[data-separator]:active {
-  background-color: var(--color-accent-primary) !important;
+/* ── Code toolbar ── */
+.judge-toolbar {
+  background: var(--judge-panel-bg);
+  border-bottom: 1px solid var(--judge-border);
 }
 
-/* ── Monaco editor container ── */
+/* ── Resizable handles ── */
+.judge-resize-handle {
+  transition: background-color var(--judge-transition);
+}
+.judge-resize-handle:hover,
+.judge-resize-handle:active {
+  background-color: var(--judge-accent) !important;
+}
+
+/* ── Monaco overrides ── */
 .judge-root .monaco-editor,
 .judge-root .overflow-guard {
   border-radius: 0 !important;
 }
-
-/* ── Scrollbar within judge panels ── */
-.judge-root ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+.judge-root .monaco-editor .margin {
+  background: transparent !important;
 }
 
+/* ── Scrollbars ── */
+.judge-root ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 .judge-root ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .judge-root ::-webkit-scrollbar-thumb {
-  background: var(--border);
+  background: var(--judge-border);
   border-radius: 9999px;
+  transition: background var(--judge-transition);
 }
-
 .judge-root ::-webkit-scrollbar-thumb:hover {
   background: var(--muted-foreground);
 }
+.judge-root ::-webkit-scrollbar-corner {
+  background: transparent;
+}
 
-/* ── Select dropdown animation ── */
+/* ── Select animation ── */
 [data-slot="select-content"] {
-  animation: judge-dropdown-in 0.12s ease-out;
+  animation: judge-dropdown-in 0.15s ease-out;
 }
-
 @keyframes judge-dropdown-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── Badge border radius override for sharp design ── */
+/* ── Test case pill ── */
+.judge-tc-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--judge-radius-sm);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.015em;
+  color: var(--muted-foreground);
+  border: 1px solid transparent;
+  transition: all var(--judge-transition);
+  cursor: pointer;
+  user-select: none;
+  background: transparent;
+}
+.judge-tc-pill:hover {
+  background: var(--secondary);
+  color: var(--foreground);
+  border-color: var(--judge-border-subtle);
+}
+.judge-tc-pill[data-active="true"] {
+  background: var(--judge-accent-subtle);
+  color: var(--judge-accent);
+  font-weight: 600;
+  border-color: color-mix(in oklch, var(--judge-accent) 25%, transparent);
+}
+.judge-tc-pill-custom {
+  padding-right: 1.5rem;
+}
+.judge-tc-pill-add {
+  border: 1px dashed var(--judge-border);
+  gap: 0.25rem;
+}
+.judge-tc-pill-add:hover {
+  border-color: var(--judge-accent);
+  color: var(--judge-accent);
+  background: var(--judge-accent-subtle);
+}
+
+/* ── Input fields ── */
+.judge-input {
+  width: 100%;
+  min-height: 64px;
+  border-radius: var(--judge-radius);
+  border: 1px solid var(--judge-border);
+  background: var(--judge-surface);
+  padding: 0.75rem;
+  font-size: 0.8125rem;
+  font-family: var(--judge-font-mono);
+  line-height: 1.6;
+  resize: vertical;
+  color: var(--foreground);
+  transition: border-color var(--judge-transition), box-shadow var(--judge-transition);
+}
+.judge-input:focus {
+  outline: none;
+  border-color: var(--judge-accent);
+  box-shadow: 0 0 0 3px var(--judge-accent-subtle), var(--judge-shadow-sm);
+}
+.judge-input::placeholder {
+  color: var(--muted-foreground);
+  opacity: 0.5;
+}
+
+/* ── Code block (output / expected) ── */
+.judge-codeblock {
+  border-radius: var(--judge-radius);
+  border: 1px solid var(--judge-border);
+  background: var(--judge-surface);
+  padding: 0.75rem;
+  font-size: 0.8125rem;
+  font-family: var(--judge-font-mono);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-x: auto;
+  color: var(--foreground);
+}
+.judge-codeblock--error {
+  background: var(--color-danger-light);
+  border-color: color-mix(in oklch, var(--color-danger) 25%, transparent);
+  color: var(--color-danger);
+}
+
+/* ── Status banner ── */
+.judge-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: var(--judge-radius);
+  border: 1px solid var(--judge-border);
+  background: var(--judge-panel-bg);
+  box-shadow: var(--judge-shadow-sm);
+}
+.judge-status-banner--accepted {
+  border-color: color-mix(in oklch, var(--color-success) 35%, transparent);
+  background: color-mix(in oklch, var(--color-success) 6%, var(--judge-panel-bg));
+}
+.judge-status-banner--failed {
+  border-color: color-mix(in oklch, var(--color-danger) 35%, transparent);
+  background: color-mix(in oklch, var(--color-danger) 6%, var(--judge-panel-bg));
+}
+.judge-status-banner--warning {
+  border-color: color-mix(in oklch, var(--color-warning) 35%, transparent);
+  background: color-mix(in oklch, var(--color-warning) 6%, var(--judge-panel-bg));
+}
+
+/* ── Progress track ── */
+.judge-progress-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--secondary);
+  overflow: hidden;
+}
+.judge-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Badge ── */
 [data-slot="badge"] {
-  border-radius: 6px !important;
+  border-radius: var(--judge-radius-sm) !important;
   letter-spacing: 0.01em;
 }
 
-/* ── Smooth transitions on interactive elements ── */
+/* ── Smooth buttons ── */
 .judge-root button {
-  transition: all 0.15s ease;
+  transition: all var(--judge-transition);
 }
 
-/* ── Custom textarea focus ring ── */
-.judge-root textarea:focus {
-  border-color: var(--ring) !important;
-}
-
-/* ── Code blocks in description ── */
+/* ── Code in description ── */
 .judge-root code {
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  font-family: var(--judge-font-mono);
 }
 
-/* ── Responsive: stack panels vertically on mobile ── */
+/* ── Label ── */
+.judge-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-foreground);
+  margin-bottom: 0.5rem;
+}
+
+/* ── First-failed card ── */
+.judge-failed-card {
+  border-radius: var(--judge-radius);
+  border: 1px solid color-mix(in oklch, var(--color-danger) 25%, transparent);
+  overflow: hidden;
+  box-shadow: var(--judge-shadow-sm);
+}
+.judge-failed-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.625rem 0.875rem;
+  background: color-mix(in oklch, var(--color-danger) 6%, var(--judge-panel-bg));
+  border-bottom: 1px solid color-mix(in oklch, var(--color-danger) 12%, transparent);
+}
+
+/* ── Description examples ── */
+.judge-example-card {
+  border-radius: var(--judge-radius);
+  border: 1px solid var(--judge-border);
+  overflow: hidden;
+  transition: border-color var(--judge-transition);
+}
+.judge-example-card:hover {
+  border-color: color-mix(in oklch, var(--judge-accent) 40%, var(--judge-border));
+}
+.judge-example-header {
+  background: var(--judge-surface);
+  padding: 0.5rem 0.875rem;
+  border-bottom: 1px solid var(--judge-border);
+}
+.judge-example-body {
+  padding: 0.875rem;
+}
+
+/* ── Constraint items ── */
+.judge-constraint-item {
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  padding: 0.375rem 0;
+}
+.judge-constraint-dot {
+  margin-top: 0.5rem;
+  height: 4px;
+  width: 4px;
+  min-width: 4px;
+  border-radius: 9999px;
+  background: var(--judge-accent);
+}
+
+/* ── Empty state ── */
+.judge-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+  color: var(--muted-foreground);
+  gap: 0.75rem;
+}
+.judge-empty-state-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  opacity: 0.3;
+  stroke-width: 1.2;
+}
+
+/* ── Section heading ── */
+.judge-section-heading {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.judge-section-heading::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--judge-border);
+}
+
+/* ── Language selector button (dropdown) ── */
+.judge-lang-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--judge-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--judge-font-mono);
+  color: var(--foreground);
+  background: var(--secondary);
+  border: 1px solid var(--judge-border);
+  cursor: pointer;
+  transition: all var(--judge-transition);
+  height: 1.75rem;
+}
+.judge-lang-trigger:hover {
+  background: var(--judge-surface-elevated);
+  border-color: var(--judge-accent);
+}
+.judge-lang-trigger[data-state="open"] {
+  border-color: var(--judge-accent);
+  box-shadow: 0 0 0 2px var(--judge-accent-subtle);
+}
+
+/* ── Action buttons ── */
+.judge-btn-run {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.75rem;
+  padding: 0 0.75rem;
+  border-radius: var(--judge-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--secondary);
+  border: 1px solid var(--judge-border);
+  color: var(--foreground);
+  cursor: pointer;
+  transition: all var(--judge-transition);
+}
+.judge-btn-run:hover:not(:disabled) {
+  background: var(--judge-surface-elevated);
+  border-color: var(--muted-foreground);
+}
+.judge-btn-run:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.judge-btn-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.75rem;
+  padding: 0 1rem;
+  border-radius: var(--judge-radius-sm);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: var(--color-success);
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all var(--judge-transition);
+  box-shadow: 0 1px 3px rgba(34, 197, 94, 0.3);
+}
+.judge-btn-submit:hover:not(:disabled) {
+  background: var(--color-success-hover);
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);
+  transform: translateY(-0.5px);
+}
+.judge-btn-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Toolbar icon buttons ── */
+.judge-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--judge-radius-xs);
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: all var(--judge-transition);
+}
+.judge-icon-btn:hover {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
+/* ── Result badge ── */
+.judge-result-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+  margin-left: 0.375rem;
+}
+.judge-result-dot--success {
+  background: var(--color-success);
+  box-shadow: 0 0 4px var(--color-success-light);
+}
+.judge-result-dot--error {
+  background: var(--color-danger);
+  box-shadow: 0 0 4px var(--color-danger-light);
+}
+
+/* ── Loading skeleton ── */
+@keyframes judge-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.judge-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--secondary) 25%,
+    var(--judge-surface-elevated) 50%,
+    var(--secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: judge-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--judge-radius-sm);
+}
+
+/* ── Pulse animation for running state ── */
+@keyframes judge-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.judge-pulsing {
+  animation: judge-pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Responsive ── */
 @media (max-width: 768px) {
   .judge-root [data-panel-group-direction="horizontal"] {
     flex-direction: column !important;
   }
+}
+
+/* ── Focus ring utility ── */
+.judge-focus-ring:focus-visible {
+  outline: 2px solid var(--judge-accent);
+  outline-offset: 2px;
+}
+
+/* ── Keyboard shortcut badge ── */
+.judge-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  border-radius: var(--judge-radius-xs);
+  border: 1px solid var(--judge-border);
+  background: var(--judge-surface);
+  font-family: var(--judge-font-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--muted-foreground);
+  line-height: 1;
 }

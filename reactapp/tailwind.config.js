@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        general: ["general", "sans-serif"],
         zentry: ["zentry", "sans-serif"],
       },
       colors: {

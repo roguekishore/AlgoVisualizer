@@ -38,6 +38,11 @@ export function useProblem(problemId) {
     [problem]
   );
 
+  const judgeRoute = useMemo(
+    () => (problem?.judgeId ? `/judge/${problem.judgeId}` : null),
+    [problem]
+  );
+
   const openLeetCode = useCallback(() => {
     if (leetCodeUrl) {
       window.open(leetCodeUrl, '_blank', 'noopener,noreferrer');
@@ -48,9 +53,11 @@ export function useProblem(problemId) {
     problem,
     visualizerRoute,
     leetCodeUrl,
+    judgeRoute,
     openLeetCode,
     hasVisualizer: problem?.hasVisualizer ?? false,
     hasLeetCode: !!problem?.lcNumber,
+    hasJudge: !!problem?.judgeId,
   };
 }
 

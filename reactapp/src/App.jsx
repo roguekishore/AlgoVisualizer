@@ -17,6 +17,7 @@ const NAVBAR_HIDDEN_PATHS = [
   '/map',
   '/login',
   '/signup',
+  '/judge',
 ];
 
 const TRANSPARENT_NAVBAR_PATHS = [

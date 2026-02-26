@@ -130,8 +130,8 @@ export const ALL_PROBLEMS = [
   // Pattern: Sequential Access
   // Countries: Start in Central America - easy small countries
   // =================================================================
-  { id: 'stage1-1', title: 'Find Maximum Element', route: '/arrays/FindMaxElement', stage: 1, order: 1, lcNumber: null, lcSlug: null, countryId: 'GT', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'FindMaxElement' },
-  { id: 'stage1-2', title: 'Find Minimum Element', route: '/arrays/FindMinElement', stage: 1, order: 2, lcNumber: null, lcSlug: null, countryId: 'BZ', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'FindMinElement' },
+  { id: 'stage1-1', title: 'Find Maximum Element', route: '/arrays/FindMaxElement', stage: 1, order: 1, lcNumber: null, lcSlug: null, countryId: 'GT', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'FindMaxElement', judgeId: 'find-max-element' },
+  { id: 'stage1-2', title: 'Find Minimum Element', route: '/arrays/FindMinElement', stage: 1, order: 2, lcNumber: null, lcSlug: null, countryId: 'BZ', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'FindMinElement', judgeId: 'find-min-element' },
   { id: 'stage1-3', title: 'Array Sum', route: '/arrays/ArraySum', stage: 1, order: 3, lcNumber: null, lcSlug: null, countryId: 'HN', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ArraySum' },
   { id: 'stage1-4', title: 'Reverse Array', route: '/arrays/ReverseArray', stage: 1, order: 4, lcNumber: null, lcSlug: null, countryId: 'SV', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ReverseArray' },
   { id: 'stage1-5', title: 'Count Zeros in Array', route: '/arrays/CountZeros', stage: 1, order: 5, lcNumber: null, lcSlug: null, countryId: 'NI', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'CountZeros' },
@@ -499,6 +499,29 @@ export const getVisualizerRoute = (problemId) => {
   return problem?.route || null;
 };
 
+// ── Judge integration helpers ──
+
+// Check if a problem has a judge problem definition
+export const hasJudgeProblem = (problemId) => {
+  const problem = getProblemById(problemId);
+  return !!problem?.judgeId;
+};
+
+// Get judge route for a problem
+export const getJudgeRoute = (problemId) => {
+  const problem = getProblemById(problemId);
+  return problem?.judgeId ? `/judge/${problem.judgeId}` : null;
+};
+
+// Get judgeId for a problem
+export const getJudgeId = (problemId) => {
+  const problem = getProblemById(problemId);
+  return problem?.judgeId || null;
+};
+
+// Get all problems that have judge definitions
+export const getProblemsWithJudge = () => ALL_PROBLEMS.filter(p => p.judgeId);
+
 // Get all new problems (without visualizers)
 export const getNewProblems = () => ALL_PROBLEMS.filter(p => p.isNew);
 
@@ -604,6 +627,7 @@ export const STATS = {
   withoutVisualizer: ALL_PROBLEMS.filter(p => !p.hasVisualizer).length,
   withLeetCode: ALL_PROBLEMS.filter(p => p.lcNumber).length,
   withoutLeetCode: ALL_PROBLEMS.filter(p => !p.lcNumber).length,
+  withJudge: ALL_PROBLEMS.filter(p => p.judgeId).length,
   newBasicProblems: ALL_PROBLEMS.filter(p => p.isNew).length,
   mainStages: 24,
   bonusStages: 3,

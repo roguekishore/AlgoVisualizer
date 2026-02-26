@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { fetchProblem, submitCode, runCode } from "../../services/judgeApi";
@@ -15,15 +15,23 @@ import {
   ResizableHandle,
 } from "../../components/ui/resizable";
 import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-} from "../../components/ui/select";
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "../../components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+} from "../../components/ui/dropdown-menu";
+
 import {
   ArrowLeft,
   Play,
-  Send,
   CheckCircle2,
   XCircle,
   Clock,
@@ -38,8 +46,18 @@ import {
   RotateCcw,
   Copy,
   Check,
+  Plus,
+  X,
+  ArrowUpRight,
+  ChevronDown,
+  Code2,
+  Zap,
+  CircleDot,
+  Hash,
+  Braces,
 } from "lucide-react";
 import "./Judge.css";
+import VisualizerDrawer, { VisualizerToggleButton } from "./VisualizerDrawer";
 
 /* ── Constants ── */
 const LANGUAGES = [
@@ -51,16 +69,6 @@ const difficultyVariant = {
   Easy: "success",
   Medium: "warning",
   Hard: "danger",
-};
-
-const statusConfig = {
-  Accepted: { icon: CheckCircle2, color: "text-[var(--color-success)]", label: "Accepted" },
-  "Wrong Answer": { icon: XCircle, color: "text-[var(--color-danger)]", label: "Wrong Answer" },
-  "Compilation Error": { icon: AlertTriangle, color: "text-[var(--color-danger)]", label: "Compilation Error" },
-  "Runtime Error": { icon: AlertTriangle, color: "text-[var(--color-orange)]", label: "Runtime Error" },
-  "Time Limit Exceeded": { icon: Clock, color: "text-[var(--color-warning)]", label: "Time Limit Exceeded" },
-  Success: { icon: CheckCircle2, color: "text-[var(--color-success)]", label: "Success" },
-  Error: { icon: AlertTriangle, color: "text-[var(--color-danger)]", label: "Error" },
 };
 
 /* ════════════════════════════════════════════
@@ -79,10 +87,77 @@ export default function JudgePage() {
   const [runResult, setRunResult] = useState(null);
   const [leftTab, setLeftTab] = useState("description");
   const [bottomTab, setBottomTab] = useState("testcases");
-  const [customInput, setCustomInput] = useState("");
   const [copied, setCopied] = useState(false);
   const [activeTestCase, setActiveTestCase] = useState(0);
+  const [vizOpen, setVizOpen] = useState(false);
   const editorRef = useRef(null);
+
+  /*  Custom test-case management (LeetCode-style)
+      testCases = [{ input, output, isCustom }]
+      - First N entries come from problem.sampleTestCases (read-only output)
+      - User can append custom entries with editable input  */
+  const [testCases, setTestCases] = useState([]);
+
+  /* Seed test cases once problem loads */
+  useEffect(() => {
+    if (problem?.sampleTestCases?.length) {
+      setTestCases(
+        problem.sampleTestCases.map((tc) => ({
+          input: tc.input,
+          output: tc.output,
+          isCustom: false,
+        }))
+      );
+      setActiveTestCase(0);
+    }
+  }, [problem]);
+
+  /* Derived: current input for "Run" */
+  const customInput = testCases[activeTestCase]?.input || "";
+
+  /* Update input of the active test case */
+  const updateActiveInput = (value) => {
+    setTestCases((prev) =>
+      prev.map((tc, i) => (i === activeTestCase ? { ...tc, input: value } : tc))
+    );
+  };
+
+  /* Add a new custom test case */
+  const addCustomTestCase = () => {
+    const last = testCases[testCases.length - 1];
+    setTestCases((prev) => [
+      ...prev,
+      { input: last?.input || "", output: "", isCustom: true },
+    ]);
+    setActiveTestCase(testCases.length);
+  };
+
+  /* Remove a custom test case */
+  const removeTestCase = (idx) => {
+    if (!testCases[idx]?.isCustom) return;
+    setTestCases((prev) => prev.filter((_, i) => i !== idx));
+    setActiveTestCase((prev) => Math.min(prev, testCases.length - 2));
+  };
+
+  /* Load a failed test case's input as a new custom test case */
+  const useFailedAsTestCase = (input, expected) => {
+    setTestCases((prev) => [
+      ...prev,
+      { input, output: expected || "", isCustom: true },
+    ]);
+    setActiveTestCase(testCases.length);
+    setBottomTab("testcases");
+  };
+
+  /* ── Parse active test-case input into a number array for the visualizer ── */
+  const testArray = useMemo(() => {
+    const tc = testCases[activeTestCase];
+    if (!tc?.input) return null;
+    const lines = tc.input.trim().split("\n");
+    const arrLine = lines.length > 1 ? lines[lines.length - 1] : lines[0];
+    const nums = arrLine.trim().split(/\s+/).map(Number);
+    return nums.length > 0 && nums.every((n) => !isNaN(n)) ? nums : null;
+  }, [testCases, activeTestCase]);
 
   const editorTheme =
     theme === "dark" ||
@@ -96,7 +171,6 @@ export default function JudgePage() {
       .then((p) => {
         setProblem(p);
         setCode(p.boilerplate?.cpp || "");
-        if (p.sampleTestCases?.[0]) setCustomInput(p.sampleTestCases[0].input);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -190,172 +264,262 @@ export default function JudgePage() {
   }
 
   const currentLang = LANGUAGES.find((l) => l.value === language);
-  const statusInfo = result ? statusConfig[result.status] || statusConfig.Error : null;
-  const runStatusInfo = runResult ? statusConfig[runResult.status] || statusConfig.Error : null;
 
   /* ════════════════════════════════════════════
      RENDER
-     Layout:
-       LEFT  = Description (top) + Testcases / Output (bottom)
-       RIGHT = Code Editor (full height)
      ════════════════════════════════════════════ */
   return (
-    <div className="judge-root flex h-screen flex-col bg-background text-foreground overflow-hidden pt-24 md:pt-28">
-      {/* ───── Header ───── */}
-      <header className="flex items-center justify-between h-11 px-3 border-b border-border bg-card flex-shrink-0 z-10">
-        <div className="flex items-center gap-2 min-w-0">
-          <Link
-            to="/judge"
-            className="flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
+    <TooltipProvider delayDuration={300}>
+    <div className="judge-root flex h-screen flex-col bg-background text-foreground overflow-hidden">
+
+      {/* ═══════════ HEADER ═══════════ */}
+      <header className="judge-header flex items-center justify-between h-11 px-3 flex-shrink-0 z-10">
+        {/* Left: back + title */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                to="/judge"
+                className="flex items-center justify-center h-7 w-7 rounded-md text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs">Back to Problems</TooltipContent>
+          </Tooltip>
           <Separator orientation="vertical" className="h-4" />
-          <FileCode2 className="h-4 w-4 text-[var(--color-accent-primary)] flex-shrink-0" />
-          <span className="text-sm font-semibold truncate">{problem.title}</span>
-          <Badge variant={difficultyVariant[problem.difficulty] || "secondary"}>
-            {problem.difficulty}
-          </Badge>
+          <div className="flex items-center gap-2 min-w-0">
+            <Code2 className="h-3.5 w-3.5 text-[var(--color-accent-primary)] flex-shrink-0" />
+            <span className="text-[13px] font-semibold tracking-tight truncate">{problem.title}</span>
+            <Badge variant={difficultyVariant[problem.difficulty] || "secondary"} className="flex-shrink-0 text-[10px] px-1.5 py-0">
+              {problem.difficulty}
+            </Badge>
+            {problem.topic && (
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-[var(--color-accent-primary)]/20 text-[var(--color-accent-primary)] hidden sm:inline-flex">
+                {problem.topic}
+              </Badge>
+            )}
+          </div>
         </div>
-        <div className="flex items-center gap-2">
+
+        {/* Right: actions */}
+        <div className="flex items-center gap-1.5">
+          <VisualizerToggleButton
+            problemId={problemId}
+            isOpen={vizOpen}
+            onToggle={() => setVizOpen((v) => !v)}
+          />
+          <Separator orientation="vertical" className="h-4 mx-0.5 hidden sm:block" />
           <ThemeToggle />
         </div>
       </header>
 
-      {/* ───── Workspace: horizontal split ───── */}
+      {/* ═══════════ VISUALIZER DRAWER ═══════════ */}
+      <VisualizerDrawer
+        problemId={problemId}
+        isOpen={vizOpen}
+        onToggle={() => setVizOpen((v) => !v)}
+        testArray={testArray}
+      />
+
+      {/* ═══════════ WORKSPACE ═══════════ */}
       <ResizablePanelGroup orientation="horizontal" className="flex-1 min-h-0">
 
-        {/* ═══════════════════════════════════════
-            LEFT PANEL — Description / Results (full height)
-            ═══════════════════════════════════════ */}
+        {/* ─── LEFT PANEL ─── */}
         <ResizablePanel id="left" defaultSize="40%" minSize="25%" maxSize="60%">
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full judge-panel">
             <Tabs value={leftTab} onValueChange={setLeftTab} className="flex flex-col h-full">
-              <div className="flex items-center border-b border-border bg-card px-1 flex-shrink-0">
+              <div className="flex items-center border-b border-border px-1 flex-shrink-0">
                 <TabsList className="bg-transparent h-10 p-0 gap-0">
                   <TabsTrigger value="description" className="judge-tab-trigger">
-                    <BookOpen className="h-3.5 w-3.5 mr-1.5" />
+                    <BookOpen className="h-3.5 w-3.5" />
                     Description
                   </TabsTrigger>
                   <TabsTrigger value="results" className="judge-tab-trigger">
-                    <ListChecks className="h-3.5 w-3.5 mr-1.5" />
+                    <ListChecks className="h-3.5 w-3.5" />
                     Results
                     {result && (
-                      <span className={`ml-1.5 inline-block h-2 w-2 rounded-full ${
-                        result.status === "Accepted" ? "bg-[var(--color-success)]" : "bg-[var(--color-danger)]"
+                      <span className={`judge-result-dot ${
+                        result.status === "Accepted" ? "judge-result-dot--success" : "judge-result-dot--error"
                       }`} />
                     )}
                   </TabsTrigger>
                 </TabsList>
               </div>
 
-              {/* Description content */}
+              {/* ── Description ── */}
               <TabsContent value="description" className="flex-1 overflow-hidden m-0">
-                <ScrollArea className="h-full p-5">
-                  <div className="text-sm leading-relaxed text-foreground space-y-2 mb-6">
-                    {problem.description.split("\n").map((line, i) => (
-                      <p key={i} className={line ? "" : "h-2"}>{line}</p>
-                    ))}
-                  </div>
-
-                  {problem.examples?.length > 0 && (
-                    <div className="space-y-3 mb-6">
-                      <h3 className="text-sm font-semibold text-foreground">Examples</h3>
-                      {problem.examples.map((ex, i) => (
-                        <div key={i} className="rounded-lg border border-border overflow-hidden">
-                          <div className="bg-muted/50 px-3 py-1.5 border-b border-border">
-                            <span className="text-xs font-medium text-muted-foreground">Example {i + 1}</span>
-                          </div>
-                          <div className="p-3 space-y-2 text-sm bg-card">
-                            <div className="flex gap-2">
-                              <span className="text-muted-foreground font-medium min-w-[60px]">Input:</span>
-                              <code className="text-xs font-mono bg-muted px-2 py-0.5 rounded">{ex.input}</code>
-                            </div>
-                            <div className="flex gap-2">
-                              <span className="text-muted-foreground font-medium min-w-[60px]">Output:</span>
-                              <code className="text-xs font-mono bg-muted px-2 py-0.5 rounded">{ex.output}</code>
-                            </div>
-                            {ex.explanation && (
-                              <div className="pt-1 border-t border-border/50">
-                                <span className="text-xs text-muted-foreground">{ex.explanation}</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
+                <ScrollArea className="h-full">
+                  <div className="p-5 space-y-6">
+                    {/* Problem statement */}
+                    <div className="text-[13px] leading-relaxed text-foreground/90 space-y-2">
+                      {problem.description.split("\n").map((line, i) => (
+                        <p key={i} className={line ? "" : "h-2"}>{line}</p>
                       ))}
                     </div>
-                  )}
 
-                  {problem.constraints?.length > 0 && (
-                    <div className="space-y-2">
-                      <h3 className="text-sm font-semibold text-foreground">Constraints</h3>
-                      <ul className="space-y-1">
-                        {problem.constraints.map((c, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm">
-                            <span className="mt-1.5 h-1 w-1 rounded-full bg-[var(--color-accent-primary)] flex-shrink-0" />
-                            <code className="text-xs font-mono text-muted-foreground">{c}</code>
-                          </li>
+                    {/* Examples */}
+                    {problem.examples?.length > 0 && (
+                      <div className="space-y-3">
+                        <h3 className="judge-section-heading">Examples</h3>
+                        {problem.examples.map((ex, i) => (
+                          <div key={i} className="judge-example-card">
+                            <div className="judge-example-header">
+                              <span className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                                <Hash className="h-3 w-3" />
+                                Example {i + 1}
+                              </span>
+                            </div>
+                            <div className="judge-example-body space-y-2.5">
+                              <div>
+                                <div className="judge-label">Input</div>
+                                <code className="judge-codeblock block text-[12px]">{ex.input}</code>
+                              </div>
+                              <div>
+                                <div className="judge-label">Output</div>
+                                <code className="judge-codeblock block text-[12px]">{ex.output}</code>
+                              </div>
+                              {ex.explanation && (
+                                <div className="pt-2 border-t border-border/50">
+                                  <div className="judge-label">Explanation</div>
+                                  <span className="text-xs text-muted-foreground leading-relaxed">{ex.explanation}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
                         ))}
-                      </ul>
-                    </div>
-                  )}
+                      </div>
+                    )}
+
+                    {/* Constraints */}
+                    {problem.constraints?.length > 0 && (
+                      <div className="space-y-2.5">
+                        <h3 className="judge-section-heading">Constraints</h3>
+                        <div className="rounded-lg border border-border p-3 space-y-0.5">
+                          {problem.constraints.map((c, i) => (
+                            <div key={i} className="judge-constraint-item">
+                              <span className="judge-constraint-dot" />
+                              <code className="text-xs font-mono text-foreground/70">{c}</code>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </ScrollArea>
               </TabsContent>
 
-              {/* Results content */}
+              {/* ── Results ── */}
               <TabsContent value="results" className="flex-1 overflow-hidden m-0">
-                <ScrollArea className="h-full p-5">
-                  {!result && !runResult && (
-                    <div className="flex flex-col items-center justify-center py-16 text-muted-foreground">
-                      <Terminal className="h-10 w-10 mb-3 stroke-1" />
-                      <p className="text-sm text-center">Run or submit your code to see results</p>
-                    </div>
-                  )}
+                <ScrollArea className="h-full">
+                  <div className="p-5">
+                    {!result && !runResult && (
+                      <div className="judge-empty-state py-16">
+                        <Terminal className="judge-empty-state-icon" />
+                        <p className="text-sm font-medium">No results yet</p>
+                        <p className="text-xs text-muted-foreground/70">Run or submit your code to see results here</p>
+                      </div>
+                    )}
 
-                  {runResult && (
-                    <div className="space-y-4">
-                      <StatusHeader info={runStatusInfo} time={runResult.time} />
-                      {runResult.stdout && <OutputBlock label="Output">{runResult.stdout}</OutputBlock>}
-                      {runResult.stderr && <OutputBlock label="Error" variant="error">{runResult.stderr}</OutputBlock>}
-                    </div>
-                  )}
+                    {/* Run output */}
+                    {runResult && (
+                      <div className="space-y-4">
+                        <StatusBanner status={runResult.status} time={runResult.time} />
+                        {runResult.stdout && <CodeOutput label="Standard Output" icon={<SquareTerminal className="h-3 w-3" />}>{runResult.stdout}</CodeOutput>}
+                        {runResult.stderr && <CodeOutput label="Error Output" variant="error" icon={<AlertTriangle className="h-3 w-3" />}>{runResult.stderr}</CodeOutput>}
+                      </div>
+                    )}
 
-                  {result && (
-                    <div className="space-y-4">
-                      <StatusHeader info={statusInfo} time={result.time} />
-                      {result.error && <OutputBlock label="Compilation / Runtime Error" variant="error">{result.error}</OutputBlock>}
+                    {/* Submit results */}
+                    {result && (
+                      <div className="space-y-5">
+                        <StatusBanner status={result.status} time={result.time} />
 
-                      {result.totalTests > 0 && (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">
-                              <span className="font-semibold text-foreground">{result.totalPassed}</span> / {result.totalTests} passed
-                            </span>
-                            <span className="text-xs text-muted-foreground">
-                              {Math.round((result.totalPassed / result.totalTests) * 100)}%
-                            </span>
+                        {result.error && <CodeOutput label="Compilation / Runtime Error" variant="error" icon={<AlertTriangle className="h-3 w-3" />}>{result.error}</CodeOutput>}
+
+                        {/* Progress */}
+                        {result.totalTests > 0 && (
+                          <div className="space-y-3">
+                            <div className="flex items-baseline justify-between">
+                              <span className="text-sm text-foreground">
+                                <span className="font-bold tabular-nums">{result.totalPassed}</span>
+                                <span className="text-muted-foreground"> / {result.totalTests} test cases passed</span>
+                              </span>
+                              <span className={`text-xs font-bold tabular-nums ${
+                                result.totalPassed === result.totalTests ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"
+                              }`}>
+                                {Math.round((result.totalPassed / result.totalTests) * 100)}%
+                              </span>
+                            </div>
+                            <div className="judge-progress-track">
+                              <div
+                                className="judge-progress-fill"
+                                style={{
+                                  width: `${(result.totalPassed / result.totalTests) * 100}%`,
+                                  backgroundColor: result.totalPassed === result.totalTests ? "var(--color-success)" : "var(--color-danger)",
+                                }}
+                              />
+                            </div>
                           </div>
-                          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-500"
-                              style={{
-                                width: `${(result.totalPassed / result.totalTests) * 100}%`,
-                                backgroundColor: result.totalPassed === result.totalTests ? "var(--color-success)" : "var(--color-danger)",
-                              }}
-                            />
-                          </div>
-                        </div>
-                      )}
+                        )}
 
-                      {result.results?.length > 0 && (
-                        <div className="space-y-2 pt-2">
-                          {result.results.map((tc) => (
-                            <TestCaseCard key={tc.testCase} tc={tc} />
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
+                        {/* First failed test case */}
+                        {(() => {
+                          const firstFailed = result.results?.find((tc) => !tc.passed);
+                          if (!firstFailed) return null;
+                          return (
+                            <div className="space-y-3">
+                              <h4 className="judge-section-heading">First Failed Test</h4>
+                              <div className="judge-failed-card">
+                                <div className="judge-failed-card-header">
+                                  <div className="flex items-center gap-2">
+                                    <XCircle className="h-3.5 w-3.5 text-[var(--color-danger)]" />
+                                    <span className="text-xs font-semibold text-[var(--color-danger)]">
+                                      Test Case {firstFailed.testCase}
+                                    </span>
+                                  </div>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        onClick={() => useFailedAsTestCase(firstFailed.input, firstFailed.expected)}
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-medium bg-[var(--color-accent-primary-light)] text-[var(--color-accent-primary)] hover:bg-[var(--color-accent-primary)] hover:text-white transition-colors"
+                                      >
+                                        <ArrowUpRight className="h-3 w-3" />
+                                        Debug
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="left" className="text-xs">Load this input as a custom test case</TooltipContent>
+                                  </Tooltip>
+                                </div>
+                                <div className="p-3.5 space-y-3">
+                                  <div>
+                                    <div className="judge-label">Input</div>
+                                    <pre className="judge-codeblock text-[12px]">{firstFailed.input}</pre>
+                                  </div>
+                                  <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                      <div className="judge-label" style={{ color: 'var(--color-success)' }}>Expected</div>
+                                      <pre className="judge-codeblock text-[12px]" style={{ borderColor: 'rgba(34,197,94,0.2)' }}>{firstFailed.expected}</pre>
+                                    </div>
+                                    <div>
+                                      <div className="judge-label" style={{ color: 'var(--color-danger)' }}>Your Output</div>
+                                      <pre className="judge-codeblock text-[12px]" style={{ borderColor: 'rgba(239,68,68,0.2)' }}>{firstFailed.actual}</pre>
+                                    </div>
+                                  </div>
+                                  {firstFailed.error && (
+                                    <div>
+                                      <div className="judge-label" style={{ color: 'var(--color-danger)' }}>Runtime Error</div>
+                                      <pre className="judge-codeblock judge-codeblock--error text-[12px]">{firstFailed.error}</pre>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
+                  </div>
                 </ScrollArea>
               </TabsContent>
             </Tabs>
@@ -364,64 +528,92 @@ export default function JudgePage() {
 
         <ResizableHandle orientation="horizontal" withHandle />
 
-        {/* ═══════════════════════════════════════
-            RIGHT PANEL — vertical split:
-              top    = Code editor + toolbar
-              bottom = Testcases / Output tabs
-            ═══════════════════════════════════════ */}
+        {/* ─── RIGHT PANEL ─── */}
         <ResizablePanel id="right" defaultSize="60%" minSize="35%">
           <ResizablePanelGroup orientation="vertical">
-            {/* ── Top: Code Editor ── */}
+
+            {/* ── Code editor ── */}
             <ResizablePanel id="right-top" defaultSize="60%" minSize="25%">
               <div className="flex flex-col h-full">
                 {/* Toolbar */}
-                <div className="flex items-center justify-between h-10 px-2 border-b border-border bg-card flex-shrink-0">
+                <div className="judge-toolbar flex items-center justify-between h-10 px-2.5 flex-shrink-0">
                   <div className="flex items-center gap-2">
-                    <Select value={language} onValueChange={handleLanguageChange}>
-                      <SelectTrigger className="h-7 w-24 text-xs">
-                        <span>{currentLang?.label}</span>
-                      </SelectTrigger>
-                      <SelectContent>
+                    {/* Language dropdown */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="judge-lang-trigger">
+                        <Braces className="h-3 w-3 text-[var(--color-accent-primary)]" />
+                        {currentLang?.label}
+                        <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="min-w-[140px]">
+                        <DropdownMenuLabel className="text-[10px] uppercase tracking-wider text-muted-foreground">Language</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
                         {LANGUAGES.map((l) => (
-                          <SelectItem key={l.value} value={l.value}>{l.label}</SelectItem>
+                          <DropdownMenuItem
+                            key={l.value}
+                            onClick={() => handleLanguageChange(l.value)}
+                            className={`text-xs font-medium cursor-pointer ${language === l.value ? "text-[var(--color-accent-primary)] bg-[var(--color-accent-primary-light)]" : ""}`}
+                          >
+                            <Braces className="h-3 w-3 mr-1.5" />
+                            {l.label}
+                            {language === l.value && <Check className="h-3 w-3 ml-auto" />}
+                          </DropdownMenuItem>
                         ))}
-                      </SelectContent>
-                    </Select>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
 
-                  <div className="flex items-center gap-1.5">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleResetCode} title="Reset to boilerplate">
-                      <RotateCcw className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleCopyCode} title="Copy code">
-                      {copied ? <Check className="h-3.5 w-3.5 text-[var(--color-success)]" /> : <Copy className="h-3.5 w-3.5" />}
-                    </Button>
+                  <div className="flex items-center gap-1">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button className="judge-icon-btn" onClick={handleResetCode}>
+                          <RotateCcw className="h-3.5 w-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">Reset to boilerplate</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button className="judge-icon-btn" onClick={handleCopyCode}>
+                          {copied ? <Check className="h-3.5 w-3.5 text-[var(--color-success)]" /> : <Copy className="h-3.5 w-3.5" />}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">{copied ? "Copied!" : "Copy code"}</TooltipContent>
+                    </Tooltip>
 
                     <Separator orientation="vertical" className="h-4 mx-1" />
 
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 px-3 text-xs gap-1.5"
-                      onClick={handleRun}
-                      disabled={running || submitting}
-                    >
-                      {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
-                      Run
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="h-7 px-3 text-xs gap-1.5 bg-[var(--color-success)] hover:bg-[var(--color-success-hover)] text-white"
-                      onClick={handleSubmit}
-                      disabled={submitting || running}
-                    >
-                      {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
-                      Submit
-                    </Button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className="judge-btn-run"
+                          onClick={handleRun}
+                          disabled={running || submitting}
+                        >
+                          {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Play className="h-3.5 w-3.5" />}
+                          Run
+                          <kbd className="judge-kbd hidden sm:inline-flex ml-0.5">⌘R</kbd>
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">Run against active test case</TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className="judge-btn-submit"
+                          onClick={handleSubmit}
+                          disabled={submitting || running}
+                        >
+                          {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
+                          Submit
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">Submit against all test cases</TooltipContent>
+                    </Tooltip>
                   </div>
                 </div>
 
-                {/* Monaco Editor */}
+                {/* Monaco */}
                 <div className="flex-1 min-h-0">
                   <Editor
                     height="100%"
@@ -457,22 +649,22 @@ export default function JudgePage() {
 
             {/* ── Bottom: Testcases / Output ── */}
             <ResizablePanel id="right-bottom" defaultSize="40%" minSize="15%" maxSize="60%">
-              <div className="flex flex-col h-full bg-card">
+              <div className="flex flex-col h-full judge-panel">
                 <Tabs value={bottomTab} onValueChange={setBottomTab} className="flex flex-col h-full">
                   <div className="flex items-center border-b border-border px-1 flex-shrink-0">
                     <TabsList className="bg-transparent h-9 p-0 gap-0">
                       <TabsTrigger value="testcases" className="judge-tab-trigger h-9">
-                        <FlaskConical className="h-3.5 w-3.5 mr-1.5" />
+                        <FlaskConical className="h-3.5 w-3.5" />
                         Testcases
                       </TabsTrigger>
                       <TabsTrigger value="result" className="judge-tab-trigger h-9">
-                        <SquareTerminal className="h-3.5 w-3.5 mr-1.5" />
+                        <SquareTerminal className="h-3.5 w-3.5" />
                         Output
                         {(runResult || result) && (
-                          <span className={`ml-1.5 inline-block h-1.5 w-1.5 rounded-full ${
+                          <span className={`judge-result-dot ${
                             runResult?.status === "Success" || result?.status === "Accepted"
-                              ? "bg-[var(--color-success)]"
-                              : "bg-[var(--color-danger)]"
+                              ? "judge-result-dot--success"
+                              : "judge-result-dot--error"
                           }`} />
                         )}
                       </TabsTrigger>
@@ -482,44 +674,61 @@ export default function JudgePage() {
                   {/* Testcases */}
                   <TabsContent value="testcases" className="flex-1 overflow-hidden m-0">
                     <div className="flex flex-col h-full">
-                      {problem.sampleTestCases?.length > 0 && (
-                        <div className="flex items-center gap-1.5 px-3 pt-3 pb-2 flex-shrink-0">
-                          {problem.sampleTestCases.map((_, idx) => (
+                      {/* Pills */}
+                      <div className="flex items-center gap-1.5 px-3 pt-3 pb-2 flex-shrink-0 flex-wrap">
+                        {testCases.map((tc, idx) => {
+                          const sampleCount = problem?.sampleTestCases?.length || 0;
+                          return (
+                            <div key={idx} className="relative group">
+                              <button
+                                className={`judge-tc-pill ${tc.isCustom ? "judge-tc-pill-custom" : ""}`}
+                                data-active={activeTestCase === idx}
+                                onClick={() => setActiveTestCase(idx)}
+                              >
+                                <CircleDot className="h-2.5 w-2.5" />
+                                {tc.isCustom ? `Custom ${idx - sampleCount + 1}` : `Case ${idx + 1}`}
+                              </button>
+                              {tc.isCustom && (
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); removeTestCase(idx); }}
+                                  className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 flex items-center justify-center rounded-full bg-secondary border border-border text-muted-foreground/60 hover:text-[var(--color-danger)] hover:bg-[var(--color-danger-light)] hover:border-[var(--color-danger)]/30 transition-colors opacity-0 group-hover:opacity-100"
+                                >
+                                  <X className="h-2 w-2" />
+                                </button>
+                              )}
+                            </div>
+                          );
+                        })}
+                        <Tooltip>
+                          <TooltipTrigger asChild>
                             <button
-                              key={idx}
-                              className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${
-                                activeTestCase === idx
-                                  ? "bg-secondary text-foreground"
-                                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                              }`}
-                              onClick={() => {
-                                setActiveTestCase(idx);
-                                setCustomInput(problem.sampleTestCases[idx].input);
-                              }}
+                              onClick={addCustomTestCase}
+                              className="judge-tc-pill judge-tc-pill-add"
                             >
-                              Case {idx + 1}
+                              <Plus className="h-3 w-3" />
                             </button>
-                          ))}
-                        </div>
-                      )}
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom" className="text-xs">Add custom test case</TooltipContent>
+                        </Tooltip>
+                      </div>
+
+                      {/* Active case content */}
                       <ScrollArea className="flex-1 px-3 pb-3">
                         <div className="space-y-3">
-                          <div className="space-y-1.5">
-                            <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Input</label>
+                          <div>
+                            <div className="judge-label">Input</div>
                             <textarea
-                              className="w-full min-h-[60px] rounded-lg border border-border bg-background p-3 text-xs font-mono resize-none focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
-                              value={customInput}
-                              onChange={(e) => setCustomInput(e.target.value)}
-                              placeholder="Enter custom input…"
+                              className="judge-input"
+                              value={testCases[activeTestCase]?.input || ""}
+                              onChange={(e) => updateActiveInput(e.target.value)}
+                              placeholder="Enter test input…"
                               spellCheck={false}
                             />
                           </div>
-                          {problem.sampleTestCases?.[activeTestCase]?.output && (
-                            <div className="space-y-1.5">
-                              <label className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Expected Output</label>
-                              <pre className="rounded-lg border border-border bg-muted p-3 text-xs font-mono whitespace-pre-wrap">
-                                {problem.sampleTestCases[activeTestCase].output}
-                              </pre>
+                          {testCases[activeTestCase]?.output && (
+                            <div>
+                              <div className="judge-label">Expected Output</div>
+                              <pre className="judge-codeblock text-[12px]">{testCases[activeTestCase].output}</pre>
                             </div>
                           )}
                         </div>
@@ -527,31 +736,44 @@ export default function JudgePage() {
                     </div>
                   </TabsContent>
 
-                  {/* Run / Submit output */}
+                  {/* Output */}
                   <TabsContent value="result" className="flex-1 overflow-hidden m-0">
                     <ScrollArea className="h-full p-3">
                       {!runResult && !result && (
-                        <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-                          <SquareTerminal className="h-8 w-8 mb-2 stroke-1" />
-                          <p className="text-xs">Run your code to see output</p>
+                        <div className="judge-empty-state py-8">
+                          <SquareTerminal className="judge-empty-state-icon" />
+                          <p className="text-xs font-medium">Run your code to see output</p>
                         </div>
                       )}
 
                       {runResult && (
                         <div className="space-y-3">
-                          <StatusHeader info={runStatusInfo} time={runResult.time} small />
-                          {runResult.stdout && <OutputBlock label="Stdout" size="sm">{runResult.stdout}</OutputBlock>}
-                          {runResult.stderr && <OutputBlock label="Stderr" variant="error" size="sm">{runResult.stderr}</OutputBlock>}
+                          <StatusBanner status={runResult.status} time={runResult.time} compact />
+                          {runResult.stdout && <CodeOutput label="Stdout" size="sm" icon={<SquareTerminal className="h-3 w-3" />}>{runResult.stdout}</CodeOutput>}
+                          {runResult.stderr && <CodeOutput label="Stderr" variant="error" size="sm" icon={<AlertTriangle className="h-3 w-3" />}>{runResult.stderr}</CodeOutput>}
                         </div>
                       )}
 
                       {result && !runResult && (
                         <div className="space-y-3">
-                          <StatusHeader info={statusInfo} time={result.time} small />
+                          <StatusBanner status={result.status} time={result.time} compact />
                           {result.totalTests > 0 && (
-                            <span className="text-xs text-muted-foreground">{result.totalPassed}/{result.totalTests} passed</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs text-muted-foreground">
+                                <span className="font-semibold text-foreground tabular-nums">{result.totalPassed}</span>/{result.totalTests} passed
+                              </span>
+                              <div className="flex-1 h-1.5 rounded-full bg-secondary overflow-hidden">
+                                <div
+                                  className="h-full rounded-full transition-all duration-500"
+                                  style={{
+                                    width: `${(result.totalPassed / result.totalTests) * 100}%`,
+                                    backgroundColor: result.totalPassed === result.totalTests ? "var(--color-success)" : "var(--color-danger)",
+                                  }}
+                                />
+                              </div>
+                            </div>
                           )}
-                          {result.error && <OutputBlock variant="error" size="sm">{result.error}</OutputBlock>}
+                          {result.error && <CodeOutput variant="error" size="sm">{result.error}</CodeOutput>}
                         </div>
                       )}
                     </ScrollArea>
@@ -563,6 +785,7 @@ export default function JudgePage() {
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
+    </TooltipProvider>
   );
 }
 
@@ -570,17 +793,32 @@ export default function JudgePage() {
    SUB-COMPONENTS
    ──────────────────────────────────────────── */
 
-function StatusHeader({ info, time, small }) {
-  if (!info) return null;
-  const Icon = info.icon;
+const STATUS_MAP = {
+  Accepted:             { icon: CheckCircle2, color: "var(--color-success)",  variant: "accepted", label: "Accepted" },
+  Success:              { icon: CheckCircle2, color: "var(--color-success)",  variant: "accepted", label: "Success" },
+  "Wrong Answer":       { icon: XCircle,      color: "var(--color-danger)",   variant: "failed",   label: "Wrong Answer" },
+  "Compilation Error":  { icon: AlertTriangle, color: "var(--color-danger)",  variant: "failed",   label: "Compilation Error" },
+  "Runtime Error":      { icon: AlertTriangle, color: "var(--color-orange)",  variant: "warning",  label: "Runtime Error" },
+  "Time Limit Exceeded":{ icon: Clock,         color: "var(--color-warning)", variant: "warning",  label: "Time Limit Exceeded" },
+  Error:                { icon: AlertTriangle, color: "var(--color-danger)",  variant: "failed",   label: "Error" },
+};
+
+function StatusBanner({ status, time, compact }) {
+  const cfg = STATUS_MAP[status] || STATUS_MAP.Error;
+  const Icon = cfg.icon;
   return (
-    <div className="flex items-center gap-2">
-      <Icon className={`${small ? "h-4 w-4" : "h-5 w-5"} ${info.color}`} />
-      <span className={`${small ? "text-sm" : "text-lg"} font-bold ${info.color}`}>
-        {info.label}
-      </span>
+    <div className={`judge-status-banner judge-status-banner--${cfg.variant} ${compact ? "!py-2 !px-3" : ""}`}>
+      <Icon className={compact ? "h-4 w-4" : "h-5 w-5"} style={{ color: cfg.color }} />
+      <div className="flex flex-col">
+        <span className={`${compact ? "text-sm" : "text-base"} font-bold leading-tight`} style={{ color: cfg.color }}>
+          {status}
+        </span>
+        {!compact && time > 0 && (
+          <span className="text-[10px] text-muted-foreground mt-0.5">Executed in {time}ms</span>
+        )}
+      </div>
       {time > 0 && (
-        <span className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">
+        <span className="ml-auto flex items-center gap-1.5 text-[11px] text-muted-foreground tabular-nums bg-secondary/80 px-2 py-0.5 rounded-md">
           <Clock className="h-3 w-3" /> {time}ms
         </span>
       )}
@@ -588,60 +826,19 @@ function StatusHeader({ info, time, small }) {
   );
 }
 
-function OutputBlock({ label, variant, size = "md", children }) {
+function CodeOutput({ label, variant, size = "md", icon, children }) {
   const isError = variant === "error";
   return (
-    <div className="space-y-1.5">
+    <div>
       {label && (
-        <label className={`${size === "sm" ? "text-[10px]" : "text-xs"} font-medium uppercase tracking-wider ${
-          isError ? "text-[var(--color-danger)]" : "text-muted-foreground"
-        }`}>
+        <div className="judge-label flex items-center gap-1.5" style={isError ? { color: 'var(--color-danger)' } : undefined}>
+          {icon}
           {label}
-        </label>
-      )}
-      <pre className={`text-xs font-mono rounded-lg p-3 overflow-x-auto whitespace-pre-wrap border ${
-        isError
-          ? "bg-[var(--color-danger-light)] text-[var(--color-danger)] border-[var(--color-danger)]/20"
-          : "bg-muted border-border"
-      }`}>
-        {children}
-      </pre>
-    </div>
-  );
-}
-
-function TestCaseCard({ tc }) {
-  return (
-    <div className={`rounded-lg border overflow-hidden ${
-      tc.passed ? "border-[var(--color-success)]/30" : "border-[var(--color-danger)]/30"
-    }`}>
-      <div className={`flex items-center gap-2 px-3 py-2 text-sm ${
-        tc.passed ? "bg-[var(--color-success-light)]" : "bg-[var(--color-danger-light)]"
-      }`}>
-        {tc.passed
-          ? <CheckCircle2 className="h-3.5 w-3.5 text-[var(--color-success)]" />
-          : <XCircle className="h-3.5 w-3.5 text-[var(--color-danger)]" />
-        }
-        <span className="font-medium text-xs">Test Case {tc.testCase}</span>
-        <span className="ml-auto text-xs text-muted-foreground">{tc.time}ms</span>
-      </div>
-      {!tc.passed && (
-        <div className="p-3 space-y-2 bg-card text-xs font-mono">
-          <FieldBlock label="Input">{tc.input}</FieldBlock>
-          <FieldBlock label="Expected" className="text-[var(--color-success)]">{tc.expected}</FieldBlock>
-          <FieldBlock label="Output" className="text-[var(--color-danger)]">{tc.actual}</FieldBlock>
-          {tc.error && <FieldBlock label="Error" className="text-[var(--color-danger)]" bg="bg-[var(--color-danger-light)]">{tc.error}</FieldBlock>}
         </div>
       )}
-    </div>
-  );
-}
-
-function FieldBlock({ label, className, bg = "bg-muted", children }) {
-  return (
-    <div>
-      <label className="text-[10px] font-sans font-medium text-muted-foreground uppercase tracking-wider">{label}</label>
-      <pre className={`mt-0.5 ${bg} rounded p-2 whitespace-pre-wrap ${className || ""}`}>{children}</pre>
+      <pre className={`judge-codeblock ${size === "sm" ? "text-[12px]" : "text-[13px]"} ${isError ? "judge-codeblock--error" : ""}`}>
+        {children}
+      </pre>
     </div>
   );
 }

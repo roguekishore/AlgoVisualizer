@@ -3,6 +3,7 @@ import {
   X, Lock, CheckCircle, Play, RotateCcw, ZoomIn, ZoomOut,
   Home, MapPin, Bug, ChevronRight, Sparkles, Trophy,
   Target, ArrowLeft, Moon, Sun, ChevronDown, ChevronUp,
+  ExternalLink, Code2,
 } from 'lucide-react';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +17,9 @@ import useProgressStore, {
   getProblemsByStage,
   getProblemForCountry,
   getCountryForProblem,
+  getLeetCodeUrlForProblem,
+  hasJudgeProblem,
+  getJudgeRoute,
 } from './useProgressStore';
 
 import { Dock, DockIcon } from '@/components/ui/dock';
@@ -213,6 +217,16 @@ const WorldMap = () => {
   }, [getCountryId, getProblemState]);
 
   const goToProblem = useCallback(() => { if (selectedProblem) navigate(selectedProblem.route); }, [selectedProblem, navigate]);
+
+  const goToJudge = useCallback(() => {
+    if (selectedProblem?.judgeId) navigate(`/judge/${selectedProblem.judgeId}`);
+  }, [selectedProblem, navigate]);
+
+  const goToLeetCode = useCallback(() => {
+    if (selectedProblem?.lcSlug) {
+      window.open(`https://leetcode.com/problems/${selectedProblem.lcSlug}`, '_blank', 'noopener,noreferrer');
+    }
+  }, [selectedProblem]);
 
   const markComplete = useCallback(async () => {
     if (!selectedProblem) return;
@@ -587,15 +601,37 @@ const WorldMap = () => {
             <div className="flex flex-col gap-2">
               {(selectedProblem.state === 'available' || selectedProblem.state === 'current') && (
                 <>
-                  {selectedProblem.hasVisualizer ? (
+                  {/* Primary CTA — Judge (non-LC) or LeetCode */}
+                  {selectedProblem.judgeId && (
+                    <button
+                      onClick={goToJudge}
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
+                      style={{ background: 'linear-gradient(to right, #10b981, #34d399)' }}
+                    >
+                      <Code2 size={15} /> Solve It
+                    </button>
+                  )}
+                  {selectedProblem.lcSlug && (
+                    <button
+                      onClick={goToLeetCode}
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
+                      style={{ background: 'linear-gradient(to right, #f59e0b, #fbbf24)' }}
+                    >
+                      <ExternalLink size={15} /> Go to LeetCode
+                    </button>
+                  )}
+                  {/* Visualizer button */}
+                  {selectedProblem.hasVisualizer && (
                     <button
                       onClick={goToProblem}
                       className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
                       style={{ background: 'linear-gradient(to right, #5542FF, #B28EF2)' }}
                     >
-                      <Play size={15} /> Start Problem
+                      <Play size={15} /> Visualize
                     </button>
-                  ) : (
+                  )}
+                  {/* Fallback if nothing is available */}
+                  {!selectedProblem.judgeId && !selectedProblem.lcSlug && !selectedProblem.hasVisualizer && (
                     <button
                       disabled
                       className="flex items-center justify-center gap-2 h-10 rounded-lg text-zinc-400 text-sm font-semibold bg-zinc-100 dark:bg-zinc-800 cursor-not-allowed"
@@ -613,15 +649,35 @@ const WorldMap = () => {
               )}
               {selectedProblem.state === 'completed' && (
                 <>
-                  {selectedProblem.hasVisualizer ? (
+                  {/* Same buttons but as review mode */}
+                  {selectedProblem.judgeId && (
+                    <button
+                      onClick={goToJudge}
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
+                      style={{ background: 'linear-gradient(to right, #10b981, #34d399)' }}
+                    >
+                      <Code2 size={15} /> Solve Again
+                    </button>
+                  )}
+                  {selectedProblem.lcSlug && (
+                    <button
+                      onClick={goToLeetCode}
+                      className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
+                      style={{ background: 'linear-gradient(to right, #f59e0b, #fbbf24)' }}
+                    >
+                      <ExternalLink size={15} /> Go to LeetCode
+                    </button>
+                  )}
+                  {selectedProblem.hasVisualizer && (
                     <button
                       onClick={goToProblem}
                       className="flex items-center justify-center gap-2 h-10 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90"
                       style={{ background: 'linear-gradient(to right, #5542FF, #B28EF2)' }}
                     >
-                      <Play size={15} /> Review Problem
+                      <Play size={15} /> Review Visualizer
                     </button>
-                  ) : (
+                  )}
+                  {!selectedProblem.judgeId && !selectedProblem.lcSlug && !selectedProblem.hasVisualizer && (
                     <button
                       disabled
                       className="flex items-center justify-center gap-2 h-10 rounded-lg text-zinc-400 text-sm font-semibold bg-zinc-100 dark:bg-zinc-800 cursor-not-allowed"
@@ -636,9 +692,24 @@ const WorldMap = () => {
               )}
             </div>
 
-            <code className="block px-3 py-2 rounded-lg bg-muted border border-border text-[11px] text-muted-foreground font-mono truncate">
-              {selectedProblem.route}
-            </code>
+            {/* Problem info badges */}
+            <div className="flex flex-wrap gap-1.5">
+              {selectedProblem.lcNumber && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 border-amber-400/50 text-amber-600 dark:text-amber-400 bg-amber-500/5">
+                  LC #{selectedProblem.lcNumber}
+                </Badge>
+              )}
+              {selectedProblem.judgeId && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 border-emerald-400/50 text-emerald-600 dark:text-emerald-400 bg-emerald-500/5">
+                  Online Judge
+                </Badge>
+              )}
+              {selectedProblem.hasVisualizer && (
+                <Badge variant="outline" className="text-[10px] py-0 px-1.5 border-[#5542FF]/40 text-[#5542FF] dark:text-[#B28EF2] bg-[#5542FF]/5">
+                  Visualizer
+                </Badge>
+              )}
+            </div>
           </div>
         )}
       </div>

@@ -45,6 +45,10 @@ import {
   getNewProblems,
   getProblemsWithVisualizers,
   getProblemsWithLeetCode,
+  hasJudgeProblem,
+  getJudgeRoute,
+  getJudgeId,
+  getProblemsWithJudge,
   Difficulty,
   STATS,
 } from '../data/dsa-conquest-map';
@@ -74,6 +78,10 @@ export {
   getNewProblems,
   getProblemsWithVisualizers,
   getProblemsWithLeetCode,
+  hasJudgeProblem,
+  getJudgeRoute,
+  getJudgeId,
+  getProblemsWithJudge,
   Difficulty,
   STATS,
 };

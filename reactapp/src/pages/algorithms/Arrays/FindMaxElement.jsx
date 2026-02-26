@@ -1,8 +1,8 @@
  import React, { useState, useEffect } from "react";
 import { ArrowLeft, Maximize2, Play, RotateCcw, Code, Zap, Clock, Cpu } from "lucide-react";
 
-const FindMaxElement = ({ navigate }) => {
-  const [array, setArray] = useState([3, 1, 4, 1, 5, 9, 2, 6]);
+const FindMaxElement = ({ navigate, embedded = false, externalArray }) => {
+  const [array, setArray] = useState(externalArray || [3, 1, 4, 1, 5, 9, 2, 6]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [maxIndex, setMaxIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -10,6 +10,14 @@ const FindMaxElement = ({ navigate }) => {
   const [isComplete, setIsComplete] = useState(false);
   const [algorithm, setAlgorithm] = useState("optimal"); // "bruteforce" or "optimal"
   const [comparisons, setComparisons] = useState(0);
+
+  // Sync when externalArray changes (e.g. user clicks a test case)
+  React.useEffect(() => {
+    if (externalArray && externalArray.length > 0) {
+      setArray(externalArray);
+      resetAnimation();
+    }
+  }, [externalArray]);
 
   const resetAnimation = () => {
     setCurrentIndex(0);
@@ -61,6 +69,96 @@ const FindMaxElement = ({ navigate }) => {
 
     return () => clearInterval(interval);
   }, [isPlaying, currentIndex, array, maxIndex, speed, algorithm]);
+
+  /* ══════ Embedded mode — compact panel for Judge drawer ══════ */
+  if (embedded) {
+    return (
+      <div className="flex flex-col h-full p-4 gap-3">
+        {/* Controls row */}
+        <div className="flex items-center gap-2 flex-shrink-0">
+          <button
+            onClick={startAnimation}
+            disabled={isPlaying}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-medium transition-colors"
+          >
+            <Play className="h-3 w-3" />
+            {isPlaying ? "Running…" : "Play"}
+          </button>
+          <button
+            onClick={resetAnimation}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-medium transition-colors"
+          >
+            <RotateCcw className="h-3 w-3" /> Reset
+          </button>
+          <button
+            onClick={generateNewArray}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-medium transition-colors"
+          >
+            Shuffle
+          </button>
+          <select
+            value={speed}
+            onChange={(e) => setSpeed(Number(e.target.value))}
+            className="h-7 px-2 rounded-md border border-zinc-200 dark:border-zinc-700 bg-transparent text-xs text-zinc-600 dark:text-zinc-400 cursor-pointer"
+          >
+            <option value={1500}>Slow</option>
+            <option value={1000}>Medium</option>
+            <option value={500}>Fast</option>
+            <option value={250}>Very Fast</option>
+          </select>
+          <span className="ml-auto text-[11px] text-zinc-500 dark:text-zinc-400 font-mono tabular-nums">
+            Comparisons: {comparisons}
+          </span>
+        </div>
+
+        {/* Compact array bars */}
+        <div className="flex-1 flex items-end justify-center gap-1.5 min-h-0 pb-2">
+          {array.map((value, index) => {
+            const isChecking = index === currentIndex && !isComplete;
+            const isMax = index === maxIndex;
+            const isScanned = index < currentIndex;
+            const isFound = isComplete && isMax;
+            return (
+              <div key={index} className="flex flex-col items-center gap-1 flex-1 max-w-[48px]">
+                <span className="text-[10px] font-mono text-zinc-400">{value}</span>
+                <div
+                  className={[
+                    "w-full rounded-sm transition-all duration-200",
+                    isFound
+                      ? "bg-emerald-500 ring-2 ring-emerald-400/50"
+                      : isChecking
+                      ? "bg-amber-400 dark:bg-amber-500"
+                      : isMax
+                      ? "bg-emerald-400 dark:bg-emerald-500"
+                      : isScanned
+                      ? "bg-indigo-300 dark:bg-indigo-500/60"
+                      : "bg-zinc-200 dark:bg-zinc-700",
+                  ].join(" ")}
+                  style={{ height: `${Math.max(value * 12 + 16, 20)}px` }}
+                />
+                <span className="text-[9px] font-mono text-zinc-500">{index}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Status line */}
+        <div className="text-center text-xs text-zinc-500 dark:text-zinc-400 flex-shrink-0">
+          {isComplete ? (
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
+              ✓ Maximum: {array[maxIndex]} at index [{maxIndex}]
+            </span>
+          ) : isPlaying ? (
+            <span className="text-amber-600 dark:text-amber-400">
+              Checking index [{currentIndex}]…
+            </span>
+          ) : (
+            <span>Press Play to visualize the algorithm</span>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-theme-primary text-theme-primary p-6">
