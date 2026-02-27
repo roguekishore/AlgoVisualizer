@@ -37,6 +37,13 @@ export function LoginForm({ className, ...props }) {
       }
       // Store user in localStorage for the session
       localStorage.setItem("user", JSON.stringify(data))
+      // Signal the Chrome extension (if installed) to update its linked lcusername
+      window.postMessage({
+        type: 'VANTAGE_LOGIN',
+        lcusername: data.lcusername ?? null,
+        uid: data.uid ?? null,
+        sessionToken: data.sessionToken ?? null,
+      }, '*')
       navigate("/")
     } catch {
       setError("Could not reach the server. Please try again.")

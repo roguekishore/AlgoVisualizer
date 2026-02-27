@@ -6,7 +6,8 @@
   "permissions": ["storage", "activeTab"],
   "host_permissions": [
     "https://leetcode.com/*",
-    "http://localhost:8080/*"
+    "http://localhost:8080/*",
+    "http://localhost:3000/*"
   ],
   "action": {
     "default_popup": "popup.html"
@@ -29,6 +30,11 @@
         "https://leetcode.com/problems/*",
         "https://leetcode.com/submissions/*"
       ],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["http://localhost:3000/*"],
       "js": ["content-script.js"],
       "run_at": "document_idle"
     }

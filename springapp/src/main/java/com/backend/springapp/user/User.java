@@ -31,6 +31,10 @@ public class User {
     @Column(unique = true)
     private String lcusername;
 
+    /** Opaque session token issued on login/signup. Sent by the extension as Bearer token. */
+    @Column(unique = true)
+    private String sessionToken;
+
     @ManyToOne
     @JoinColumn(name = "institution_id")
     private Institution institution;

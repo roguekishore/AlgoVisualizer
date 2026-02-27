@@ -84,15 +84,30 @@ const WorldMap = () => {
 
   /* ── load progress from backend on mount ── */
   useEffect(() => {
-    try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      if (user?.uid) {
+    let sseCleanup;
+    async function init() {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user?.uid) return;
+
+        // Validate user still exists in the backend (guards against DB recreate)
+        const res = await fetch(`http://localhost:8080/api/users/${user.uid}`);
+        if (!res.ok) {
+          // User no longer exists in DB — clear stale session
+          console.warn('[WorldMap] Stale user session detected, clearing localStorage');
+          localStorage.removeItem('user');
+          return;
+        }
+
         loadProgress(user.uid);
         // Open SSE stream for live updates from the extension / other tabs
-        const cleanup = subscribeToLiveUpdates(user.uid);
-        return cleanup; // close SSE on unmount
+        sseCleanup = subscribeToLiveUpdates(user.uid);
+      } catch {
+        // Backend unreachable or not logged in — silently skip
       }
-    } catch { /* not logged in */ }
+    }
+    init();
+    return () => sseCleanup?.();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ───────────────────────────────────────────────

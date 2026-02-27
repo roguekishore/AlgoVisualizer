@@ -26,10 +26,24 @@ function flashBadge(text, color, ms = 4000) {
 }
 
 // ── Backend calls ─────────────────────────────────────────────────────────────
+
+/** Read the session token from chrome.storage.local. */
+function getSessionToken() {
+    return new Promise(resolve => {
+        chrome.storage.local.get(['sessionToken'], ({ sessionToken }) => {
+            resolve(sessionToken || null);
+        });
+    });
+}
+
 async function postSolved(lcusername, slugs) {
+    const token = await getSessionToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const res = await fetch(BACKEND_SYNC, {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body:    JSON.stringify({ lcusername, leetcodeSlugs: slugs }),
     });
     if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`);
@@ -37,9 +51,13 @@ async function postSolved(lcusername, slugs) {
 }
 
 async function postAttempt(lcusername, lcslug) {
+    const token = await getSessionToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
     const res = await fetch(BACKEND_ATTEMPT, {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body:    JSON.stringify({ lcusername, lcslug }),
     });
     const body = await res.text();
@@ -52,6 +70,16 @@ async function postAttempt(lcusername, lcslug) {
 
 // ── Message listener ──────────────────────────────────────────────────────────
 chrome.runtime.onMessage.addListener((msg, _sender, _sendResponse) => {
+
+    // ── Auth mismatch warning from content-script ─────────────────────────────
+    if (msg.action === 'authMismatch') {
+        flashBadge('!', '#ef4444', 8000);
+        console.warn(
+            `[Vantage] ⚠ Account mismatch — LC session is @${msg.current} ` +
+            `but the app is linked to @${msg.linked}.`
+        );
+        return false;
+    }
 
     // ── Accepted submission → mark SOLVED ─────────────────────────────────────
     if (msg.action === 'submissionAccepted') {

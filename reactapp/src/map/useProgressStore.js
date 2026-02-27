@@ -49,6 +49,7 @@ import {
   getJudgeRoute,
   getJudgeId,
   getProblemsWithJudge,
+  getConquestIdByJudgeId,
   Difficulty,
   STATS,
 } from '../data/dsa-conquest-map';
@@ -82,6 +83,7 @@ export {
   getJudgeRoute,
   getJudgeId,
   getProblemsWithJudge,
+  getConquestIdByJudgeId,
   Difficulty,
   STATS,
 };
@@ -121,6 +123,14 @@ async function apiMarkSolved(userId, backendPid) {
     method: 'POST',
   });
   if (!res.ok) throw new Error('Failed to mark solved');
+  return res.json();
+}
+
+async function apiMarkAttempted(userId, backendPid) {
+  const res = await fetch(`${API_BASE}/progress/${backendPid}/attempt?userId=${userId}`, {
+    method: 'POST',
+  });
+  if (!res.ok) throw new Error('Failed to mark attempted');
   return res.json();
 }
 
@@ -284,6 +294,27 @@ const useProgressStore = create((set, get) => ({
     } catch (err) {
       console.error('Failed to mark problem as solved:', err);
       return { success: false, nextProblem: null };
+    }
+  },
+
+  /**
+   * Mark a problem as attempted (wrong answer / runtime error / etc).
+   * Fire-and-forget — doesn't block the UI.
+   * Accepts a conquest-map ID (e.g. 'stage1-1').
+   */
+  markProblemAttempted: async (problemId) => {
+    let user = null;
+    try { user = JSON.parse(localStorage.getItem('user')); } catch { /* ignore */ }
+    if (!user?.uid) return;
+
+    const backendPid = toBackendPid(problemId);
+    if (!backendPid) return;
+
+    try {
+      await apiMarkAttempted(user.uid, backendPid);
+      console.log('[ProgressStore] Marked attempted:', problemId);
+    } catch (err) {
+      console.warn('Failed to mark problem as attempted:', err);
     }
   },
 

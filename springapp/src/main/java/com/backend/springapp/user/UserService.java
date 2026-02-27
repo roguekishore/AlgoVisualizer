@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +27,7 @@ public class UserService {
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
         dto.setLcusername(user.getLcusername());
+        dto.setSessionToken(user.getSessionToken());
         dto.setGraduationYear(user.getGraduationYear());
         dto.setRating(user.getRating());
         if (user.getInstitution() != null) {
@@ -113,6 +115,7 @@ public class UserService {
 
     // ─── Auth ────────────────────────────────────────────────────────────────
 
+    @Transactional
     public UserResponseDTO login(LoginRequestDTO dto) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
@@ -121,7 +124,20 @@ public class UserService {
             throw new IllegalArgumentException("Invalid email or password");
         }
 
+        // Issue a fresh session token on every login
+        user.setSessionToken(UUID.randomUUID().toString());
+        userRepository.save(user);
+
         return toResponse(user);
+    }
+
+    /**
+     * Resolve a session token to the owning User entity.
+     * Used by SyncController to authenticate extension requests.
+     */
+    public User resolveToken(String token) {
+        if (token == null || token.isBlank()) return null;
+        return userRepository.findBySessionToken(token).orElse(null);
     }
 
     @Transactional
@@ -141,6 +157,7 @@ public class UserService {
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
+        user.setSessionToken(UUID.randomUUID().toString());
         if (dto.getLcusername() != null && !dto.getLcusername().isBlank()) {
             user.setLcusername(dto.getLcusername().trim());
         }

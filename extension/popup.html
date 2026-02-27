@@ -229,6 +229,26 @@
     .status.ok   { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
     .status.fail { background: #fef2f2; border-color: #fecaca; color: #b91c1c; }
 
+    /* Sign-in prompt */
+    .signin-prompt {
+      display: none;
+      font-size: 11.5px;
+      color: #92400e;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: var(--radius);
+      padding: 9px 11px;
+      line-height: 1.65;
+    }
+
+    .signin-prompt a {
+      color: #1d4ed8;
+      text-decoration: underline;
+      font-weight: 500;
+    }
+
+    .signin-prompt a:hover { color: #1e40af; }
+
     .status-dot {
       flex-shrink: 0;
       margin-top: 4px;
@@ -309,6 +329,10 @@
 
     <p class="desc">
       Sync your accepted LeetCode solutions to Vantage to unlock conquered territories on your world map.
+    </p>
+
+    <p class="signin-prompt" id="signinPrompt">
+      Please <a href="http://localhost:3000/login" target="_blank">sign in</a> to the app and set your LeetCode username in your profile to enable sync.
     </p>
 
     <button class="btn" id="syncBtn">

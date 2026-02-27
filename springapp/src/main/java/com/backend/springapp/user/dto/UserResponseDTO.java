@@ -9,6 +9,8 @@ public class UserResponseDTO {
     private String username;
     private String email;
     private String lcusername;
+    /** Opaque session token — sent back to the extension for authenticated sync requests. */
+    private String sessionToken;
     private Integer graduationYear;
     private int rating;
     private Long institutionId;

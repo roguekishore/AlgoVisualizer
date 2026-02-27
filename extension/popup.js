@@ -1,17 +1,35 @@
 ﻿const SPRING_BOOT_URL = "http://localhost:8080/api/sync";
+const SPRING_BOOT_USER = "http://localhost:8080/api/users";
 const LC_GRAPHQL      = "https://leetcode.com/graphql";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-async function lcQuery(query, variables = {}) {
-    const res = await fetch(LC_GRAPHQL, {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query, variables })
-    });
-    if (!res.ok) throw new Error("LeetCode request failed: " + res.status);
-    return res.json();
+/**
+ * Query the LeetCode GraphQL API with automatic retry + exponential back-off.
+ * LeetCode returns 499 (rate-limit / "client closed request") when requests
+ * arrive too quickly.  Retrying after a short pause resolves it every time.
+ */
+async function lcQuery(query, variables = {}, retries = 3) {
+    for (let attempt = 1; attempt <= retries; attempt++) {
+        const res = await fetch(LC_GRAPHQL, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query, variables })
+        });
+
+        if (res.ok) return res.json();
+
+        // Retry on 429 (Too Many Requests) or LeetCode's non-standard 499
+        if ((res.status === 429 || res.status === 499) && attempt < retries) {
+            const wait = 1000 * attempt;           // 1s, 2s, 3s …
+            console.warn(`[Vantage] LeetCode ${res.status} — retry ${attempt}/${retries} in ${wait}ms`);
+            await new Promise(r => setTimeout(r, wait));
+            continue;
+        }
+
+        throw new Error("LeetCode request failed: " + res.status);
+    }
 }
 
 // ── UI helpers ────────────────────────────────────────────────────────────────
@@ -69,50 +87,141 @@ function setAuthChip(label, state = "") {
     chip.className   = "auth-chip" + (state ? " " + state : "");
 }
 
+/** Show or hide the sign-in prompt banner. */
+function showSignInPrompt(show) {
+    const el = document.getElementById("signinPrompt");
+    el.style.display = show ? "block" : "none";
+}
+
 // ── Auth status (runs on popup open) ─────────────────────────────────────────
 
-async function checkAuthStatus() {
-    // Restore linked username from storage immediately
-    const { lcusername: linked } = await chrome.storage.local.get(["lcusername"]);
-    setLinkedUser(linked || null);
+/**
+ * Fetch the user profile from the backend by uid.
+ * Returns the UserResponseDTO (which contains the latest lcusername)
+ * or null if the user doesn't exist / backend is offline.
+ */
+async function fetchLinkedProfile(uid) {
+    const res = await fetch(`${SPRING_BOOT_USER}/${uid}`);
+    if (!res.ok) return null;
+    return res.json();          // { uid, username, email, lcusername, ... }
+}
 
-    if (!linked) {
-        setAuthChip("—", "");
-        setSessionUser(null);
+async function checkAuthStatus() {
+    // chrome.storage now stores uid, lcusername, and sessionToken, kept fresh
+    // by the content-script running on localhost:3000.
+    const { lcusername: storedLc, uid: storedUid, sessionToken: storedToken } =
+        await chrome.storage.local.get(['lcusername', 'uid', 'sessionToken']);
+
+    // ── Validate stored values against the backend ────────────────────────
+    let linked = null;          // the CONFIRMED lcusername from backend
+    let backendOnline = true;
+
+    if (storedUid != null) {
+        try {
+            const profile = await fetchLinkedProfile(storedUid);
+            if (profile && profile.lcusername) {
+                linked = profile.lcusername;
+
+                // If the backend's lcusername differs from what we cached
+                // (e.g. user changed it on their profile page), update storage.
+                if (linked !== storedLc) {
+                    chrome.storage.local.set({ lcusername: linked });
+                }
+            } else {
+                // User exists but has no lcusername, or user deleted
+                chrome.storage.local.remove(['lcusername', 'uid', 'sessionToken']);
+            }
+        } catch {
+            backendOnline = false;
+        }
+    } else if (storedLc) {
+        // Legacy path: only lcusername in storage (no uid).
+        // Can happen if the content-script hasn't re-synced yet.
+        // Fall back to the old "does this lcusername exist?" check.
+        try {
+            const res = await fetch(SPRING_BOOT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ lcusername: storedLc, leetcodeSlugs: [] }),
+            });
+            if (res.ok) {
+                linked = storedLc;
+            } else {
+                chrome.storage.local.remove(['lcusername', 'uid', 'sessionToken']);
+            }
+        } catch {
+            backendOnline = false;
+        }
+    }
+
+    // ── Detect the live LeetCode session ─────────────────────────────────
+    // Primary: read the cached value written by the content-script running
+    // inside an actual LeetCode tab (has full cookie access → reliable).
+    // Fallback: try a direct GraphQL query from the popup (unreliable in
+    // MV3 because the popup's origin can't always attach LC cookies).
+    let lcSessionUser = null;
+    try {
+        const { lcSessionUser: cached } =
+            await chrome.storage.local.get(['lcSessionUser']);
+        if (cached) {
+            lcSessionUser = cached;
+        } else {
+            // No cached value — try direct query as a fallback
+            const data = await lcQuery(
+                `query userStatus { userStatus { username isSignedIn } }`);
+            const { username, isSignedIn } = data.data.userStatus;
+            if (isSignedIn && username) lcSessionUser = username;
+        }
+    } catch { /* LeetCode unreachable and nothing cached */ }
+    setSessionUser(lcSessionUser);
+
+    // ── Update UI ─────────────────────────────────────────────────────────
+    if (!backendOnline) {
+        setLinkedUser(storedLc || null);
+        setAuthChip("offline", "");
+        showSignInPrompt(false);
+        setStatus("Backend offline — cannot verify linked account.", "fail");
         return;
     }
 
-    // Live-check who is currently logged in on LeetCode
-    try {
-        const data = await lcQuery(`query userStatus { userStatus { username isSignedIn } }`);
-        const { username, isSignedIn } = data.data.userStatus;
+    if (!linked) {
+        setLinkedUser(null);
+        showSignInPrompt(true);
+        setAuthChip("—", "");
+        setStatus("Sign in to the app to enable sync.", "idle");
+        return;
+    }
 
-        if (!isSignedIn || !username) {
-            setSessionUser(null);
-            setAuthChip("not signed in", "mismatch");
-            setStatus("Sign in to LeetCode to enable auto-sync.", "fail");
-            return;
-        }
+    setLinkedUser(linked);
+    showSignInPrompt(false);
 
-        setSessionUser(username);
-
-        if (username.toLowerCase() === linked.toLowerCase()) {
-            setAuthChip("✓ match", "match");
-            // Clear any previous mismatch warning
-            setStatus("Ready to sync", "idle");
-        } else {
-            setAuthChip("⚠ mismatch", "mismatch");
-            setStatus(
-                `LeetCode session is @${username} but the app is linked to @${linked}. ` +
-                `Auto-sync is blocked. Re-link by clicking Sync Now, or log in to LeetCode as @${linked}.`,
-                "fail"
-            );
-        }
-    } catch {
-        setSessionUser(null);
-        setAuthChip("offline", "");
+    if (!lcSessionUser) {
+        setAuthChip("not signed in", "mismatch");
+        setStatus("Sign in to LeetCode to enable auto-sync.", "fail");
+    } else if (lcSessionUser.toLowerCase() === linked.toLowerCase()) {
+        setAuthChip("✓ match", "match");
+        setStatus("Ready to sync", "idle");
+    } else {
+        setAuthChip("⚠ mismatch", "mismatch");
+        setStatus(
+            `LeetCode session is @${lcSessionUser} but the app is linked to @${linked}. ` +
+            `Click Sync Now to re-link as @${lcSessionUser}, or log in to LeetCode as @${linked}.`,
+            "fail"
+        );
     }
 }
+
+// ── Live-update: re-run auth check whenever chrome.storage changes ───────────
+// This catches login/logout events pushed by the content-script while the
+// popup is still open.
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && (
+        changes.lcusername || changes.uid ||
+        changes.sessionToken || changes.lcSessionUser
+    )) {
+        checkAuthStatus();
+    }
+});
 
 // ── On load: run auth check ───────────────────────────────────────────────────
 
@@ -146,10 +255,10 @@ document.getElementById("syncBtn").addEventListener("click", async () => {
         }
 
         // Cache the lcusername for the content-script and auth guard
-        chrome.storage.local.set({ lcusername: username });
+        // (persisted to chrome.storage.local only AFTER backend confirms the user exists)
         setSessionUser(username);
-        setLinkedUser(username);
-        setAuthChip("✓ match", "match");
+        // Also update the cached LC session so the popup always has it
+        chrome.storage.local.set({ lcSessionUser: username });
 
         setStatus(`Found @${username} — fetching accepted solutions...`, "busy");
 
@@ -170,21 +279,46 @@ document.getElementById("syncBtn").addEventListener("click", async () => {
         const slugs = solvedData.data.problemsetQuestionList.data.map(q => q.titleSlug);
         setStatus(`Forwarding ${slugs.length} solutions to Vantage...`, "busy");
 
-        // 3. Push directly to our backend
+        // 3. Push directly to our backend (with Bearer token for authentication)
         try {
+            const { sessionToken } = await chrome.storage.local.get(['sessionToken']);
+            const headers = { "Content-Type": "application/json" };
+            if (sessionToken) headers["Authorization"] = `Bearer ${sessionToken}`;
+
             const backendRes = await fetch(SPRING_BOOT_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers,
                 body: JSON.stringify({ lcusername: username, leetcodeSlugs: slugs })
             });
 
             if (backendRes.ok) {
+                // Backend confirmed — now persist lcusername to chrome.storage.
+                const { uid: existingUid, sessionToken: existingToken } =
+                    await chrome.storage.local.get(['uid', 'sessionToken']);
+                const storageUpdate = { lcusername: username };
+                if (existingUid != null) storageUpdate.uid = existingUid;
+                if (existingToken) storageUpdate.sessionToken = existingToken;
+                chrome.storage.local.set(storageUpdate);
+
+                setLinkedUser(username);
+                setAuthChip("✓ match", "match");
+                showSignInPrompt(false);
+
                 const data = await backendRes.json();
                 setStatus(`${data.updated} newly synced  ·  ${data.matched} matched on map`, "ok");
                 setBusy(false);
             } else {
-                const errText = await backendRes.text();
-                setStatus(errText || "Backend returned an error.", "fail");
+                if (backendRes.status === 404) {
+                    setStatus(
+                        "LeetCode username not found in your profile. " +
+                        "Please sign in to the app and set your LC username first.",
+                        "fail"
+                    );
+                    showSignInPrompt(true);
+                } else {
+                    const errText = await backendRes.text();
+                    setStatus(errText || "Backend returned an error.", "fail");
+                }
                 setBusy(false);
             }
         } catch (fetchErr) {

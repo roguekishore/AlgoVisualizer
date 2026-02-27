@@ -437,6 +437,31 @@
   transform: none;
 }
 
+/* Sign-in CTA — replaces Submit when not logged in */
+.judge-btn-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  height: 1.75rem;
+  padding: 0 0.875rem;
+  border-radius: var(--judge-radius-sm);
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: var(--judge-accent);
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: all var(--judge-transition);
+  box-shadow: 0 1px 3px color-mix(in oklch, var(--judge-accent) 40%, transparent 60%);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.judge-btn-login:hover {
+  background: var(--judge-accent-hover);
+  box-shadow: 0 2px 8px color-mix(in oklch, var(--judge-accent) 50%, transparent 50%);
+  transform: translateY(-0.5px);
+}
+
 /* ── Toolbar icon buttons ── */
 .judge-icon-btn {
   display: inline-flex;

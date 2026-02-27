@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef, useCallback, useMemo } from "react"
 import { useParams, Link } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { fetchProblem, submitCode, runCode } from "../../services/judgeApi";
+import { getStoredUser } from "../../services/userApi";
 import { useTheme } from "../../components/theme-provider";
+import useProgressStore, { getConquestIdByJudgeId } from "../../map/useProgressStore";
 import { ThemeToggle } from "../../components/theme-toggle";
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
@@ -55,6 +57,7 @@ import {
   CircleDot,
   Hash,
   Braces,
+  LogIn,
 } from "lucide-react";
 import "./Judge.css";
 import VisualizerDrawer, { VisualizerToggleButton } from "./VisualizerDrawer";
@@ -77,6 +80,10 @@ const difficultyVariant = {
 export default function JudgePage() {
   const { problemId } = useParams();
   const { theme } = useTheme();
+  const completeProblem = useProgressStore((s) => s.completeProblem);
+  const markProblemAttempted = useProgressStore((s) => s.markProblemAttempted);
+  const user = useMemo(() => getStoredUser(), []);
+  const isLoggedIn = !!user?.uid;
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState("cpp");
@@ -194,6 +201,19 @@ export default function JudgePage() {
       const res = await submitCode({ problemId, language, code });
       setResult(res);
       setLeftTab("results");
+
+      // ── Sync with progress backend (fire-and-forget) ──
+      const conquestId = getConquestIdByJudgeId(problemId);
+      if (conquestId) {
+        if (res.status === "Accepted") {
+          completeProblem(conquestId).then(({ success }) => {
+            if (success) console.log('[Judge] Progress: marked SOLVED', conquestId);
+          });
+        } else {
+          // Wrong Answer / Runtime Error / TLE → mark attempted
+          markProblemAttempted(conquestId);
+        }
+      }
     } catch (err) {
       setResult({
         status: "Error",
@@ -597,19 +617,29 @@ export default function JudgePage() {
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="text-xs">Run against active test case</TooltipContent>
                     </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          className="judge-btn-submit"
-                          onClick={handleSubmit}
-                          disabled={submitting || running}
-                        >
-                          {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
-                          Submit
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">Submit against all test cases</TooltipContent>
-                    </Tooltip>
+                    {isLoggedIn ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            className="judge-btn-submit"
+                            onClick={handleSubmit}
+                            disabled={submitting || running}
+                          >
+                            {submitting ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Zap className="h-3.5 w-3.5" />}
+                            Submit
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="text-xs">Submit against all test cases</TooltipContent>
+                      </Tooltip>
+                    ) : (
+                      <Link
+                        to="/login"
+                        className="judge-btn-login"
+                      >
+                        <LogIn className="h-3.5 w-3.5" />
+                        Sign in to Submit
+                      </Link>
+                    )}
                   </div>
                 </div>
 

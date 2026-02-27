@@ -68,8 +68,11 @@ const ProfilePage = () => {
         setProfile(profileData);
         setStats(statsData);
       } catch (err) {
+        // If backend returns 404 / error, the user no longer exists (DB recreated)
         console.warn("Failed to load profile:", err);
-        setProfile(user);
+        localStorage.removeItem("user");
+        navigate("/login");
+        return;
       } finally {
         setLoading(false);
       }
@@ -80,6 +83,9 @@ const ProfilePage = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     useProgressStore.getState().clearForLogout();
+    // Signal the Chrome extension (if installed) to drop its cached lcusername
+    // so the next person who logs in doesn't see a stale "App Linked" value.
+    window.postMessage({ type: "VANTAGE_LOGOUT" }, "*");
     navigate("/login");
   };
 

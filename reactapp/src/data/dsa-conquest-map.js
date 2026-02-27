@@ -522,6 +522,12 @@ export const getJudgeId = (problemId) => {
 // Get all problems that have judge definitions
 export const getProblemsWithJudge = () => ALL_PROBLEMS.filter(p => p.judgeId);
 
+// Reverse lookup: judgeId (e.g. 'find-max-element') → conquest map ID (e.g. 'stage1-1')
+export const getConquestIdByJudgeId = (judgeId) => {
+  const problem = ALL_PROBLEMS.find(p => p.judgeId === judgeId);
+  return problem?.id || null;
+};
+
 // Get all new problems (without visualizers)
 export const getNewProblems = () => ALL_PROBLEMS.filter(p => p.isNew);
 
