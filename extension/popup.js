@@ -41,16 +41,29 @@ function setStatus(text, state = "idle") {
     textEl.textContent = text;
 }
 
+// Tracks whether the button is auth-locked (mismatch / not signed in / etc.)
+// so setBusy(false) can restore the correct state after a sync attempt.
+let _syncLocked = false;
+
 function setBusy(busy) {
     const btn     = document.getElementById("syncBtn");
     const spinner = document.getElementById("btnSpinner");
     const icon    = document.getElementById("btnIcon");
     const label   = document.getElementById("btnLabel");
 
-    btn.disabled          = busy;
+    // When finishing, restore the locked state instead of blindly enabling.
+    btn.disabled          = busy ? true : _syncLocked;
     spinner.style.display = busy ? "block" : "none";
     icon.style.display    = busy ? "none"  : "block";
     label.textContent     = busy ? "Syncing..." : "Sync Now";
+}
+
+/** Lock or unlock the sync button independently of the busy spinner. */
+function setSyncDisabled(disabled, reason = "") {
+    _syncLocked = disabled;
+    const btn = document.getElementById("syncBtn");
+    btn.disabled = disabled;
+    btn.title    = disabled ? reason : "";
 }
 
 /** Update the "LC Session" row (current LeetCode login). */
@@ -106,11 +119,50 @@ async function fetchLinkedProfile(uid) {
     return res.json();          // { uid, username, email, lcusername, ... }
 }
 
+/**
+ * Ask the content-script in a localhost:3000 tab to read localStorage
+ * directly and return the current user data.  This bypasses chrome.storage
+ * completely — it's a synchronous request → response over chrome.tabs.
+ */
+async function fetchUserFromContentScript() {
+    try {
+        const tabs = await chrome.tabs.query({ url: 'http://localhost:3000/*' });
+        for (const tab of tabs) {
+            try {
+                const resp = await chrome.tabs.sendMessage(
+                    tab.id, { action: 'getUserFromLocalStorage' });
+                if (resp && resp.uid != null) {
+                    console.log('[Vantage] Got user directly from content-script:', resp);
+                    return resp;   // { lcusername, uid, sessionToken }
+                }
+            } catch { /* content-script not ready in this tab */ }
+        }
+    } catch (err) {
+        console.warn('[Vantage] Tab query failed:', err);
+    }
+    return null;
+}
+
 async function checkAuthStatus() {
     // chrome.storage now stores uid, lcusername, and sessionToken, kept fresh
     // by the content-script running on localhost:3000.
-    const { lcusername: storedLc, uid: storedUid, sessionToken: storedToken } =
+    let { lcusername: storedLc, uid: storedUid, sessionToken: storedToken } =
         await chrome.storage.local.get(['lcusername', 'uid', 'sessionToken']);
+
+    // ── Fallback: if chrome.storage is empty, ask the content-script directly
+    if (storedUid == null) {
+        const direct = await fetchUserFromContentScript();
+        if (direct && direct.uid != null) {
+            storedUid   = direct.uid;
+            storedLc    = direct.lcusername;
+            storedToken = direct.sessionToken;
+            // Persist to chrome.storage so future opens are instant
+            const update = { uid: storedUid };
+            if (storedLc) update.lcusername = storedLc;
+            if (storedToken) update.sessionToken = storedToken;
+            chrome.storage.local.set(update);
+        }
+    }
 
     // ── Validate stored values against the backend ────────────────────────
     let linked = null;          // the CONFIRMED lcusername from backend
@@ -119,16 +171,22 @@ async function checkAuthStatus() {
     if (storedUid != null) {
         try {
             const profile = await fetchLinkedProfile(storedUid);
-            if (profile && profile.lcusername) {
-                linked = profile.lcusername;
+            if (profile) {
+                if (profile.lcusername) {
+                    linked = profile.lcusername;
 
-                // If the backend's lcusername differs from what we cached
-                // (e.g. user changed it on their profile page), update storage.
-                if (linked !== storedLc) {
-                    chrome.storage.local.set({ lcusername: linked });
+                    // If the backend's lcusername differs from what we cached
+                    // (e.g. user changed it on their profile page), update storage.
+                    if (linked !== storedLc) {
+                        chrome.storage.local.set({ lcusername: linked });
+                    }
+                } else {
+                    // User exists but hasn't set an lcusername yet — keep uid
+                    // and sessionToken so the popup knows they're logged in.
+                    if (storedLc) chrome.storage.local.remove(['lcusername']);
                 }
             } else {
-                // User exists but has no lcusername, or user deleted
+                // User doesn't exist in backend (deleted?) — clear everything
                 chrome.storage.local.remove(['lcusername', 'uid', 'sessionToken']);
             }
         } catch {
@@ -181,14 +239,25 @@ async function checkAuthStatus() {
         setAuthChip("offline", "");
         showSignInPrompt(false);
         setStatus("Backend offline — cannot verify linked account.", "fail");
+        setSyncDisabled(true, "Backend offline");
         return;
     }
 
-    if (!linked) {
+    if (!linked && storedUid == null) {
         setLinkedUser(null);
         showSignInPrompt(true);
         setAuthChip("—", "");
         setStatus("Sign in to the app to enable sync.", "idle");
+        setSyncDisabled(true, "Sign in to the app first");
+        return;
+    }
+
+    if (!linked && storedUid != null) {
+        setLinkedUser(null);
+        showSignInPrompt(false);
+        setAuthChip("no LC", "");
+        setStatus("Set your LeetCode username in your profile to enable sync.", "idle");
+        setSyncDisabled(true, "No LeetCode username set in your profile");
         return;
     }
 
@@ -197,17 +266,20 @@ async function checkAuthStatus() {
 
     if (!lcSessionUser) {
         setAuthChip("not signed in", "mismatch");
-        setStatus("Sign in to LeetCode to enable auto-sync.", "fail");
+        setStatus("Sign in to LeetCode to enable sync.", "fail");
+        setSyncDisabled(true, "Sign in to LeetCode first");
     } else if (lcSessionUser.toLowerCase() === linked.toLowerCase()) {
         setAuthChip("✓ match", "match");
         setStatus("Ready to sync", "idle");
+        setSyncDisabled(false);
     } else {
         setAuthChip("⚠ mismatch", "mismatch");
         setStatus(
-            `LeetCode session is @${lcSessionUser} but the app is linked to @${linked}. ` +
-            `Click Sync Now to re-link as @${lcSessionUser}, or log in to LeetCode as @${linked}.`,
+            `LeetCode session (@${lcSessionUser}) doesn't match the app-linked account (@${linked}). ` +
+            `Log in to LeetCode as @${linked} to sync.`,
             "fail"
         );
+        setSyncDisabled(true, `Switch LeetCode account to @${linked} to sync`);
     }
 }
 

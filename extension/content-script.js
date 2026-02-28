@@ -57,7 +57,15 @@ function safeStorageGet(keys) {
 
 function safeStorageSet(obj) {
     if (!isContextValid()) { markContextDead(); return; }
-    try { chrome.storage.local.set(obj); }
+    try {
+        chrome.storage.local.set(obj, () => {
+            if (chrome.runtime.lastError) {
+                console.error('[Vantage] Storage write FAILED:', chrome.runtime.lastError.message);
+            } else {
+                console.log('[Vantage] Storage write OK:', Object.keys(obj).join(', '));
+            }
+        });
+    }
     catch { markContextDead(); }
 }
 
@@ -109,12 +117,16 @@ if (location.hostname === 'localhost') {
             prev.uid === uid &&
             prev.sessionToken === sessionToken) return;
 
-        if (lcusername && uid != null && sessionToken) {
-            safeStorageSet({ lcusername, uid, sessionToken });
-            console.log('[Vantage] Synced lcusername from app:', lcusername, 'uid:', uid);
+        if (uid != null && sessionToken) {
+            const update = { uid, sessionToken };
+            if (lcusername) update.lcusername = lcusername;
+            safeStorageSet(update);
+            // If lcusername was removed (e.g. cleared in profile), drop it from storage
+            if (!lcusername && prev.lcusername) safeStorageRemove(['lcusername']);
+            console.log('[Vantage] Synced from app — uid:', uid, 'lcusername:', lcusername ?? '(none)');
         } else {
             safeStorageRemove(STORAGE_KEYS);
-            console.log('[Vantage] No lcusername in app — cleared storage.');
+            console.log('[Vantage] No logged-in user in app — cleared storage.');
         }
     }
 
@@ -128,9 +140,13 @@ if (location.hostname === 'localhost') {
             const lc    = e.data.lcusername  || null;
             const uid   = e.data.uid         ?? null;
             const token = e.data.sessionToken || null;
-            if (lc && uid != null && token) {
-                safeStorageSet({ lcusername: lc, uid, sessionToken: token });
-                console.log('[Vantage] Login signal — lcusername:', lc, 'uid:', uid);
+            if (uid != null && token) {
+                const update = { uid, sessionToken: token };
+                if (lc) update.lcusername = lc;
+                safeStorageSet(update);
+                // If signup had no lcusername, make sure stale key is removed
+                if (!lc) safeStorageRemove(['lcusername']);
+                console.log('[Vantage] Login signal — uid:', uid, 'lcusername:', lc ?? '(none)');
             } else {
                 safeStorageRemove(STORAGE_KEYS);
             }
@@ -162,14 +178,45 @@ if (location.hostname === 'localhost') {
 
     // 5. Safety-net poll — catches any edge-case where postMessage or
     //    storage events were missed (e.g. extension reloaded mid-session).
-    //    Clears itself when context dies to stop spamming.
+    //    Starts fast (3 s) for the first minute, then backs off to 15 s.
+    let pollCount = 0;
     pollTimer = setInterval(() => {
         if (_contextDead) {
             clearInterval(pollTimer);
             return;
         }
         syncLcUsernameFromApp();
-    }, 15_000);
+        pollCount++;
+        // After ~1 minute of fast polling, switch to slow
+        if (pollCount >= 20 && pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = setInterval(() => {
+                if (_contextDead) { clearInterval(pollTimer); return; }
+                syncLcUsernameFromApp();
+            }, 15_000);
+        }
+    }, 3_000);
+
+    // 6. Direct query from popup — the popup can ask us for the current
+    //    user data from localStorage without going through chrome.storage.
+    //    This is the most reliable path because it's synchronous (request → response).
+    chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+        if (_contextDead) return false;
+        if (msg.action === 'getUserFromLocalStorage') {
+            try {
+                const raw = localStorage.getItem('user');
+                const user = raw ? JSON.parse(raw) : null;
+                sendResponse({
+                    lcusername:   user?.lcusername   || null,
+                    uid:          user?.uid          ?? null,
+                    sessionToken: user?.sessionToken  || null,
+                });
+            } catch {
+                sendResponse({ lcusername: null, uid: null, sessionToken: null });
+            }
+            return false; // synchronous response
+        }
+    });
 
     // Done — rest of the file is LeetCode-specific
 }
