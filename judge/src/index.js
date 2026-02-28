@@ -52,6 +52,16 @@ process.on("SIGTERM", () => {
   process.exit(0);
 });
 
+// Catch unhandled errors to prevent silent crashes
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
+});
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+  if (detectMode() === "docker") pool.shutdownPool();
+  process.exit(1);
+});
+
 start().catch((err) => {
   console.error("Failed to start judge server:", err);
   process.exit(1);

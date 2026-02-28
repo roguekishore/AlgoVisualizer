@@ -166,7 +166,7 @@ export const ALL_PROBLEMS = [
   // Pattern: Converging/Diverging Pointers
   // Countries: Southern South America
   // =================================================================
-  { id: 'stage4-1', title: 'Two Sum', route: '/arrays/TwoSum', stage: 4, order: 1, lcNumber: 1, lcSlug: 'two-sum', countryId: 'PE', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'TwoSum', note: 'Classic problem #1' },
+  { id: 'stage4-1', title: 'Two Sum', route: '/arrays/TwoSum', stage: 4, order: 1, lcNumber: 1, lcSlug: 'two-sum', countryId: 'PE', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'TwoSum', judgeId: 'two-sum', note: 'Classic problem #1' },
   { id: 'stage4-2', title: '3Sum', route: '/arrays/ThreeSum', stage: 4, order: 2, lcNumber: 15, lcSlug: '3sum', countryId: 'BO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ThreeSum' },
   { id: 'stage4-3', title: '4Sum', route: '/arrays/4-Sum', stage: 4, order: 3, lcNumber: 18, lcSlug: '4sum', countryId: 'PY', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'FourSum' },
   { id: 'stage4-4', title: 'Container With Most Water', route: '/arrays/ContainerWithMostWater', stage: 4, order: 4, lcNumber: 11, lcSlug: 'container-with-most-water', countryId: 'AR', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ContainerWithMostWater' },

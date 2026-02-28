@@ -99,12 +99,23 @@ public class LeaderboardService {
     // ─── helpers ─────────────────────────────────────────────────────────────
 
     /**
-     * Converts raw rows to DTOs, assigning sequential 1-based ranks
-     * starting at (offset + 1).
+     * Assigns competition-style ranks (users with the same rating share the same rank).
+     * Consistent with getUserRank which uses "count higher + 1".
      */
     private List<LeaderboardEntryDTO> applyRanks(List<LeaderboardEntryDTO> entries, int offset) {
         for (int i = 0; i < entries.size(); i++) {
-            entries.get(i).setRank(offset + i + 1);
+            if (i == 0) {
+                entries.get(i).setRank(offset + 1);
+            } else {
+                LeaderboardEntryDTO prev = entries.get(i - 1);
+                LeaderboardEntryDTO curr = entries.get(i);
+                // Same rating → same rank; otherwise sequential
+                if (curr.getRating() == prev.getRating()) {
+                    curr.setRank(prev.getRank());
+                } else {
+                    curr.setRank(offset + i + 1);
+                }
+            }
         }
         return entries;
     }

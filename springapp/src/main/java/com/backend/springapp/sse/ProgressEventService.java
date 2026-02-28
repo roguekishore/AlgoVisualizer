@@ -1,5 +1,6 @@
 package com.backend.springapp.sse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class ProgressEventService {
 
     /** userId → list of live SSE emitters (one per browser tab) */
     private final Map<Long, List<SseEmitter>> emitters = new ConcurrentHashMap<>();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /** Timeout for each SSE connection (30 minutes, then client auto-reconnects) */
     private static final long SSE_TIMEOUT = 30 * 60 * 1000L;
@@ -76,10 +78,13 @@ public class ProgressEventService {
         }
 
         // Build JSON manually to avoid ObjectMapper dependency issues
-        String slug = event.slug() != null ? "\"" + event.slug().replace("\"", "\\\"") + "\"" : "null";
-        String json = String.format(
-                "{\"pid\":%d,\"status\":\"%s\",\"slug\":%s,\"attemptCount\":%d}",
-                event.pid(), event.status(), slug, event.attemptCount());
+        String json;
+        try {
+            json = objectMapper.writeValueAsString(event);
+        } catch (Exception e) {
+            log.error("Failed to serialize progress event for userId={}", userId, e);
+            return;
+        }
 
         List<SseEmitter> dead = new java.util.ArrayList<>();
         for (SseEmitter emitter : list) {

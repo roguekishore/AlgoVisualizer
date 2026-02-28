@@ -75,12 +75,16 @@ const WorldMap = () => {
   /* ── zustand store ── */
   const completedProblems = useProgressStore(s => s.completedProblems);
   const isLoading = useProgressStore(s => s.isLoading);
-  const {
-    completeProblem, getProblemState, getCurrentRoadmapProblem,
-    getRoadmapIndex, getStageProgress, getTotalProgress,
-    resetProgress, markStageComplete, loadProgress,
-    subscribeToLiveUpdates,
-  } = useProgressStore();
+  const completeProblem = useProgressStore(s => s.completeProblem);
+  const getProblemState = useProgressStore(s => s.getProblemState);
+  const getCurrentRoadmapProblem = useProgressStore(s => s.getCurrentRoadmapProblem);
+  const getRoadmapIndex = useProgressStore(s => s.getRoadmapIndex);
+  const getStageProgress = useProgressStore(s => s.getStageProgress);
+  const getTotalProgress = useProgressStore(s => s.getTotalProgress);
+  const resetProgress = useProgressStore(s => s.resetProgress);
+  const markStageComplete = useProgressStore(s => s.markStageComplete);
+  const loadProgress = useProgressStore(s => s.loadProgress);
+  const subscribeToLiveUpdates = useProgressStore(s => s.subscribeToLiveUpdates);
 
   /* ── load progress from backend on mount ── */
   useEffect(() => {
@@ -91,7 +95,7 @@ const WorldMap = () => {
         if (!user?.uid) return;
 
         // Validate user still exists in the backend (guards against DB recreate)
-        const res = await fetch(`http://localhost:8080/api/users/${user.uid}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8080'}/api/users/${user.uid}`);
         if (!res.ok) {
           // User no longer exists in DB — clear stale session
           console.warn('[WorldMap] Stale user session detected, clearing localStorage');

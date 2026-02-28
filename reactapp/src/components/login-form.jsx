@@ -25,7 +25,7 @@ export function LoginForm({ className, ...props }) {
     setError("")
     setLoading(true)
     try {
-      const res = await fetch("http://localhost:8080/api/auth/login", {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || "http://localhost:8080"}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

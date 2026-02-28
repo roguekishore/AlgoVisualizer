@@ -6,9 +6,9 @@ import com.backend.springapp.problem.Tag;
 import com.backend.springapp.sse.ProgressEvent;
 import com.backend.springapp.sse.ProgressEventService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -57,8 +57,11 @@ public class UserProgressService {
      */
     @Transactional
     public UserProgressResponseDTO markAsAttempted(Long uid, Long pid) {
+        if (!userRepository.existsById(uid)) {
+            throw new EntityNotFoundException("User not found with id: " + uid);
+        }
         Problem problem = problemRepository.findById(pid)
-                .orElseThrow(() -> new EntityNotFoundException("Problem not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Problem not found with id: " + pid));
 
         UserProgress progress = progressRepository.findByUserIdAndProblemId(uid, pid)
                 .orElse(null);
@@ -93,8 +96,11 @@ public class UserProgressService {
      */
     @Transactional
     public UserProgressResponseDTO markAsSolved(Long uid, Long pid) {
+        if (!userRepository.existsById(uid)) {
+            throw new EntityNotFoundException("User not found with id: " + uid);
+        }
         Problem problem = problemRepository.findById(pid)
-                .orElseThrow(() -> new EntityNotFoundException("Problem not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Problem not found with id: " + pid));
 
         UserProgress progress = progressRepository.findByUserIdAndProblemId(uid, pid)
                 .orElse(null);
@@ -158,9 +164,7 @@ public class UserProgressService {
      * Helper to create User reference without loading full entity.
      */
     private User createUserReference(Long uid) {
-        User user = new User();
-        user.setUid(uid);
-        return user;
+        return userRepository.getReferenceById(uid);
     }
 
     /**

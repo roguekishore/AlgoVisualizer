@@ -35,10 +35,8 @@ public class InstitutionController {
         List<Institution> institutions = q.isBlank()
                 ? institutionRepository.findAll(PageRequest.of(0, limit)).getContent()
                 : institutionRepository
-                        .findByNameContainingIgnoreCaseOrNormalizedNameContainingIgnoreCase(q, q)
-                        .stream()
-                        .limit(limit)
-                        .toList();
+                        .findByNameContainingIgnoreCaseOrNormalizedNameContainingIgnoreCase(
+                                q, q, PageRequest.of(0, limit));
 
         List<InstitutionSummaryDTO> results = institutions.stream()
                 .map(i -> new InstitutionSummaryDTO(i.getId(), i.getName(), i.getUniversity(),

@@ -18,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final InstitutionRepository institutionRepository;
+    private final UserProgressRepository progressRepository;
 
     // ─── Mapping ─────────────────────────────────────────────────────────────
 
@@ -110,6 +111,7 @@ public class UserService {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException("User not found with id: " + id);
         }
+        progressRepository.deleteAllByUserId(id);
         userRepository.deleteById(id);
     }
 

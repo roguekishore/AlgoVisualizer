@@ -11,6 +11,7 @@
 
 module.exports = {
   id: "find-max-element",
+  conquestId: "stage1-1",
   title: "Find Maximum Element",
   difficulty: "Easy",
   category: "Arrays",

@@ -11,6 +11,7 @@
 
 module.exports = {
   id: "find-min-element",
+  conquestId: "stage1-2",
   title: "Find Minimum Element",
   difficulty: "Easy",
   category: "Arrays",

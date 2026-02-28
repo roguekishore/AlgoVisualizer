@@ -185,7 +185,7 @@ export function useProblemSearch(query, options = {}) {
     }
 
     return filtered;
-  }, [query, category, difficulty, hasVisualizerOnly]);
+  }, [query, topic, difficulty, hasVisualizerOnly]);
 
   return {
     results,

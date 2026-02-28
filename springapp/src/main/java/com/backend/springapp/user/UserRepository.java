@@ -29,7 +29,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Atomically increments the stored rating of a user by the given points.
      * Called every time a new problem is solved (not already solved).
      */
-    @Modifying
+    @Modifying(clearAutomatically = true)
     @Query("UPDATE User u SET u.rating = u.rating + :points WHERE u.uid = :uid")
     void addRating(@Param("uid") Long uid, @Param("points") int points);
 

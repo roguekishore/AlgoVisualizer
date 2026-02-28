@@ -17,8 +17,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
  */
 @RestController
 @RequestMapping("/api/progress")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001", "http://localhost:5173"},
-             allowCredentials = "true")
 @RequiredArgsConstructor
 public class ProgressEventController {
 

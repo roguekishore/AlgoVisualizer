@@ -6,10 +6,10 @@ import com.backend.springapp.sse.ProgressEvent;
 import com.backend.springapp.sse.ProgressEventService;
 import com.backend.springapp.user.*;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

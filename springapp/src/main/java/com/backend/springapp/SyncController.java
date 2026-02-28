@@ -15,7 +15,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sync")
-@CrossOrigin(origins = "*") // Allows the browser extension to call this from any origin
 @RequiredArgsConstructor
 public class SyncController {
 

@@ -227,6 +227,14 @@ function runAllTestCasesInWorker(worker, language, filename, testCases) {
 }
 
 /**
+ * Safely escape a string for use inside single quotes in a bash script.
+ */
+function shellEscape(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/'/g, "'\"'\"'");
+}
+
+/**
  * Create ultra-fast batch runner using process reuse and piping
  */
 function createOptimizedBatchRunner(language, filename, testCases) {
@@ -239,11 +247,13 @@ echo "Starting optimized C++ execution..."
 (
 `;
     for (let i = 0; i < testCases.length; i++) {
+      const escapedInput = shellEscape(testCases[i].input);
+      const escapedExpected = shellEscape(testCases[i].expected.trim());
       script += `  echo "TC${i + 1}_START"\n`;
       script += `  echo "TC${i + 1}_INPUT"\n`;
-      script += `  echo '${testCases[i].input.replace(/'/g, "'\"\\'\"'")}' | ./solution 2>/tmp/err${i + 1}\n`;
+      script += `  echo '${escapedInput}' | ./solution 2>/tmp/err${i + 1}\n`;
       script += `  echo "TC${i + 1}_END"\n`;
-      script += `  echo "TC${i + 1}_EXPECTED:${testCases[i].expected.replace(/'/g, "'\"\\'\"'").trim()}"\n`;
+      script += `  echo "TC${i + 1}_EXPECTED:${escapedExpected}"\n`;
     }
     script += `) | while IFS= read -r line; do
   echo "RESULT:\$line"
@@ -261,11 +271,13 @@ echo "" | java -Xmx${MEMORY_LIMIT_MB}m -cp /workspace ${className} >/dev/null 2>
 (
 `;
     for (let i = 0; i < testCases.length; i++) {
+      const escapedInput = shellEscape(testCases[i].input);
+      const escapedExpected = shellEscape(testCases[i].expected.trim());
       script += `  echo "TC${i + 1}_START"\n`;
       script += `  echo "TC${i + 1}_INPUT"\n`;
-      script += `  echo '${testCases[i].input.replace(/'/g, "'\"\\'\"'")}' | java -Xmx${MEMORY_LIMIT_MB}m -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -cp /workspace ${className} 2>/tmp/err${i + 1}\n`;
+      script += `  echo '${escapedInput}' | java -Xmx${MEMORY_LIMIT_MB}m -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -cp /workspace ${className} 2>/tmp/err${i + 1}\n`;
       script += `  echo "TC${i + 1}_END"\n`;
-      script += `  echo "TC${i + 1}_EXPECTED:${testCases[i].expected.replace(/'/g, "'\"\\'\"'").trim()}"\n`;
+      script += `  echo "TC${i + 1}_EXPECTED:${escapedExpected}"\n`;
     }
     script += `) | while IFS= read -r line; do
   echo "RESULT:\$line" 

@@ -2,6 +2,7 @@ package com.backend.springapp.leaderboard;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface InstitutionRepository extends JpaRepository<Institution, Long> {
@@ -9,4 +10,8 @@ public interface InstitutionRepository extends JpaRepository<Institution, Long> 
 
     List<Institution> findByNameContainingIgnoreCaseOrNormalizedNameContainingIgnoreCase(
             String name, String normalizedName);
+
+    /** Paginated version — returns at most {@code pageable.getPageSize()} results. */
+    List<Institution> findByNameContainingIgnoreCaseOrNormalizedNameContainingIgnoreCase(
+            String name, String normalizedName, Pageable pageable);
 }

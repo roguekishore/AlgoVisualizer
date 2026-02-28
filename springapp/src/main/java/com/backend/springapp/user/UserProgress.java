@@ -2,16 +2,17 @@ package com.backend.springapp.user;
 
 import com.backend.springapp.problem.Problem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"user", "problem"})
 @Table(name = "userprogress", uniqueConstraints = { @UniqueConstraint(columnNames = { "uid", "pid" }) }, indexes = {
         @Index(name = "idx_userprogress_user", columnList = "uid"),
         @Index(name = "idx_userprogress_problem", columnList = "pid"),
@@ -21,6 +22,7 @@ public class UserProgress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne

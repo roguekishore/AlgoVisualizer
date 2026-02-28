@@ -4,13 +4,16 @@ import com.backend.springapp.user.UserProgress;
 import com.backend.springapp.user.UserProgressRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -80,6 +83,7 @@ public class ProblemService {
         if (!problemRepository.existsById(pid)) {
             throw new EntityNotFoundException("Problem not found with id: " + pid);
         }
+        progressRepository.deleteAllByProblemId(pid);
         removeExistingStages(pid);
         problemRepository.deleteById(pid);
     }
@@ -129,7 +133,7 @@ public class ProblemService {
             problems = problemRepository.findAll(pageable);
         }
 
-        return problems.map(p -> mapToResponseDTO(p, userId));
+        return mapPageToDTO(problems, userId);
     }
 
     /**
@@ -137,7 +141,7 @@ public class ProblemService {
      */
     public Page<ProblemResponseDTO> searchProblems(String keyword, Pageable pageable) {
         Page<Problem> problems = problemRepository.searchByTitleKeyword(keyword, pageable);
-        return problems.map(p -> mapToResponseDTO(p, null));
+        return mapPageToDTO(problems, null);
     }
 
     /**
@@ -145,6 +149,7 @@ public class ProblemService {
      * Throws IllegalArgumentException if invalid.
      */
     private Tag parseTag(String tagStr) {
+        if (tagStr == null || tagStr.isBlank()) return null;
         try {
             return Tag.valueOf(tagStr.toUpperCase());
         } catch (IllegalArgumentException e) {
@@ -225,5 +230,40 @@ public class ProblemService {
                 stageNames,
                 userStatus
         );
+    }
+
+    @SuppressWarnings("unchecked")
+    private Page<ProblemResponseDTO> mapPageToDTO(Page<Problem> problems, Long userId) {
+        List<Long> pids = problems.getContent().stream().map(Problem::getPid).toList();
+
+        // Batch fetch all stage names in ONE query (instead of N)
+        Map<Long, List<String>> stageMap = new HashMap<>();
+        if (!pids.isEmpty()) {
+            List<Object[]> stageRows = entityManager.createQuery(
+                    "SELECT ps.problem.pid, s.name FROM ProblemStage ps " +
+                    "JOIN ps.stage s WHERE ps.problem.pid IN :pids")
+                    .setParameter("pids", pids)
+                    .getResultList();
+            for (Object[] row : stageRows) {
+                stageMap.computeIfAbsent((Long) row[0], k -> new ArrayList<>()).add((String) row[1]);
+            }
+        }
+
+        // Batch fetch all user progress in ONE query (instead of N)
+        Map<Long, String> statusMap = new HashMap<>();
+        if (userId != null && !pids.isEmpty()) {
+            List<UserProgress> progressList = progressRepository.findByUserIdAndProblemIds(userId, pids);
+            for (UserProgress up : progressList) {
+                statusMap.put(up.getProblem().getPid(), up.getStatus().name());
+            }
+        }
+
+        return problems.map(p -> new ProblemResponseDTO(
+                p.getPid(), p.getTitle(), p.getLcslug(),
+                p.getTag() != null ? p.getTag().name() : null,
+                p.isHasVisualizer(), p.getDescription(),
+                stageMap.getOrDefault(p.getPid(), List.of()),
+                userId != null ? statusMap.getOrDefault(p.getPid(), "NOT_STARTED") : null
+        ));
     }
 }

@@ -12,6 +12,7 @@
 
 module.exports = {
   id: "two-sum",
+  conquestId: "stage4-1",
   title: "Two Sum",
   difficulty: "Easy",
   category: "Arrays",
