@@ -132,34 +132,34 @@ export const ALL_PROBLEMS = [
   // =================================================================
   { id: 'stage1-1', title: 'Find Maximum Element', route: '/arrays/FindMaxElement', stage: 1, order: 1, lcNumber: null, lcSlug: null, countryId: 'GT', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'FindMaxElement', judgeId: 'find-max-element' },
   { id: 'stage1-2', title: 'Find Minimum Element', route: '/arrays/FindMinElement', stage: 1, order: 2, lcNumber: null, lcSlug: null, countryId: 'BZ', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'FindMinElement', judgeId: 'find-min-element' },
-  { id: 'stage1-3', title: 'Array Sum', route: '/arrays/ArraySum', stage: 1, order: 3, lcNumber: null, lcSlug: null, countryId: 'HN', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ArraySum' },
-  { id: 'stage1-4', title: 'Reverse Array', route: '/arrays/ReverseArray', stage: 1, order: 4, lcNumber: null, lcSlug: null, countryId: 'SV', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ReverseArray' },
-  { id: 'stage1-5', title: 'Count Zeros in Array', route: '/arrays/CountZeros', stage: 1, order: 5, lcNumber: null, lcSlug: null, countryId: 'NI', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'CountZeros' },
-  { id: 'stage1-6', title: 'Insert Element at Index', route: '/arrays/InsertElement', stage: 1, order: 6, lcNumber: null, lcSlug: null, countryId: 'CR', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true },
-  { id: 'stage1-7', title: 'Delete Element at Index', route: '/arrays/DeleteElement', stage: 1, order: 7, lcNumber: null, lcSlug: null, countryId: 'PA', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true },
+  { id: 'stage1-3', title: 'Array Sum', route: '/arrays/ArraySum', stage: 1, order: 3, lcNumber: null, lcSlug: null, countryId: 'HN', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ArraySum', judgeId: 'array-sum' },
+  { id: 'stage1-4', title: 'Reverse Array', route: '/arrays/ReverseArray', stage: 1, order: 4, lcNumber: null, lcSlug: null, countryId: 'SV', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'ReverseArray', judgeId: 'reverse-array' },
+  { id: 'stage1-5', title: 'Count Zeros in Array', route: '/arrays/CountZeros', stage: 1, order: 5, lcNumber: null, lcSlug: null, countryId: 'NI', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'CountZeros', judgeId: 'count-zeros' },
+  { id: 'stage1-6', title: 'Insert Element at Index', route: '/arrays/InsertElement', stage: 1, order: 6, lcNumber: null, lcSlug: null, countryId: 'CR', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true, judgeId: 'insert-element-at-index' },
+  { id: 'stage1-7', title: 'Delete Element at Index', route: '/arrays/DeleteElement', stage: 1, order: 7, lcNumber: null, lcSlug: null, countryId: 'PA', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true, judgeId: 'delete-element-at-index' },
 
   // =================================================================
   // STAGE 2: Array Index Manipulation (5 problems)
   // Pattern: Index-based Operations
   // Countries: Caribbean + Mexico
   // =================================================================
-  { id: 'stage2-1', title: 'Linear Search in Array', route: '/searching/LinearSearchBasic', stage: 2, order: 1, lcNumber: null, lcSlug: null, countryId: 'CU', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true },
-  { id: 'stage2-2', title: 'Linear Search', route: '/searching/LinearSearch', stage: 2, order: 2, lcNumber: null, lcSlug: null, countryId: 'JM', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'LinearSearch', note: 'Full visualizer version' },
-  { id: 'stage2-3', title: 'Move Zeros', route: '/arrays/MoveZeros', stage: 2, order: 3, lcNumber: 283, lcSlug: 'move-zeroes', countryId: 'HT', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'MoveZeros' },
-  { id: 'stage2-4', title: 'Rotate Array', route: '/arrays/RotateArray', stage: 2, order: 4, lcNumber: 189, lcSlug: 'rotate-array', countryId: 'DO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'RotateArray' },
-  { id: 'stage2-5', title: 'Squares of a Sorted Array', route: '/arrays/SquaresOfSortedArray', stage: 2, order: 5, lcNumber: 977, lcSlug: 'squares-of-a-sorted-array', countryId: 'MX', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'SquaresOfSortedArray' },
+  { id: 'stage2-1', title: 'Linear Search in Array', route: '/searching/LinearSearchBasic', stage: 2, order: 1, lcNumber: null, lcSlug: null, countryId: 'CU', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true, judgeId: 'linear-search-basic' },
+  { id: 'stage2-2', title: 'Linear Search', route: '/searching/LinearSearch', stage: 2, order: 2, lcNumber: null, lcSlug: null, countryId: 'JM', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'LinearSearch', note: 'Full visualizer version', judgeId: 'linear-search' },
+  { id: 'stage2-3', title: 'Move Zeros', route: '/arrays/MoveZeros', stage: 2, order: 3, lcNumber: 283, lcSlug: 'move-zeroes', countryId: 'HT', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'MoveZeros', judgeId: 'move-zeros' },
+  { id: 'stage2-4', title: 'Rotate Array', route: '/arrays/RotateArray', stage: 2, order: 4, lcNumber: 189, lcSlug: 'rotate-array', countryId: 'DO', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'RotateArray', judgeId: 'rotate-array' },
+  { id: 'stage2-5', title: 'Squares of a Sorted Array', route: '/arrays/SquaresOfSortedArray', stage: 2, order: 5, lcNumber: 977, lcSlug: 'squares-of-a-sorted-array', countryId: 'MX', difficulty: Difficulty.EASY, hasVisualizer: true, component: 'SquaresOfSortedArray', judgeId: 'squares-of-a-sorted-array' },
 
   // =================================================================
   // STAGE 3: Prefix & Subarray Thinking (6 problems)
   // Pattern: Cumulative Computation
   // Countries: Northern South America
   // =================================================================
-  { id: 'stage3-1', title: 'Prefix Sum Construction', route: '/arrays/PrefixSum', stage: 3, order: 1, lcNumber: null, lcSlug: null, countryId: 'CO', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true },
-  { id: 'stage3-2', title: 'Maximum Subarray', route: '/arrays/MaximumSubarray', stage: 3, order: 2, lcNumber: 53, lcSlug: 'maximum-subarray', countryId: 'VE', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MaximumSubarray', note: "Kadane's Algorithm" },
-  { id: 'stage3-3', title: 'Product of Array Except Self', route: '/arrays/ProductOfArrayExceptSelf', stage: 3, order: 3, lcNumber: 238, lcSlug: 'product-of-array-except-self', countryId: 'GY', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ProductOfArrayExceptSelf' },
-  { id: 'stage3-4', title: 'Sum of Subarray Ranges', route: '/arrays/SubarrayRanges', stage: 3, order: 4, lcNumber: 2104, lcSlug: 'sum-of-subarray-ranges', countryId: 'SR', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SubarrayRanges' },
-  { id: 'stage3-5', title: 'Subarray Sum Equals K', route: '/hashing/SubarraySumEqualsK', stage: 3, order: 5, lcNumber: 560, lcSlug: 'subarray-sum-equals-k', countryId: 'EC', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SubarraySumEqualsK' },
-  { id: 'stage3-6', title: 'Split Array Largest Sum', route: '/arrays/SplitArrayLargestSum', stage: 3, order: 6, lcNumber: 410, lcSlug: 'split-array-largest-sum', countryId: 'BR', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'SplitArrayLargestSum' },
+  { id: 'stage3-1', title: 'Prefix Sum Construction', route: '/arrays/PrefixSum', stage: 3, order: 1, lcNumber: null, lcSlug: null, countryId: 'CO', difficulty: Difficulty.EASY, hasVisualizer: false, isNew: true, judgeId: 'prefix-sum-construction' },
+  { id: 'stage3-2', title: 'Maximum Subarray', route: '/arrays/MaximumSubarray', stage: 3, order: 2, lcNumber: 53, lcSlug: 'maximum-subarray', countryId: 'VE', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'MaximumSubarray', note: "Kadane's Algorithm", judgeId: 'maximum-subarray' },
+  { id: 'stage3-3', title: 'Product of Array Except Self', route: '/arrays/ProductOfArrayExceptSelf', stage: 3, order: 3, lcNumber: 238, lcSlug: 'product-of-array-except-self', countryId: 'GY', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'ProductOfArrayExceptSelf', judgeId: 'product-of-array-except-self' },
+  { id: 'stage3-4', title: 'Sum of Subarray Ranges', route: '/arrays/SubarrayRanges', stage: 3, order: 4, lcNumber: 2104, lcSlug: 'sum-of-subarray-ranges', countryId: 'SR', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SubarrayRanges', judgeId: 'sum-of-subarray-ranges' },
+  { id: 'stage3-5', title: 'Subarray Sum Equals K', route: '/hashing/SubarraySumEqualsK', stage: 3, order: 5, lcNumber: 560, lcSlug: 'subarray-sum-equals-k', countryId: 'EC', difficulty: Difficulty.MEDIUM, hasVisualizer: true, component: 'SubarraySumEqualsK', judgeId: 'subarray-sum-equals-k' },
+  { id: 'stage3-6', title: 'Split Array Largest Sum', route: '/arrays/SplitArrayLargestSum', stage: 3, order: 6, lcNumber: 410, lcSlug: 'split-array-largest-sum', countryId: 'BR', difficulty: Difficulty.HARD, hasVisualizer: true, component: 'SplitArrayLargestSum', judgeId: 'split-array-largest-sum' },
 
   // =================================================================
   // STAGE 4: Two Pointers (5 problems)

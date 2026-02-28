@@ -1,5 +1,6 @@
 package com.backend.springapp.user;
 
+import com.backend.springapp.gamification.GamificationService;
 import com.backend.springapp.problem.Problem;
 import com.backend.springapp.problem.ProblemRepository;
 import com.backend.springapp.problem.Tag;
@@ -28,6 +29,7 @@ public class UserProgressService {
     private final ProblemRepository problemRepository;
     private final UserRepository userRepository;
     private final ProgressEventService progressEventService;
+    private final GamificationService gamificationService;
 
     /**
      * Get all progress for a user (for app startup).
@@ -126,6 +128,12 @@ public class UserProgressService {
 
         // Increment rating only once per problem
         if (!alreadySolved) {
+            // ── Gamification: award coins + XP (MUST run before addRating
+            //    because addRating uses @Modifying(clearAutomatically=true)
+            //    which evicts ALL managed entities from the persistence context) ──
+            boolean isFirstAttempt = saved.getAttemptCount() != null && saved.getAttemptCount() <= 1;
+            gamificationService.rewardProblemSolve(uid, pid, problem.getTag(), isFirstAttempt);
+
             int points = switch (problem.getTag()) {
                 case HARD   -> 3;
                 case MEDIUM -> 2;

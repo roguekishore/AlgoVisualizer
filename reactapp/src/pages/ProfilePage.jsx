@@ -4,12 +4,15 @@ import {
   User, Trophy, Target, CheckCircle, BarChart3,
   GraduationCap, Building2, Star, ArrowLeft, LogOut,
   Flame, Zap, TrendingUp, BookOpen, Lock, Clock,
+  Coins, Sparkles, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { getStoredUser, fetchUserStats, fetchUserProfile } from "@/services/userApi";
+import { fetchPlayerStats, fetchCoinHistory } from "@/services/gamificationApi";
+import useGamificationStore from "@/stores/useGamificationStore";
 import useProgressStore, {
   STAGES,
   STAGE_ORDER,
@@ -41,6 +44,9 @@ const ProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [gamStats, setGamStats] = useState(null);
+  const [coinHistory, setCoinHistory] = useState(null);
+  const [coinPage, setCoinPage] = useState(0);
 
   const completedProblems = useProgressStore(s => s.completedProblems);
   const getStageProgress = useProgressStore(s => s.getStageProgress);
@@ -60,13 +66,19 @@ const ProfilePage = () => {
     async function load() {
       try {
         // Always fetch fresh from backend — no caching
-        const [profileData, statsData] = await Promise.all([
+        const [profileData, statsData, gamData, coinData] = await Promise.all([
           fetchUserProfile(user.uid),
           fetchUserStats(user.uid),
+          fetchPlayerStats(user.uid).catch(() => null),
+          fetchCoinHistory(user.uid, 0, 10).catch(() => null),
           loadProgress(user.uid),
         ]);
         setProfile(profileData);
         setStats(statsData);
+        setGamStats(gamData);
+        setCoinHistory(coinData);
+        // Update global store for navbar
+        if (gamData) useGamificationStore.getState().loadStats(user.uid);
       } catch (err) {
         // If backend returns 404 / error, the user no longer exists (DB recreated)
         console.warn("Failed to load profile:", err);
@@ -83,6 +95,7 @@ const ProfilePage = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     useProgressStore.getState().clearForLogout();
+    useGamificationStore.getState().clearStats();
     // Signal the Chrome extension (if installed) to drop its cached lcusername
     // so the next person who logs in doesn't see a stale "App Linked" value.
     window.postMessage({ type: "VANTAGE_LOGOUT" }, "*");
@@ -199,6 +212,73 @@ const ProfilePage = () => {
           />
         </div>
 
+        {/* ═══════════ GAMIFICATION STATS ═══════════ */}
+        {gamStats && (
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Sparkles size={16} className="text-violet-500" />
+                Gamification
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {/* Level */}
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-500/10 border border-violet-500/20">
+                    <Sparkles size={28} className="text-violet-500" />
+                  </div>
+                  <p className="text-3xl font-bold tabular-nums text-violet-600 dark:text-violet-400">
+                    {gamStats.level}
+                  </p>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    {gamStats.title}
+                  </p>
+                </div>
+
+                {/* XP Progress */}
+                <div className="space-y-3 flex flex-col justify-center">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    <span>XP</span>
+                    <span className="tabular-nums">
+                      {gamStats.xp.toLocaleString()} / {gamStats.xpForNextLevel.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="w-full h-3 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{
+                        width: `${Math.min(100, gamStats.xpForNextLevel > gamStats.xpForCurrentLevel
+                          ? ((gamStats.xp - gamStats.xpForCurrentLevel) / (gamStats.xpForNextLevel - gamStats.xpForCurrentLevel)) * 100
+                          : 100)}%`,
+                        background: "linear-gradient(to right, #8b5cf6, #a78bfa)",
+                      }}
+                    />
+                  </div>
+                  <p className="text-[11px] text-muted-foreground text-center">
+                    {gamStats.xpForNextLevel - gamStats.xp > 0
+                      ? `${(gamStats.xpForNextLevel - gamStats.xp).toLocaleString()} XP to next level`
+                      : "Max level reached!"}
+                  </p>
+                </div>
+
+                {/* Coins */}
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+                    <Coins size={28} className="text-amber-500" />
+                  </div>
+                  <p className="text-3xl font-bold tabular-nums text-amber-600 dark:text-amber-400">
+                    {gamStats.coins.toLocaleString()}
+                  </p>
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Coins
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* ═══════════ DIFFICULTY BREAKDOWN ═══════════ */}
         <Card>
           <CardHeader className="pb-3">
@@ -259,6 +339,91 @@ const ProfilePage = () => {
             </p>
           </CardContent>
         </Card>
+
+        {/* ═══════════ COIN HISTORY ═══════════ */}
+        {coinHistory && coinHistory.content && coinHistory.content.length > 0 && (
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Coins size={16} className="text-amber-500" />
+                Coin History
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border text-left">
+                      <th className="pb-2 text-xs font-medium text-muted-foreground">Source</th>
+                      <th className="pb-2 text-xs font-medium text-muted-foreground text-right">Amount</th>
+                      <th className="pb-2 text-xs font-medium text-muted-foreground text-right">Balance</th>
+                      <th className="pb-2 text-xs font-medium text-muted-foreground text-right">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {coinHistory.content.map((tx) => (
+                      <tr key={tx.id} className="border-b border-border/50 last:border-0">
+                        <td className="py-2">
+                          <Badge variant="outline" className="text-[10px]">
+                            {tx.source.replace(/_/g, " ")}
+                          </Badge>
+                        </td>
+                        <td className={cn(
+                          "py-2 text-right font-bold tabular-nums",
+                          tx.amount > 0 ? "text-emerald-500" : "text-red-500"
+                        )}>
+                          {tx.amount > 0 ? "+" : ""}{tx.amount}
+                        </td>
+                        <td className="py-2 text-right tabular-nums text-muted-foreground">
+                          {tx.balanceAfter}
+                        </td>
+                        <td className="py-2 text-right text-xs text-muted-foreground">
+                          {new Date(tx.createdAt).toLocaleDateString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Pagination */}
+              {coinHistory.totalPages > 1 && (
+                <div className="flex items-center justify-center gap-3 mt-4">
+                  <button
+                    onClick={async () => {
+                      if (coinPage > 0) {
+                        const newPage = coinPage - 1;
+                        setCoinPage(newPage);
+                        const data = await fetchCoinHistory(user.uid, newPage, 10);
+                        setCoinHistory(data);
+                      }
+                    }}
+                    disabled={coinPage === 0}
+                    className="p-1 rounded hover:bg-muted disabled:opacity-30 transition-colors"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <span className="text-xs text-muted-foreground tabular-nums">
+                    Page {coinPage + 1} of {coinHistory.totalPages}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      if (coinPage < coinHistory.totalPages - 1) {
+                        const newPage = coinPage + 1;
+                        setCoinPage(newPage);
+                        const data = await fetchCoinHistory(user.uid, newPage, 10);
+                        setCoinHistory(data);
+                      }
+                    }}
+                    disabled={coinPage >= coinHistory.totalPages - 1}
+                    className="p-1 rounded hover:bg-muted disabled:opacity-30 transition-colors"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
 
         {/* ═══════════ STAGE PROGRESS ═══════════ */}
         <Card>

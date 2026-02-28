@@ -2,69 +2,81 @@
 
 ## How to Create a Problem File
 
-### Step 1 — Copy this template
+### Step 1 — The AI generates this for you (see the prompts at the bottom)
+
+The file format looks like this (for reference only — the AI writes it):
 
 ```js
-'use strict';
+/**
+ * Problem Title — Problem Definition
+ *
+ * Input format (stdin):
+ *   Line 1: n (number of elements)
+ *   Line 2: n space-separated integers
+ *
+ * Output format (stdout):
+ *   A single integer
+ */
 
 module.exports = {
-  id: 'PASTE_ID_HERE',           // from the table below
-  conquestId: 'PASTE_CONQUEST_ID_HERE', // from the table below
+  id: 'find-max-element',       // ← from the table
+  conquestId: 'stage1-1',       // ← from the table
+  title: 'Find Maximum Element',
+  difficulty: 'Easy',
+  category: 'Arrays',
+  tags: ['Array', 'Traversal'],
 
-  title: 'PROBLEM TITLE',
-  description: `
-Write a short description of the problem here.
-Include input format, output format, and any constraints.
-  `.trim(),
-
-  difficulty: 'easy', // 'easy' | 'medium' | 'hard'
-  tags: ['arrays'],   // e.g. ['arrays', 'strings', 'hashing']
+  description: `Given an array of integers, find the maximum element.`,
 
   examples: [
-    { input: '[1, 2, 3]', output: '3', explanation: 'Max is 3' },
+    { input: 'arr = [3,1,4,1,5,9]', output: '9', explanation: '9 is the largest.' },
   ],
 
-  testCases: [
-    { input: [1, 2, 3],         expectedOutput: 3 },
-    { input: [-5, 0, 5],        expectedOutput: 5 },
-    { input: [42],              expectedOutput: 42 },
-    { input: [1, 1, 1],         expectedOutput: 1 },
-    { input: [-1, -2, -3],      expectedOutput: -1 },
-    // Add 5–10 test cases. Cover edge cases (empty-ish, negatives, single element).
+  constraints: [
+    '1 ≤ n ≤ 10⁵',
+    '-10⁹ ≤ arr[i] ≤ 10⁹',
   ],
 
-  // The actual solution (used to verify test cases pass):
-  solution: {
-    javascript: `
-function solve(arr) {
-  // Your solution here
-  return Math.max(...arr);
-}
-`.trim(),
-  },
-
-  // Starter code shown to the user in the editor:
-  starterCode: {
-    javascript: `function solve(arr) {
-  // Write your solution here
-
-}`,
-    python: `def solve(arr):
-    # Write your solution here
-    pass`,
+  boilerplate: {
     cpp: `#include <bits/stdc++.h>
 using namespace std;
 
-int solve(vector<int>& arr) {
-    // Write your solution here
-}`,
-    java: `public class Solution {
-    public int solve(int[] arr) {
-        // Write your solution here
+int findMax(vector<int>& arr) {
+    // TODO: write your solution here
+    return 0;
+}
+
+int main() {
+    int n; cin >> n;
+    vector<int> arr(n);
+    for (int i = 0; i < n; i++) cin >> arr[i];
+    cout << findMax(arr) << endl;
+}
+`,
+    java: `import java.util.*;
+public class Solution {
+    public static int findMax(int[] arr) {
+        // TODO: write your solution here
         return 0;
     }
-}`,
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
+        System.out.println(findMax(arr));
+    }
+}
+`,
   },
+
+  // input = what goes into stdin, expected = what stdout should print
+  testCases: [
+    { input: '8\n3 1 4 1 5 9 2 6', expected: '9' },
+    { input: '1\n42',              expected: '42' },
+    { input: '6\n-5 -2 -8 -1 -9 -3', expected: '-1' },
+    // 5–10 cases covering: normal, single element, all negative, all same, large numbers
+  ],
 };
 ```
 
@@ -266,3 +278,82 @@ After dropping the file in, I'll run one command that automatically wires it to 
 - Any other file in the project
 
 Just drop the `.js` file in `judge/src/problems/` and tell me. I'll run the sync script.
+
+---
+
+## AI Prompts
+
+### Prompt 1 — Send this ONCE at the start of the conversation (attach `dsa-conquest-map.js`)
+
+> You are generating judge problem definition files for a DSA learning platform called Vantage.
+> 
+> I am attaching `dsa-conquest-map.js` — this is the single source of truth for all problems. Each entry has:
+> - `id` — the conquest map ID (e.g. `stage1-3`)
+> - `title` — the problem title
+> - `difficulty` — Easy / Medium / Hard
+> - `lcNumber` / `lcSlug` — LeetCode reference if it exists
+> - `stage` and `order` — which stage and position
+> 
+> When I ask you to generate a problem, look it up in the map by title to find its `id` and stage.
+> 
+> Each file you generate must follow this exact structure:
+> 
+> ```js
+> /**
+>  * {Title} — Problem Definition
+>  *
+>  * Input format (stdin):
+>  *   (describe the stdin line-by-line format you chose)
+>  *
+>  * Output format (stdout):
+>  *   (describe what to print)
+>  */
+> 
+> module.exports = {
+>   id: '{judge-id}',           // kebab-case slug, e.g. 'array-sum'
+>   conquestId: '{stage-id}',   // from the conquest map, e.g. 'stage1-3'
+>   title: '{Problem Title}',
+>   difficulty: 'Easy',         // Easy | Medium | Hard
+>   category: '{Category}',     // e.g. Arrays, Strings, Binary Search
+>   tags: ['Array'],
+> 
+>   description: `markdown description with **bold**, \`code\`, etc.`,
+> 
+>   examples: [
+>     { input: '...', output: '...', explanation: '...' },
+>   ],
+> 
+>   constraints: [
+>     '1 ≤ n ≤ 10⁵',
+>   ],
+> 
+>   boilerplate: {
+>     cpp: `...`,   // full C++ file with main() that reads stdin and prints stdout
+>     java: `...`,  // full Java file with main() that reads stdin and prints stdout
+>   },
+> 
+>   // CRITICAL: input = exact stdin string (\n for newlines), expected = exact stdout string
+>   testCases: [
+>     { input: '3\n1 2 3', expected: '3' },
+>     // 8–10 cases: normal, edge cases, negatives, large values, single element
+>   ],
+> };
+> ```
+> 
+> Rules:
+> - `id` = kebab-case version of the title (you decide a sensible slug)
+> - `conquestId` = the `id` field from the conquest map entry (e.g. `stage1-3`)
+> - `boilerplate.cpp` and `boilerplate.java` must include a full `main()` that handles stdin/stdout — the user only fills in the solve function
+> - `testCases[].input` is the raw stdin string with `\n` between lines
+> - `testCases[].expected` is the exact stdout the program should print (trim trailing whitespace)
+> - Generate 8–10 test cases covering: normal cases, single element, all same, negatives, large numbers, edge cases specific to the problem
+> - If the problem is on LeetCode, use the official problem statement as reference
+> - Output ONLY the `.js` file content, nothing else
+
+---
+
+### Prompt 2 — Send this for EVERY problem (change only the last word)
+
+> Generate: **Array Sum**
+
+That's it. Change `Array Sum` to whatever problem title you want from the table above.

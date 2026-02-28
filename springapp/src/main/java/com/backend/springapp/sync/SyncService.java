@@ -1,5 +1,6 @@
 package com.backend.springapp.sync;
 
+import com.backend.springapp.gamification.GamificationService;
 import com.backend.springapp.problem.Problem;
 import com.backend.springapp.problem.ProblemRepository;
 import com.backend.springapp.sse.ProgressEvent;
@@ -32,6 +33,7 @@ public class SyncService {
     private final UserProgressRepository progressRepository;
     private final ProblemRepository problemRepository;
     private final ProgressEventService progressEventService;
+    private final GamificationService gamificationService;
 
     @Transactional
     public SyncResponseDTO syncProgress(String lcusername, List<String> slugs) {
@@ -83,7 +85,13 @@ public class SyncService {
             progress.setSolvedAt(LocalDateTime.now());
             progressRepository.save(progress);
 
-            // ── 5. Award rating points ───────────────────────────────────────
+            // ── 5. Gamification: award coins + XP (MUST run before addRating
+            //    because addRating uses @Modifying(clearAutomatically=true)
+            //    which evicts ALL managed entities from the persistence context) ──
+            boolean isFirstAttempt = progress.getAttemptCount() != null && progress.getAttemptCount() <= 1;
+            gamificationService.rewardProblemSolve(uid, pid, problem.getTag(), isFirstAttempt);
+
+            // ── 6. Award rating points (clears persistence context!) ─────────
             int points = switch (problem.getTag()) {
                 case HARD   -> 3;
                 case MEDIUM -> 2;
