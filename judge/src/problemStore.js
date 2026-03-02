@@ -5,14 +5,40 @@ const problemsDir = path.join(__dirname, "problems");
 const problemsCache = new Map();
 
 /**
- * Load all problem definitions from the problems directory
+ * Recursively collect all .js files under a directory.
+ */
+function collectJsFiles(dir) {
+  let results = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results = results.concat(collectJsFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
+/**
+ * Load all problem definitions from the problems directory (including subdirectories).
  */
 function loadProblems() {
   problemsCache.clear();
-  const files = fs.readdirSync(problemsDir).filter((f) => f.endsWith(".js"));
-  for (const file of files) {
-    const problem = require(path.join(problemsDir, file));
-    problemsCache.set(problem.id, problem);
+  const files = collectJsFiles(problemsDir);
+  for (const fullPath of files) {
+    try {
+      // Clear require cache so re-runs always pick up fresh content
+      delete require.cache[require.resolve(fullPath)];
+      const problem = require(fullPath);
+      if (problem && problem.id) {
+        problemsCache.set(problem.id, problem);
+      } else {
+        console.warn(`⚠  Skipping ${path.relative(problemsDir, fullPath)} — no 'id' field`);
+      }
+    } catch (err) {
+      console.error(`✗  Failed to load ${path.relative(problemsDir, fullPath)}:`, err.message);
+    }
   }
   console.log(`📚 Loaded ${problemsCache.size} problem(s)`);
 }

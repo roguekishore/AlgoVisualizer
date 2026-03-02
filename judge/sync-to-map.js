@@ -19,24 +19,39 @@ const path = require('path');
 const PROBLEMS_DIR  = path.join(__dirname, 'src', 'problems');
 const CONQUEST_MAP  = path.join(__dirname, '..', 'reactapp', 'src', 'data', 'dsa-conquest-map.js');
 
+// ── Helper: recursively collect all .js files under a directory ───────────
+
+function collectJsFiles(dir) {
+  let results = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      results = results.concat(collectJsFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      results.push(fullPath);
+    }
+  }
+  return results;
+}
+
 // ── 1. Collect all problem files that declare a conquestId ────────────────
 
 const linked = [];
 
-for (const file of fs.readdirSync(PROBLEMS_DIR).filter(f => f.endsWith('.js'))) {
+for (const fullPath of collectJsFiles(PROBLEMS_DIR)) {
+  const relName = path.relative(PROBLEMS_DIR, fullPath);
   try {
     // Clear require cache so re-runs always pick up fresh content
-    const fullPath = path.join(PROBLEMS_DIR, file);
     delete require.cache[require.resolve(fullPath)];
     const problem = require(fullPath);
 
     if (problem.conquestId && problem.id) {
-      linked.push({ conquestId: problem.conquestId, judgeId: problem.id, file });
+      linked.push({ conquestId: problem.conquestId, judgeId: problem.id, file: relName });
     } else {
-      console.warn(`⚠  ${file} — no conquestId field, skipping`);
+      console.warn(`⚠  ${relName} — no conquestId field, skipping`);
     }
   } catch (err) {
-    console.error(`✗  Failed to load ${file}:`, err.message);
+    console.error(`✗  Failed to load ${relName}:`, err.message);
   }
 }
 
