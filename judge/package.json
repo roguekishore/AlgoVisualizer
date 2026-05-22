@@ -9,12 +9,20 @@
     "build-sandboxes": "docker build -t vantage-sandbox-cpp sandboxes/cpp && docker build -t vantage-sandbox-java sandboxes/java",
     "start:docker": "MODE=docker node src/index.js",
     "docker:build": "docker buildx build --platform linux/amd64,linux/arm64 -t roguekishore/judge .",
-    "docker:push": "docker buildx build --platform linux/amd64,linux/arm64 -t roguekishore/judge --push ."
+    "docker:push": "docker buildx build --platform linux/amd64,linux/arm64 -t roguekishore/judge --push .",
+    "test": "node --test",
+    "test:watch": "node --test --watch"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "tree-sitter": "0.21.1",
+    "tree-sitter-cpp": "0.23.4",
+    "tree-sitter-java": "0.23.5",
     "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "fast-check": "4.8.0"
   },
   "engines": {
     "node": ">=18.0.0"
