@@ -20,6 +20,13 @@ const COMPILE_TIMEOUT = 30000;
 const MEMORY_LIMIT_MB = 256;
 /** CPU limit (number of cores) */
 const CPU_LIMIT = "1";
+/**
+ * Name of the dedicated trace channel file used by the instrumented build.
+ * Instrumented C++ writes NDJSON to file descriptor 3 (redirected here); Java
+ * writes to the path in the `VANTAGE_TRACE_FILE` env var (set to this file).
+ * Either way the channel is fully separate from stdout (Requirement 7.1).
+ */
+const TRACE_FILENAME = "trace.ndjson";
 
 // ─────────────────────────────────────────────────
 // EXECUTION MODE DETECTION
@@ -375,6 +382,182 @@ function getJavaFilename(code) {
 }
 
 // ─────────────────────────────────────────────────
+// INSTRUMENTED EXECUTION  (Code Flow Visualizer)
+// ─────────────────────────────────────────────────
+//
+// Compiles and runs an *instrumented* build (see trace/instrumentPass.js) and
+// captures the trace channel (fd 3 / VANTAGE_TRACE_FILE) SEPARATELY from stdout,
+// so the program's observable output stays clean (Requirement 7.1). Reuses the
+// exact same CPU / memory / time / compile limits as normal execution and the
+// same Docker worker pool — no new execution surface is introduced.
+
+/**
+ * Run an instrumented build inside a pooled worker container, capturing the
+ * trace channel separately from stdout.
+ *
+ * The instrumented C++ writes NDJSON to file descriptor 3 (redirected to a
+ * trace file); the instrumented Java writes to the path in VANTAGE_TRACE_FILE
+ * (also pointed at the same trace file, with fd 3 redirected as a fallback).
+ */
+async function executeInstrumentedInDockerPool(language, code, input) {
+  const worker = await pool.acquire(language);
+  try {
+    const filename = language === "cpp" ? "solution.cpp" : getJavaFilename(code);
+    pool.writeToWorker(worker, filename, code);
+    pool.writeToWorker(worker, "input.txt", input);
+    // Start from a clean trace channel.
+    pool.execInWorker(worker, `: > /workspace/${TRACE_FILENAME}`, { timeout: 5000 });
+
+    // Compile (reuses the same compiler flags / timeout as normal runs).
+    const compileResult = compileInWorker(worker, language, filename);
+    if (!compileResult.success) {
+      return {
+        stdout: "",
+        traceEvents: "",
+        stderr: `Compilation Error:\n${compileResult.error}`,
+        time: 0,
+        exitCode: 1,
+        compilationError: true,
+      };
+    }
+
+    // Run with fd 3 (and VANTAGE_TRACE_FILE for Java) routed to the trace file.
+    const traceFile = `/workspace/${TRACE_FILENAME}`;
+    let runCmd;
+    if (language === "cpp") {
+      runCmd = `/workspace/solution < /workspace/input.txt 3>${traceFile}`;
+    } else {
+      const className = filename.replace(".java", "");
+      runCmd =
+        `VANTAGE_TRACE_FILE=${traceFile} ` +
+        `java -Xmx${MEMORY_LIMIT_MB}m -cp /workspace ${className} ` +
+        `< /workspace/input.txt 3>${traceFile}`;
+    }
+
+    const start = Date.now();
+    const result = pool.execInWorker(worker, runCmd, { timeout: TIME_LIMIT });
+    const time = Date.now() - start;
+
+    const traceEvents = readTraceFromWorker(worker, traceFile);
+
+    if (result.killed) {
+      return {
+        stdout: result.stdout || "",
+        traceEvents,
+        stderr: "Time Limit Exceeded",
+        time,
+        exitCode: -1,
+        tle: true,
+      };
+    }
+
+    if (result.exitCode !== 0) {
+      return {
+        stdout: result.stdout,
+        traceEvents,
+        stderr: `Runtime Error:\n${result.stderr || "Non-zero exit code"}`,
+        time,
+        exitCode: result.exitCode,
+      };
+    }
+
+    return { stdout: result.stdout, traceEvents, stderr: "", time, exitCode: 0 };
+  } finally {
+    pool.release(worker);
+  }
+}
+
+/**
+ * Read the captured trace channel out of a worker's /workspace.
+ * Returns "" if the file is missing or unreadable (best-effort).
+ */
+function readTraceFromWorker(worker, traceFile) {
+  const res = pool.execInWorker(worker, `cat ${traceFile} 2>/dev/null || true`, {
+    timeout: 5000,
+  });
+  return res.exitCode === 0 ? res.stdout : "";
+}
+
+/**
+ * Host-mode instrumented C++: compile, then run with fd 3 redirected to a
+ * trace file (and VANTAGE_TRACE_FILE set as a portable fallback).
+ */
+function executeInstrumentedCppHost(code, input, sessionDir) {
+  const compiled = compileCppHost(code, sessionDir);
+  if (!compiled.success) {
+    return { ...compiled.error, traceEvents: "" };
+  }
+
+  const traceFile = path.join(sessionDir, TRACE_FILENAME);
+  const run = runWithTraceChannelHost(compiled.binary, [], input, traceFile);
+  return { ...run, traceEvents: readTraceFile(traceFile) };
+}
+
+/**
+ * Host-mode instrumented Java: compile, then run with VANTAGE_TRACE_FILE
+ * pointed at a trace file (and fd 3 redirected where supported).
+ */
+function executeInstrumentedJavaHost(code, input, sessionDir) {
+  const compiled = compileJavaHost(code, sessionDir);
+  if (!compiled.success) {
+    return { ...compiled.error, traceEvents: "" };
+  }
+
+  const traceFile = path.join(sessionDir, TRACE_FILENAME);
+  const args = ["-cp", compiled.classDir, `-Xmx${MEMORY_LIMIT_MB}m`, compiled.className];
+  const run = runWithTraceChannelHost("java", args, input, traceFile, {
+    VANTAGE_TRACE_FILE: traceFile,
+  });
+  return { ...run, traceEvents: readTraceFile(traceFile) };
+}
+
+/**
+ * Run a command with stdin = input and file descriptor 3 routed to `traceFile`,
+ * reusing the same time/memory limits as normal host execution. The trace
+ * channel is captured separately from stdout (Requirement 7.1).
+ */
+function runWithTraceChannelHost(command, args, input, traceFile, extraEnv = {}) {
+  // Pre-create the trace file so its descriptor can be wired to fd 3.
+  fs.writeFileSync(traceFile, "");
+  const traceFd = fs.openSync(traceFile, "a");
+  const start = Date.now();
+  try {
+    const stdout = execFileSync(command, args, {
+      input,
+      timeout: TIME_LIMIT,
+      maxBuffer: 10 * 1024 * 1024,
+      env: { ...process.env, VANTAGE_TRACE_FILE: traceFile, ...extraEnv },
+      // stdin, stdout, stderr, then fd 3 → trace file.
+      stdio: ["pipe", "pipe", "pipe", traceFd],
+    });
+    const time = Date.now() - start;
+    return { stdout: stdout.toString(), stderr: "", time, exitCode: 0 };
+  } catch (runErr) {
+    const time = Date.now() - start;
+    if (runErr.killed || runErr.signal === "SIGTERM") {
+      return { stdout: runErr.stdout?.toString() || "", stderr: "Time Limit Exceeded", time, exitCode: -1, tle: true };
+    }
+    return {
+      stdout: runErr.stdout?.toString() || "",
+      stderr: `Runtime Error:\n${runErr.stderr?.toString() || runErr.message}`,
+      time,
+      exitCode: runErr.status || 1,
+    };
+  } finally {
+    try { fs.closeSync(traceFd); } catch { /* best-effort */ }
+  }
+}
+
+/** Read a captured trace file from the host, returning "" on any failure. */
+function readTraceFile(traceFile) {
+  try {
+    return fs.existsSync(traceFile) ? fs.readFileSync(traceFile, "utf8") : "";
+  } catch {
+    return "";
+  }
+}
+
+// ─────────────────────────────────────────────────
 // HOST EXECUTION  (Dev mode - no Docker needed)
 // ─────────────────────────────────────────────────
 
@@ -542,6 +725,51 @@ async function executeCode(language, code, input) {
 }
 
 /**
+ * Execute an *instrumented* build against a single input string, capturing the
+ * trace channel (fd 3 / VANTAGE_TRACE_FILE) separately from stdout.
+ *
+ * Mirrors `executeCode` (same worker pool, same CPU/memory/time/compile limits)
+ * but returns the captured NDJSON trace alongside the program's output. No new
+ * execution surface is introduced.
+ *
+ * @param {string} language - "cpp" | "java"
+ * @param {string} code - Instrumented source (from trace/instrumentPass.js)
+ * @param {string} input - stdin forwarded to the program
+ * @returns {Promise<{ stdout: string, traceEvents: string, stderr: string, exitCode: number, time: number, tle?: boolean, compilationError?: boolean }>}
+ */
+async function executeInstrumented(language, code, input) {
+  const mode = detectMode();
+
+  if (mode === "docker") {
+    return executeInstrumentedInDockerPool(language, code, input);
+  }
+
+  // Host (dev) mode - synchronous compile + run with a dedicated trace channel.
+  const sessionId = uuidv4();
+  const sessionDir = path.join(TEMP_DIR, sessionId);
+  fs.mkdirSync(sessionDir, { recursive: true });
+
+  try {
+    switch (language) {
+      case "cpp":
+        return executeInstrumentedCppHost(code, input, sessionDir);
+      case "java":
+        return executeInstrumentedJavaHost(code, input, sessionDir);
+      default:
+        return {
+          stdout: "",
+          traceEvents: "",
+          stderr: `Unsupported language: ${language}`,
+          time: 0,
+          exitCode: 1,
+        };
+    }
+  } finally {
+    cleanup(sessionDir);
+  }
+}
+
+/**
  * Run code against all test cases of a problem.
  * Both modes: compile once, run many.
  *
@@ -632,4 +860,4 @@ async function runAgainstTestCases(language, code, testCases) {
   }
 }
 
-module.exports = { executeCode, runAgainstTestCases, detectMode };
+module.exports = { executeCode, executeInstrumented, runAgainstTestCases, detectMode };
