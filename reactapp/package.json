@@ -64,6 +64,7 @@
     "@types/three": "^0.182.0",
     "autoprefixer": "^10.4.16",
     "concurrently": "^9.1.0",
+    "fast-check": "^3.23.2",
     "postcss": "^8.4.32"
   },
   "browserslist": {
