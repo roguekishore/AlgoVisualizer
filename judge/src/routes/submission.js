@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { executeCode, runAgainstTestCases } = require("../executor");
 const { getProblem } = require("../problemStore");
+const { traceProgram } = require("../tracer");
 
 const MAX_CODE_SIZE = 64 * 1024;   // 64 KB
 const MAX_INPUT_SIZE = 1024 * 1024; // 1 MB
@@ -73,6 +74,39 @@ router.post("/run", async (req, res) => {
   } catch (err) {
     console.error("Run error:", err);
     return res.status(500).json({ error: "Internal server error during code execution." });
+  }
+});
+
+/**
+ * POST /api/trace
+ * Capture execution flow for visualization (Code Flow Visualizer).
+ * Returns a single TraceResult payload.
+ */
+router.post("/trace", async (req, res) => {
+  const { language, code, input = "" } = req.body;
+
+  if (!language || !code) {
+    return res.status(400).json({ error: "Missing required fields: language, code" });
+  }
+
+  if (!["cpp", "java"].includes(language)) {
+    return res.status(400).json({ error: "Unsupported language. Use 'cpp' or 'java'." });
+  }
+
+  if (typeof code !== "string" || code.length > MAX_CODE_SIZE) {
+    return res.status(400).json({ error: `Code exceeds maximum size of ${MAX_CODE_SIZE / 1024} KB.` });
+  }
+
+  if (typeof input !== "string" || input.length > MAX_INPUT_SIZE) {
+    return res.status(400).json({ error: `Input exceeds maximum size of ${MAX_INPUT_SIZE / 1024} KB.` });
+  }
+
+  try {
+    const result = await traceProgram({ language, code, input });
+    return res.json(result);
+  } catch (err) {
+    console.error("Trace error:", err);
+    return res.status(500).json({ error: "Internal server error during trace." });
   }
 });
 
