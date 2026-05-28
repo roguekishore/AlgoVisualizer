@@ -63,3 +63,23 @@ export async function runCode({ language, code, input }) {
   }
   return res.json();
 }
+/**
+ * Capture an execution-flow trace for visualization (single execution)
+ * POSTs to /api/trace and resolves the parsed TraceResult on success.
+ * Does not mutate the provided payload.
+ * @param {{ language: string, code: string, input?: string }} payload
+ * @returns {Promise<object>} the parsed TraceResult
+ */
+export async function traceCode(payload) {
+  const { language, code, input = "" } = payload || {};
+  const res = await fetch(`${JUDGE_BASE_URL}/api/trace`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ language, code, input }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || "Trace failed");
+  }
+  return res.json();
+}
