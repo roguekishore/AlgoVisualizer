@@ -23,9 +23,13 @@ import {
   Terminal, Loader2, SquareTerminal, FlaskConical, BookOpen,
   ListChecks, RotateCcw, Copy, Check, Plus, X, ArrowUpRight,
   ChevronDown, Code2, Zap, CircleDot, Hash, Braces, LogIn, Sparkles,
+  Workflow, Columns2,
 } from "lucide-react";
 import "./Judge.css";
 import VisualizerDrawer, { VisualizerToggleButton } from "./VisualizerDrawer";
+import CodeFlowPanel from "./codeflow/CodeFlowPanel";
+import DryRunPanel from "./codeflow/DryRunPanel";
+import { useCodeFlow } from "./codeflow/useCodeFlow";
 
 /* ── Constants ── */
 const LANGUAGES = [
@@ -77,8 +81,17 @@ export default function JudgePage() {
   const [copied, setCopied] = useState(false);
   const [activeTestCase, setActiveTestCase] = useState(0);
   const [vizOpen, setVizOpen] = useState(false);
+  const [dryRunOpen, setDryRunOpen] = useState(false);
   const [testCases, setTestCases] = useState([]);
   const editorRef = useRef(null);
+  const codeFlowRef = useRef(null);
+  // Single shared flow trace + playback state consumed by BOTH the Flow bottom
+  // tab (CodeFlowPanel) and the parallel dry-run window (DryRunPanel) so stepping
+  // in one is reflected in the other (task 27.1, Requirement R12).
+  const flow = useCodeFlow();
+  // Holds the editor-cursor handler registered by CodeFlowPanel for the
+  // editor -> block highlight direction (Requirements 4.2, 4.4, 4.5).
+  const cursorResolverRef = useRef(null);
 
   useEffect(() => {
     if (problem?.sampleTestCases?.length) {
@@ -158,9 +171,27 @@ export default function JudgePage() {
     finally { setRunning(false); }
   };
 
-  const handleEditorMount = (editor) => { editorRef.current = editor; editor.focus(); };
+  const handleEditorMount = (editor) => {
+    editorRef.current = editor;
+    editor.focus();
+    // Editor -> block direction: forward cursor line changes to the Flow panel's
+    // resolver, which highlights the innermost covering block or clears the hover
+    // when no block covers the line (Requirements 4.2, 4.4).
+    editor.onDidChangeCursorPosition((e) => {
+      const line = e?.position?.lineNumber;
+      if (typeof line === "number") cursorResolverRef.current?.(line);
+    });
+  };
   const handleResetCode = () => { if (problem?.boilerplate?.[language]) setCode(problem.boilerplate[language]); };
   const handleCopyCode = () => { navigator.clipboard.writeText(code); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+
+  // Trigger a flow trace and switch the bottom panel to the Flow tab (Req 1.1, 1.3).
+  // Uses the shared `flow` instance so both the Flow tab and the parallel dry-run
+  // window reflect the same trace/playback state.
+  const handleVisualizeFlow = () => {
+    setBottomTab("flow");
+    flow.run({ language, code, input: customInput });
+  };
 
   /* ── Loading ── */
   if (loading) {
@@ -558,6 +589,61 @@ export default function JudgePage() {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <button
+                            onClick={handleVisualizeFlow}
+                            disabled={running || submitting}
+                            style={{ display: "flex", alignItems: "center", gap: 5, height: 28, padding: "0 12px", borderRadius: 7, border: `1px solid ${S.border}`, background: "transparent", fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", opacity: running || submitting ? 0.4 : 1, transition: "all 0.15s" }}
+                            onMouseEnter={(e) => {
+                              if (!running && !submitting) {
+                                e.currentTarget.style.borderColor = "rgba(237,255,102,0.4)";
+                                e.currentTarget.style.color = S.acid;
+                                e.currentTarget.style.background = "rgba(237,255,102,0.06)";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.borderColor = S.border;
+                              e.currentTarget.style.color = "rgba(255,255,255,0.45)";
+                              e.currentTarget.style.background = "transparent";
+                            }}
+                          >
+                            <Workflow size={12} />
+                            Visualize Flow
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" style={{ fontSize: 11, background: "#0d0d10", border: `1px solid ${S.border}`, borderRadius: 7 }}>Trace and visualize execution flow</TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            onClick={() => setDryRunOpen(v => !v)}
+                            aria-pressed={dryRunOpen}
+                            style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 28, height: 28, borderRadius: 7, border: `1px solid ${dryRunOpen ? "rgba(237,255,102,0.4)" : S.border}`, background: dryRunOpen ? "rgba(237,255,102,0.06)" : "transparent", color: dryRunOpen ? S.acid : "rgba(255,255,255,0.45)", transition: "all 0.15s" }}
+                            onMouseEnter={(e) => {
+                              if (!dryRunOpen) {
+                                e.currentTarget.style.borderColor = "rgba(237,255,102,0.4)";
+                                e.currentTarget.style.color = S.acid;
+                                e.currentTarget.style.background = "rgba(237,255,102,0.06)";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (!dryRunOpen) {
+                                e.currentTarget.style.borderColor = S.border;
+                                e.currentTarget.style.color = "rgba(255,255,255,0.45)";
+                                e.currentTarget.style.background = "transparent";
+                              }
+                            }}
+                          >
+                            <Columns2 size={13} />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" style={{ fontSize: 11, background: "#0d0d10", border: `1px solid ${S.border}`, borderRadius: 7 }}>
+                          {dryRunOpen ? "Hide dry-run window" : "Show dry-run window beside editor"}
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
                             onClick={handleRun}
                             disabled={running || submitting}
                             style={{ display: "flex", alignItems: "center", gap: 5, height: 28, padding: "0 12px", borderRadius: 7, border: `1px solid ${S.border}`, background: "transparent", fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,0.45)", opacity: running || submitting ? 0.4 : 1, transition: "all 0.15s" }}
@@ -657,6 +743,7 @@ export default function JudgePage() {
                               ? (runResult?.status === "Success" || result?.status === "Accepted" ? S.green : S.red)
                               : null,
                           },
+                          { value: "flow", Icon: Workflow, label: "Flow" },
                         ].map((tab) => (
                           <TabsTrigger
                             key={tab.value}
@@ -808,11 +895,85 @@ export default function JudgePage() {
                         )}
                       </ScrollArea>
                     </TabsContent>
+
+                    {/* Flow — kept mounted (display-toggled) so the Visualize Flow
+                        affordance can trigger a trace before the tab is shown and so
+                        trace/playback state survives tab switches. */}
+                    <div
+                      style={{
+                        flex: bottomTab === "flow" ? 1 : "0 0 0",
+                        minHeight: 0,
+                        display: bottomTab === "flow" ? "flex" : "none",
+                        flexDirection: "column",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <CodeFlowPanel
+                        ref={codeFlowRef}
+                        flow={flow}
+                        language={language}
+                        code={code}
+                        input={customInput}
+                        editorRef={editorRef}
+                        cursorResolverRef={cursorResolverRef}
+                        active={bottomTab === "flow" || dryRunOpen}
+                      />
+                    </div>
                   </Tabs>
                 </div>
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
+
+          {/* ─── PARALLEL DRY-RUN WINDOW (task 27.1, Requirement R12) ───
+              Rendered beside the editor only when toggled on, so the existing
+              layout is unaffected by default. Shares the same `flow` instance as
+              the Flow tab, so stepping/playing here is reflected there and the
+              editor exec-line highlight (shared editorRef) stays in sync. */}
+          {dryRunOpen && (
+            <>
+              <ResizableHandle orientation="horizontal" withHandle />
+              <ResizablePanel id="dryrun" defaultSize="32%" minSize="20%" maxSize="50%">
+                <div style={{ display: "flex", flexDirection: "column", height: "100%", background: S.bg, borderLeft: `1px solid ${S.border}` }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 40, padding: "0 10px", flexShrink: 0, borderBottom: `1px solid ${S.border}`, background: S.bg }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", color: "rgba(255,255,255,0.65)" }}>
+                      <Columns2 size={12} color={S.acid} />
+                      Dry Run
+                    </div>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setDryRunOpen(false)}
+                          style={{ width: 26, height: 26, borderRadius: 7, border: "none", background: "transparent", display: "flex", alignItems: "center", justifyContent: "center", color: "rgba(255,255,255,0.4)" }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "#fff"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
+                        >
+                          <X size={13} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" style={{ fontSize: 11, background: "#0d0d10", border: `1px solid ${S.border}`, borderRadius: 7 }}>Hide dry-run window</TooltipContent>
+                    </Tooltip>
+                  </div>
+                  <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+                    <DryRunPanel
+                      trace={flow.trace}
+                      status={flow.status}
+                      error={flow.error}
+                      step={flow.step}
+                      totalSteps={flow.totalSteps}
+                      playing={flow.playing}
+                      speed={flow.speed}
+                      onForward={flow.stepForward}
+                      onBackward={flow.stepBackward}
+                      onPlayPause={flow.togglePlay}
+                      onReset={flow.reset}
+                      onSpeedChange={flow.setSpeed}
+                    />
+                  </div>
+                </div>
+              </ResizablePanel>
+            </>
+          )}
         </ResizablePanelGroup>
       </div>
     </TooltipProvider>
