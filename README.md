@@ -305,7 +305,52 @@ Everything is mapped and searchable, with links to both the visualizer and the o
 
 ---
 
-## 📸 Screenshots
+## � Tech Stack
+
+### **Frontend**
+- **React 19** — Modern UI framework with hooks
+- **Tailwind CSS** — Utility-first styling
+- **shadcn/ui** — Accessible component library
+- **Zustand** — Lightweight state management
+- **GSAP** — Animation engine
+- **Three.js** — 3D graphics and world map rendering
+- **Monaco Editor** — Code editor integration
+- **Axios** — HTTP client for API calls
+
+### **Backend**
+- **Spring Boot 4** — Java REST API framework
+- **Spring Security** — Authentication & JWT tokens
+- **Spring WebSocket** — Real-time bidirectional communication
+- **PostgreSQL** — Relational database
+- **Redis** — Session caching and real-time state
+- **JPA/Hibernate** — ORM for database operations
+- **Maven** — Dependency management and build automation
+
+### **Judge Service**
+- **Node.js** — JavaScript runtime
+- **Docker** — Container orchestration
+- **Docker Compose** — Multi-container orchestration
+- **GCC/G++** — C++ compilation in sandbox
+- **OpenJDK** — Java compilation in sandbox
+- **Worker Pool** — Manages 3× C++ and 3× Java workers
+
+### **Chrome Extension**
+- **Manifest V3** — Latest Chrome extension API
+- **Content Scripts** — DOM interaction
+- **Service Workers** — Background processing
+- **Message Passing** — Cross-window communication
+- **Storage API** — Local persistence
+
+### **DevOps & Infrastructure**
+- **Docker** — Containerization
+- **Docker Compose** — Environment orchestration
+- **GitHub** — Version control & CI/CD
+- **WebSocket** — Real-time communication protocol
+- **JWT** — Secure authentication tokens
+
+---
+
+## �📸 Screenshots
 
 <div align="center">
 
