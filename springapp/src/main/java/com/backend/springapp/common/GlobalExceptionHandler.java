@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestNotUsableException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,20 @@ public class GlobalExceptionHandler {
                 fieldErrors.put(fe.getField(), fe.getDefaultMessage()));
         body.put("fields", fieldErrors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    /**
+     * Client disconnected mid-response (closed tab, dropped network, killed
+     * browser). Common on SSE streams, where a broken pipe surfaces as an async
+     * error dispatch rather than on the sending thread.
+     *
+     * Returns void deliberately: the response is already committed with
+     * Content-Type text/event-stream, so writing a JSON error body would fail
+     * with HttpMessageNotWritableException. There is also nobody left to read it.
+     */
+    @ExceptionHandler(AsyncRequestNotUsableException.class)
+    public void handleClientDisconnect(AsyncRequestNotUsableException ex) {
+        log.debug("Client disconnected before response completed: {}", ex.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
