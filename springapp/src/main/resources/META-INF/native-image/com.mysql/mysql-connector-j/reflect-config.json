@@ -1,0 +1,4 @@
+[
+  {"name": "com.mysql.cj.PerConnectionLRUFactory", "allPublicConstructors": true},
+  {"name": "com.mysql.cj.util.PerVmServerConfigCacheFactory", "allPublicConstructors": true}
+]
