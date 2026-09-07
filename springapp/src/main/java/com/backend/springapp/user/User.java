@@ -5,6 +5,8 @@ import com.backend.springapp.gamification.leaderboard.Institution;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static jakarta.persistence.FetchType.EAGER;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,7 +34,7 @@ public class User {
     @Column(unique = true)
     private String lcusername;
 
-    @ManyToOne
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "institution_id")
     private Institution institution;
 

@@ -3,6 +3,8 @@ package com.backend.springapp.problem;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static jakarta.persistence.FetchType.EAGER;
+
 @Entity
 @Getter
 @Setter
@@ -17,11 +19,11 @@ public class ProblemStage {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "pid")
     private Problem problem;
 
-    @ManyToOne
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "sid")
     private Stage stage;
 }

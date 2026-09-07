@@ -4,6 +4,8 @@ import com.backend.springapp.problem.Problem;
 import jakarta.persistence.*;
 import lombok.*;
 
+import static jakarta.persistence.FetchType.EAGER;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,11 +27,11 @@ public class UserProgress {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "uid")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "pid")
     private Problem problem;
 
