@@ -42,15 +42,18 @@ Resources:
       # 2 GB buys ~1.2 vCPU, which matters: g++ -O2 and a JVM start per test case
       # are both CPU-bound, and Lambda scales CPU with memory.
       MemorySize: 2048
+      # ReservedConcurrentExecutions intentionally omitted. This account's TOTAL
+      # concurrency limit is 10 (the default for newer accounts), and AWS requires
+      # at least 10 to remain UNreserved — so any reservation here fails the stack
+      # with "decreases account's UnreservedConcurrentExecution below its minimum
+      # value of [10]". Raise the account quota (Service Quotas → Lambda →
+      # "Concurrent executions") before reintroducing a reservation.
       # Worst realistic case: 30 s compile + 13 test cases x 5 s TIME_LIMIT = ~95 s.
       # NOTE: the Spring caller's RestTemplate read timeout (WebConfig.java) is 30 s
       # and is the real ceiling - raise it there too or this headroom is unused.
       Timeout: 120
       Architectures:
         - x86_64
-      # Cost fuse. The judge compiles and runs submitted code; without a cap a
-      # loop of requests could run up compute charges past the free tier.
-      ReservedConcurrentExecutions: 5
       Environment:
         Variables:
           MODE: host
@@ -91,6 +94,10 @@ Resources:
       TargetFunctionArn: !GetAtt JudgeFunction.Arn
       AuthType: NONE
 
+  # BOTH permissions below are required. With only this first one, every request
+  # to the URL returns 403 AccessDeniedException from the AWS edge — an opaque
+  # failure that never reaches Express, so the app logs stay silent. Diagnosed
+  # the hard way 2026-09-08; see LAMBDA_DEPLOYMENT_GUIDE.md "Function URL 403".
   JudgeUrlPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -98,6 +105,17 @@ Resources:
       Action: lambda:InvokeFunctionUrl
       Principal: '*'
       FunctionUrlAuthType: NONE
+
+  # The second half: grants lambda:InvokeFunction (NOT ...FunctionUrl), scoped to
+  # function-URL invocations only. Do NOT add FunctionUrlAuthType here — Lambda
+  # rejects that parameter for the InvokeFunction action.
+  JudgeUrlInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref JudgeFunction
+      Action: lambda:InvokeFunction
+      Principal: '*'
+      InvokedViaFunctionUrl: true
 
   # ── Warm polling ──
   # Sends {"warmup": true}, which src/lambda.js answers directly without

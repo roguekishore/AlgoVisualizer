@@ -10,6 +10,9 @@
 #
 set -euo pipefail
 
+AWS_PROFILE="${AWS_PROFILE:-vantage}"
+export AWS_PROFILE
+
 REGION="${AWS_REGION:-ap-south-1}"
 STACK_NAME="${STACK_NAME:-vantage-judge}"
 REPO_NAME="${REPO_NAME:-vantage-judge}"
@@ -28,7 +31,7 @@ REGISTRY="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com"
 
 # Immutable tag from the commit. CloudFormation compares the ImageUri string,
 # so a moving :latest tag would make every deploy a silent no-op.
-TAG="$(git rev-parse --short HEAD)"
+TAG="$(git rev-parse --short HEAD 2>/dev/null || echo "notag-$(date +%Y%m%d%H%M%S)")"
 if ! git diff --quiet HEAD -- . 2>/dev/null; then
   TAG="${TAG}-dirty-$(date +%s)"
   echo "NOTE: uncommitted changes in judge/ - tagging as ${TAG}"
@@ -74,7 +77,7 @@ aws ecr get-login-password --region "$REGION" \
   | docker login --username AWS --password-stdin "$REGISTRY"
 
 echo "==> Building image (this takes a few minutes on a cold cache)"
-docker build --platform linux/amd64 -f Dockerfile.lambda -t "$IMAGE_URI" .
+docker build --platform linux/amd64 --provenance=false -f Dockerfile.lambda -t "$IMAGE_URI" .
 
 echo "==> Pushing ${IMAGE_URI}"
 docker push "$IMAGE_URI"
