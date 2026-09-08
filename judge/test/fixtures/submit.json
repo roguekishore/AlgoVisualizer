@@ -1,0 +1,10 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/api/submit",
+  "rawQueryString": "",
+  "headers": {"content-type": "application/json", "x-judge-token": "localtest"},
+  "requestContext": {"http": {"method": "POST", "path": "/api/submit"}},
+  "body": "{\"language\":\"cpp\",\"code\":\"#include<iostream>\\nint main(){int a,b;std::cin>>a>>b;std::cout<<a+b;}\",\"testCases\":[{\"input\":\"1 2\",\"expected\":\"3\"},{\"input\":\"10 20\",\"expected\":\"30\"}]}",
+  "isBase64Encoded": false
+}

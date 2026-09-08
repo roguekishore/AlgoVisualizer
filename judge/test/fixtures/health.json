@@ -1,0 +1,9 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/api/health",
+  "rawQueryString": "",
+  "headers": {"content-type": "application/json"},
+  "requestContext": {"http": {"method": "GET", "path": "/api/health"}},
+  "isBase64Encoded": false
+}

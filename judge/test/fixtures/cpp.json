@@ -1,0 +1,10 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/api/run",
+  "rawQueryString": "",
+  "headers": {"content-type": "application/json", "x-judge-token": "localtest"},
+  "requestContext": {"http": {"method": "POST", "path": "/api/run"}},
+  "body": "{\"language\":\"cpp\",\"code\":\"#include<iostream>\\nint main(){int a,b;std::cin>>a>>b;std::cout<<a+b;}\",\"input\":\"3 4\"}",
+  "isBase64Encoded": false
+}

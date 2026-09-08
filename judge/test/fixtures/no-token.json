@@ -1,0 +1,10 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/api/run",
+  "rawQueryString": "",
+  "headers": {"content-type": "application/json"},
+  "requestContext": {"http": {"method": "POST", "path": "/api/run"}},
+  "body": "{\"language\":\"cpp\",\"code\":\"int main(){}\",\"input\":\"\"}",
+  "isBase64Encoded": false
+}

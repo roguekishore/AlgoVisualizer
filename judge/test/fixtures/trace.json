@@ -1,0 +1,10 @@
+{
+  "version": "2.0",
+  "routeKey": "$default",
+  "rawPath": "/api/trace",
+  "rawQueryString": "",
+  "headers": {"content-type": "application/json", "x-judge-token": "localtest"},
+  "requestContext": {"http": {"method": "POST", "path": "/api/trace"}},
+  "body": "{\"language\":\"cpp\",\"code\":\"#include<iostream>\\nint main(){int x=5;std::cout<<x;}\",\"input\":\"\"}",
+  "isBase64Encoded": false
+}
