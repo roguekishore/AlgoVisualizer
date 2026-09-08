@@ -1,0 +1,46 @@
+# ─────────────────────────────────────────────────────────────
+# Judge service - AWS Lambda container image (C++ and Java)
+#
+# One image serves both languages. The judge picks the toolchain per
+# request from the `language` field, so a split cpp/java image pair
+# would need routing that neither src/ nor the Spring caller has.
+#
+# Two stages, because tree-sitter{,-cpp,-java} are native modules with no
+# prebuilds - they need python3 + make + gcc-c++ to compile at npm ci time.
+# Only the compiled output is carried into the runtime stage, so python3
+# and make don't ship. g++ DOES ship: it compiles submitted C++ at runtime.
+# ─────────────────────────────────────────────────────────────
+
+FROM public.ecr.aws/lambda/nodejs:20 AS build
+
+# node-gyp toolchain for the tree-sitter native addons
+RUN dnf install -y gcc-c++ make python3 tar findutils && dnf clean all
+
+WORKDIR /build
+
+COPY package.json package-lock.json ./
+# --omit=dev drops fast-check; the tree-sitter addons are prod deps and still build here.
+RUN npm ci --omit=dev
+
+# ─────────────────────────────────────────────────────────────
+
+FROM public.ecr.aws/lambda/nodejs:20
+
+# Runtime toolchains for submitted code:
+#   gcc-c++                          -> g++ for C++ submissions
+#   java-21-amazon-corretto-devel -> javac/java for Java submissions
+# Matches the sandbox images: gcc:14 (g++ 14) and eclipse-temurin:21-jdk.
+RUN dnf install -y gcc-c++ java-21-amazon-corretto-devel && dnf clean all
+
+WORKDIR ${LAMBDA_TASK_ROOT}
+
+COPY --from=build /build/node_modules ./node_modules
+COPY package.json ./
+COPY src/ ./src/
+
+# MODE=host is forced: Lambda cannot run the Docker worker pool.
+# Submitted code therefore runs in this process - see JUDGE_TOKEN in src/app.js.
+ENV MODE=host
+ENV NODE_ENV=production
+
+CMD ["src/lambda.handler"]

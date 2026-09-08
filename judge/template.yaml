@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Vantage Judge Service - single Lambda container (C++ and Java) with warm polling
+
+# Plain CloudFormation, not SAM: deploys with the aws CLI alone, no extra tooling.
+# The ECR repository and its lifecycle policy are created by deploy.sh, not here -
+# the image must exist in ECR before this stack can create the function.
+
+Parameters:
+
+  ImageUri:
+    Type: String
+    Description: >-
+      Full ECR image URI including an immutable tag (git sha), e.g.
+      1234.dkr.ecr.ap-south-1.amazonaws.com/vantage-judge:a1b2c3d.
+      Must NOT be :latest - CloudFormation diffs this string, so a fixed tag
+      makes every deploy a silent no-op.
+
+  JudgeToken:
+    Type: String
+    NoEcho: true
+    Description: Shared secret required in the x-judge-token header on /api/* (except /api/health).
+
+  FunctionName:
+    Type: String
+    Default: vantage-judge
+
+  WarmPingMinutes:
+    Type: Number
+    Default: 5
+    Description: Warm ping interval. 5 min = 8,640 invocations/month, ~1% of the free request tier.
+
+Resources:
+
+  JudgeFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Ref FunctionName
+      PackageType: Image
+      Code:
+        ImageUri: !Ref ImageUri
+      Role: !GetAtt JudgeExecutionRole.Arn
+      # 2 GB buys ~1.2 vCPU, which matters: g++ -O2 and a JVM start per test case
+      # are both CPU-bound, and Lambda scales CPU with memory.
+      MemorySize: 2048
+      # Worst realistic case: 30 s compile + 13 test cases x 5 s TIME_LIMIT = ~95 s.
+      # NOTE: the Spring caller's RestTemplate read timeout (WebConfig.java) is 30 s
+      # and is the real ceiling - raise it there too or this headroom is unused.
+      Timeout: 120
+      Architectures:
+        - x86_64
+      # Cost fuse. The judge compiles and runs submitted code; without a cap a
+      # loop of requests could run up compute charges past the free tier.
+      ReservedConcurrentExecutions: 5
+      Environment:
+        Variables:
+          MODE: host
+          NODE_ENV: production
+          JUDGE_TOKEN: !Ref JudgeToken
+
+  JudgeExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      # CloudWatch Logs only. The judge touches no other AWS service, and
+      # submitted code runs in this same process - so this role is deliberately
+      # the minimum, to bound what a malicious submission could reach.
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  JudgeLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${FunctionName}
+      # Without this, Lambda logs are retained forever and slowly cost money.
+      RetentionInDays: 14
+
+  # ── Public URL, guarded by the shared secret ──
+  # AuthType NONE because the Spring caller uses a plain RestTemplate; AWS_IAM
+  # would require SigV4 signing (and the AWS SDK) on the Spring side. The
+  # x-judge-token header check in src/app.js is what actually gates access,
+  # so JudgeToken must be a strong random value.
+  JudgeFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt JudgeFunction.Arn
+      AuthType: NONE
+
+  JudgeUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref JudgeFunction
+      Action: lambda:InvokeFunctionUrl
+      Principal: '*'
+      FunctionUrlAuthType: NONE
+
+  # ── Warm polling ──
+  # Sends {"warmup": true}, which src/lambda.js answers directly without
+  # entering Express - a few ms of billed duration per ping instead of a full
+  # request. This keeps ONE execution environment warm; a second concurrent
+  # submission still cold-starts.
+  WarmPingRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub ${FunctionName}-warm-ping
+      Description: Keeps one judge execution environment warm.
+      ScheduleExpression: !Sub rate(${WarmPingMinutes} minutes)
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt JudgeFunction.Arn
+          Id: JudgeWarmTarget
+          Input: '{"warmup": true}'
+
+  WarmPingPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref JudgeFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt WarmPingRule.Arn
+
+Outputs:
+
+  JudgeUrl:
+    Description: Function URL - set this as judge.base-url in the Spring app (no trailing slash).
+    Value: !GetAtt JudgeFunctionUrl.FunctionUrl
+
+  HealthCheck:
+    Description: Unauthenticated health endpoint.
+    Value: !Sub '${JudgeFunctionUrl.FunctionUrl}api/health'
+
+  DeployedImage:
+    Description: Image URI currently deployed.
+    Value: !Ref ImageUri

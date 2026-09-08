@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+*.md
+Dockerfile
+Dockerfile.lambda
+docker-compose.yml
+sandboxes
+sync-to-map.js
+.aws-sam
+samconfig.toml
+**/*.test.js

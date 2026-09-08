@@ -14,6 +14,7 @@
     "test:watch": "node --test --watch"
   },
   "dependencies": {
+    "@codegenie/serverless-express": "^4.16.0",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "tree-sitter": "0.21.1",

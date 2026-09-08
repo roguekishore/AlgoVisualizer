@@ -56,13 +56,20 @@ public class WebConfig {
     /**
      * Shared RestTemplate for internal service calls (e.g. Spring Boot → Judge).
      * Connect timeout: 5 s - fail fast if judge is unreachable.
-     * Read timeout:   30 s - generous enough for slow Java compilations.
+     * Read timeout:   125 s - must exceed the judge's own worst case, otherwise
+     *   this side aborts first and a legitimate slow submission surfaces as a
+     *   generic I/O error instead of a Time Limit Exceeded verdict. The judge
+     *   compiles once (up to 30 s) then runs each test case at a 5 s limit, and
+     *   on Lambda a cold start adds several seconds on top; its own timeout is
+     *   120 s (see judge/template.yaml), so this sits just above it.
+     *   Tradeoff: a stuck submission holds a servlet thread for ~2 min. Fine at
+     *   this traffic level; revisit if concurrency grows.
      */
     @Bean
     public RestTemplate judgeRestTemplate() {
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(5_000);   // 5 seconds
-        factory.setReadTimeout(30_000);     // 30 seconds
+        factory.setConnectTimeout(5_000);     // 5 seconds
+        factory.setReadTimeout(125_000);      // 125 seconds
         return new RestTemplate(factory);
     }
 }
