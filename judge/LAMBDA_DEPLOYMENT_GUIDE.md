@@ -186,17 +186,18 @@ generic I/O error instead of a `Time Limit Exceeded` verdict:
 | per-test-case | 5 s | `TIME_LIMIT`, `src/executor.js` |
 | compile | 30 s | `COMPILE_TIMEOUT`, `src/executor.js` |
 | Lambda | 120 s | `Timeout`, `template.yaml` |
-| Spring read | **30 s — NOT YET RAISED** | `judgeRestTemplate`, `WebConfig.java:65` |
+| Spring read | 125 s | `judgeRestTemplate`, `WebConfig.java:72` |
 
-Worst realistic case is a 13-test-case problem failing every case: 30 + 13×5 ≈ 95 s.
-The Spring read timeout must be the largest, but **it is still 30 s** — verified in code
-2026-09-08. This guide previously claimed 125 s; that change was never applied.
+Worst realistic case is a 13-test-case problem failing every case: 30 + 13×5 ≈ 95 s, plus a
+cold start. The Spring read timeout must be the largest, and at 125 s it is — verified in
+code 2026-09-08.
 
-So a submission slower than 30 s surfaces as a generic I/O error instead of a
-`Time Limit Exceeded` verdict, and the Lambda keeps running (and billing) after Spring has
-given up. Latent, not yet observed — a cold start plus a slow Java compile is the likely
-first trigger. Fix: `factory.setReadTimeout(125_000)` in `WebConfig.java`. Needs a native
-rebuild (~8 min), so it was not bundled into today's deploys.
+It was 30 s before, which would have aborted first and turned a legitimate
+`Time Limit Exceeded` verdict into a generic I/O error while the Lambda kept running (and
+billing) after Spring gave up.
+
+Tradeoff: a stuck submission now holds a servlet thread for ~2 min. Fine at this traffic
+level; revisit if concurrency grows.
 
 ---
 
