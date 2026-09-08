@@ -10,7 +10,7 @@ class BattleServiceQueueGuardTest {
     private BattleService newService() {
         return new BattleService(
                 null, null, null, null, null, null, null,
-                null, null, null, null, null, null
+                null, null, null, null, null, null, null
         );
     }
 

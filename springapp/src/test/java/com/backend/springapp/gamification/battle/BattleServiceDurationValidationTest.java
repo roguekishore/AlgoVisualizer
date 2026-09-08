@@ -10,7 +10,7 @@ class BattleServiceDurationValidationTest {
     private BattleService newService() {
         return new BattleService(
                 null, null, null, null, null, null, null,
-                null, null, null, null, null, null
+                null, null, null, null, null, null, null
         );
     }
 

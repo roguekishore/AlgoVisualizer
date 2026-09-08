@@ -135,6 +135,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // ── Always public (no JWT needed) ──
         if (path.startsWith("/api/auth/"))         return false;
         if (path.startsWith("/api/problems"))       return false;
+        if (path.startsWith("/api/judge/problems")) return false;
         if (path.startsWith("/api/stages"))         return false;
         if (path.startsWith("/api/users/"))         return false;
         if (path.startsWith("/api/institutions"))   return false;

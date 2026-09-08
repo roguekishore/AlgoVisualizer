@@ -52,6 +52,7 @@ public class BattleService {
     private final SimpMessagingTemplate messagingTemplate;
     private final AchievementService achievementService;
     private final RestTemplate judgeRestTemplate;
+    private final com.backend.springapp.judge.JudgeProxyService judgeProxyService;
     @Value("${judge.base-url:http://localhost:9000}")
     private String judgeBaseUrl;
     @Value("${battle.customTimer1v1.enabled:true}")
@@ -673,25 +674,11 @@ public class BattleService {
         );
     }
 
-    /** Proxy code to the Judge service. */
+    /** Proxy code to the Judge service via JudgeProxyService (fetches testCases from catalog). */
     private JudgeResult callJudge(String problemId, String language, String code) {
         try {
-            Map<String, String> body = Map.of(
-                    "problemId", problemId,
-                    "language", language,
-                    "code", code
-            );
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<Map<String, String>> request = new HttpEntity<>(body, headers);
-
-                    ResponseEntity<Map<String, Object>> response = judgeRestTemplate.exchange(
-                        getJudgeSubmitUrl(), HttpMethod.POST, request,
-                        new ParameterizedTypeReference<>() {});
-
-            Map<?, ?> resBody = response.getBody();
-            if (resBody == null) {
+            Map<?, ?> resBody = judgeProxyService.submit(problemId, language, code);
+            if (resBody == null || resBody.isEmpty()) {
                 return new JudgeResult(Verdict.RUNTIME_ERROR, 0L, null, null, null, null);
             }
 
@@ -707,7 +694,6 @@ public class BattleService {
                 default -> Verdict.RUNTIME_ERROR;
             };
 
-            // Extract the first failed test case for frontend display (LeetCode-style)
             String ffInput = null, ffExpected = null, ffActual = null, ffError = null;
             Object rawResults = resBody.get("results");
             if (rawResults instanceof java.util.List<?> resultList) {
@@ -1728,16 +1714,11 @@ public class BattleService {
         }
 
         try {
-                    ResponseEntity<List<Map<String, Object>>> response = judgeRestTemplate.exchange(
-                        getJudgeProblemsUrl(), HttpMethod.GET, HttpEntity.EMPTY,
-                        new ParameterizedTypeReference<>() {});
-
-            List<?> rows = response.getBody();
+            List<Map<String, Object>> rows = judgeProxyService.fetchProblems();
             if (rows == null || rows.isEmpty()) return judgeProblemCatalogCache;
 
             List<JudgeProblemSummary> parsed = new ArrayList<>();
-            for (Object row : rows) {
-                if (!(row instanceof Map<?, ?> m)) continue;
+            for (Map<String, Object> m : rows) {
                 Object idObj = m.get("id");
                 if (idObj == null) continue;
                 String id = String.valueOf(idObj).trim();
