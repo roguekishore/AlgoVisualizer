@@ -141,18 +141,36 @@ problem set, and open outbound connections.
 What bounds the damage:
 
 - the execution role carries **only** `AWSLambdaBasicExecutionRole` (CloudWatch Logs) — those credentials can do nothing else
-- `ReservedConcurrentExecutions: 5` caps runaway compute cost
+- ~~`ReservedConcurrentExecutions` caps runaway compute cost~~ — **this fuse is GONE.** The
+  property was removed 2026-09-08: this account's *total* concurrency limit is 10, and AWS
+  requires ≥10 to stay unreserved, so any reservation fails the stack (see "Deploy failures"
+  below). Cost is currently bounded only by the account-wide limit. To restore the fuse,
+  raise the quota first (Service Quotas → Lambda → "Concurrent executions"), then re-add
+  `ReservedConcurrentExecutions` to `template.yaml`.
 - Firecracker isolates the function from other tenants and from your other infrastructure
 - `JUDGE_TOKEN` gates `/api/*` (except `/api/health`) on an `x-judge-token` header
 
-**The token is not a real secret for the browser.** `REACT_APP_JUDGE_TOKEN` is
-compiled into the public JS bundle, so anyone can extract it from the deployed
-frontend. It stops casual discovery of an open compile-and-run endpoint; it does
-not stop a determined abuser.
+**The proxy fix is DONE** (2026-09-08). `/api/submit`, `/api/run` and `/api/trace` now go
+through Spring's `JudgeProxyService`, so only the server holds the token and the browser
+never sees it. `REACT_APP_JUDGE_TOKEN` is no longer used for these calls — the earlier
+warning that it shipped in the public JS bundle no longer applies.
 
-The durable fix is to proxy `/api/submit`, `/api/run` and `/api/trace` through the
-Spring backend so only a server holds the token, and let the browser talk to Spring
-only. That is a frontend change beyond this deployment.
+**Test cases reach the executor via a token-guarded catalog route.** The Lambda has no
+problem catalog, and the catalog's public `/api/problems/:id` strips `testCases` (returning
+only `testCaseCount` + 2 `sampleTestCases`). So Spring fetches them from
+`GET /api/internal/problems/:id` on the catalog, sending `x-judge-token`, then POSTs
+`{language, code, testCases}` to the executor.
+
+That route requires **`JUDGE_TOKEN` set on the catalog container too** — it previously had
+none. The guard fails *closed*: unset or mismatched token → 403 → the UI shows the
+misleading "Problem not found or has no test cases". Never fall back to grading against
+`sampleTestCases`: a wrong solution passing the 2 samples would be marked `Accepted`,
+which writes real coins/XP/rating.
+
+**Still open:** `roguekishore/vantage-catalog` and `roguekishore/judge` are public on Docker
+Hub and both bake in `src/problems/`, where 145 of 158 files carry a `solution` field
+alongside every hidden test case. Anyone can `docker pull` and extract them, which bypasses
+the token guard entirely. Make those repos private and/or strip `solution` at image build.
 
 Do not put anything sensitive in this function's environment variables.
 
@@ -168,11 +186,94 @@ generic I/O error instead of a `Time Limit Exceeded` verdict:
 | per-test-case | 5 s | `TIME_LIMIT`, `src/executor.js` |
 | compile | 30 s | `COMPILE_TIMEOUT`, `src/executor.js` |
 | Lambda | 120 s | `Timeout`, `template.yaml` |
-| Spring read | 125 s | `judgeRestTemplate`, `WebConfig.java` |
+| Spring read | **30 s — NOT YET RAISED** | `judgeRestTemplate`, `WebConfig.java:65` |
 
 Worst realistic case is a 13-test-case problem failing every case: 30 + 13×5 ≈ 95 s.
-The Spring read timeout must be the largest — it was 30 s and would have aborted
-first.
+The Spring read timeout must be the largest, but **it is still 30 s** — verified in code
+2026-09-08. This guide previously claimed 125 s; that change was never applied.
+
+So a submission slower than 30 s surfaces as a generic I/O error instead of a
+`Time Limit Exceeded` verdict, and the Lambda keeps running (and billing) after Spring has
+given up. Latent, not yet observed — a cold start plus a slow Java compile is the likely
+first trigger. Fix: `factory.setReadTimeout(125_000)` in `WebConfig.java`. Needs a native
+rebuild (~8 min), so it was not bundled into today's deploys.
+
+---
+
+## Deploy failures
+
+Both of these cost a production outage on 2026-09-08. Both are now fixed in
+`template.yaml`; this section explains what to do if they resurface.
+
+### Function URL 403 — needs TWO permissions, not one
+
+Every request to the URL returns `403` with `{"Message":"Forbidden..."}` and
+`x-amzn-ErrorType: AccessDeniedException`. **This never reaches Express**, so CloudWatch
+shows nothing and the app logs stay silent — which makes it look like a networking or DNS
+problem rather than authorization.
+
+`AuthType: NONE` plus a `lambda:InvokeFunctionUrl` grant is **not sufficient**. A second
+statement granting `lambda:InvokeFunction` with `InvokedViaFunctionUrl: true` is also
+required. Both are now in `template.yaml` (`JudgeUrlPermission`, `JudgeUrlInvokePermission`).
+
+Diagnostic ladder — each rung isolates one layer:
+
+| Request | Expected | Meaning |
+|---|---|---|
+| `GET /api/health` | `200` | AWS let you through (health is registered *before* the token gate) |
+| `POST /api/submit`, no token | `401 {"error":"Unauthorized"}` | app's token gate is armed |
+| `POST /api/submit`, token, body `{}` | `400 Missing required fields` | **success** — the real handler ran |
+
+The capital-`M` `"Message"` is the tell: that shape comes from the AWS edge. The app's own
+rejection is lowercase `{"error": ...}`. A `400` on the third rung is the goal, not a failure.
+
+Do **not** waste time on: `AuthType` (check it once), the resource policy's
+`FunctionUrlAuthType` condition, SCPs (only apply in an Organization), or deleting and
+recreating the URL config — that last one only issues a **new URL**, forcing a
+`VANTAGE_JUDGE_BASE_URL` update and a `vantage` restart for nothing.
+
+Note `aws lambda add-permission --function-url-auth-type` is **rejected** for the
+`InvokeFunction` action (`FunctionUrlAuthType is only supported for lambda:InvokeFunctionUrl`).
+Use `--invoked-via-function-url` there instead.
+
+### ReservedConcurrentExecutions rolls the stack back
+
+```
+Specified ReservedConcurrentExecutions for function decreases account's
+UnreservedConcurrentExecution below its minimum value of [10]
+```
+
+This account's total concurrency limit is **10**, and AWS requires ≥10 to remain
+unreserved — so *any* reservation fails. The property has been removed.
+
+**On a fresh create this deletes the function**, because a failed `CREATE` rolls back and
+`DELETE_COMPLETE`s every resource in the stack. The stack is then stuck in
+`ROLLBACK_COMPLETE`, which cannot be updated — only deleted:
+
+```bash
+aws cloudformation delete-stack --stack-name vantage-judge --region ap-south-1
+aws cloudformation wait stack-delete-complete --stack-name vantage-judge --region ap-south-1
+./deploy.sh
+```
+
+The ECR image survives (`deploy.sh` creates the repo outside CloudFormation), so no rebuild
+is needed.
+
+### After any stack recreate
+
+The new stack creates a **new function URL**. Update both values on the runtime host and
+recreate the container, or Spring keeps calling a dead URL:
+
+```bash
+# ~/.env: VANTAGE_JUDGE_BASE_URL=<new url, no trailing slash>
+#         VANTAGE_JUDGE_TOKEN=<contents of judge/.judge-token>
+docker compose up -d --force-recreate vantage
+```
+
+`deploy.sh` reads `.judge-token` and bakes it into the stack, so a token rotation and a
+redeploy are the same operation — but Spring and the **catalog** must both be updated to
+match, or submit fails with `401` from the executor (Spring's token wrong) or `403` from the
+catalog (catalog's token wrong).
 
 ---
 
