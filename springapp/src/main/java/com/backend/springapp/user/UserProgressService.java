@@ -175,10 +175,17 @@ public class UserProgressService {
     }
 
     /**
-     * Helper to create User reference without loading full entity.
+     * Helper to load the User for the UserProgress FK.
+     *
+     * <p>Must be a real entity load, NOT {@code getReferenceById}: native images
+     * run with Hibernate's BytecodeProvider set to {@code none}, so generating a
+     * HibernateProxy at runtime throws
+     * {@code "Generation of HibernateProxy instances at runtime is not allowed"}.
+     * Callers have already checked {@code existsById}, so this cannot normally miss.</p>
      */
     private User createUserReference(Long uid) {
-        return userRepository.getReferenceById(uid);
+        return userRepository.findById(uid)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + uid));
     }
 
     /**
