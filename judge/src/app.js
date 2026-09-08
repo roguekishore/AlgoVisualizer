@@ -1,9 +1,15 @@
 const express = require("express");
 const cors = require("cors");
+const crypto = require("crypto");
 const submissionRouter = require("./routes/submission");
 const problemsRouter = require("./routes/problems");
 const { detectMode } = require("./executor");
 const pool = require("./workerPool");
+
+// Capture the token and immediately remove it from the environment so child
+// processes and later require()s cannot observe it.
+const TOKEN = process.env.JUDGE_TOKEN;
+delete process.env.JUDGE_TOKEN;
 
 /**
  * Build the Express app WITHOUT starting a listener or touching the worker pool.
@@ -14,7 +20,8 @@ const pool = require("./workerPool");
 function createApp() {
   const app = express();
 
-  app.use(cors());
+  const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || "*";
+  app.use(cors({ origin: ALLOWED_ORIGIN }));
   app.use(express.json({ limit: "5mb" }));
 
   // Health check - registered before the token gate so warm pings and
@@ -27,10 +34,15 @@ function createApp() {
   // The judge compiles and runs arbitrary submitted code. On Lambda it does so
   // in its own process (MODE=host), so the endpoint must not be openly callable.
   // Set JUDGE_TOKEN to require the header; leave it unset for local dev.
-  const TOKEN = process.env.JUDGE_TOKEN;
   if (TOKEN) {
+    const tokenBuf = Buffer.from(TOKEN);
     app.use("/api", (req, res, next) => {
-      if (req.get("x-judge-token") === TOKEN) return next();
+      const provided = req.get("x-judge-token") || "";
+      const providedBuf = Buffer.from(provided);
+      if (providedBuf.length === tokenBuf.length &&
+          crypto.timingSafeEqual(providedBuf, tokenBuf)) {
+        return next();
+      }
       return res.status(401).json({ error: "Unauthorized" });
     });
   }

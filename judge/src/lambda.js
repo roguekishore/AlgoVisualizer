@@ -1,7 +1,28 @@
+const fs = require("fs");
+const path = require("path");
 const serverlessExpress = require("@codegenie/serverless-express");
 const { createApp } = require("./app");
 
 const server = serverlessExpress({ app: createApp() });
+
+const TEMP_DIR = path.join(require("os").tmpdir(), "vantage-judge");
+const STALE_MS = 5 * 60 * 1000;
+
+function sweepTmp() {
+  try {
+    if (!fs.existsSync(TEMP_DIR)) return;
+    const now = Date.now();
+    for (const entry of fs.readdirSync(TEMP_DIR)) {
+      const full = path.join(TEMP_DIR, entry);
+      try {
+        const stat = fs.statSync(full);
+        if (now - stat.mtimeMs > STALE_MS) {
+          fs.rmSync(full, { recursive: true, force: true });
+        }
+      } catch { /* best-effort per entry */ }
+    }
+  } catch { /* best-effort */ }
+}
 
 /**
  * Lambda entrypoint.
@@ -12,6 +33,7 @@ const server = serverlessExpress({ app: createApp() });
  * running a full request through the router.
  */
 exports.handler = async (event, context) => {
+  sweepTmp();
   if (event && event.warmup === true) {
     return { warmed: true };
   }

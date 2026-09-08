@@ -5,6 +5,12 @@ const { v4: uuidv4 } = require("uuid");
 const os = require("os");
 const pool = require("./workerPool");
 
+const CHILD_ENV = {
+  PATH: process.env.PATH,
+  HOME: process.env.HOME || "/tmp",
+  LANG: process.env.LANG || "C.UTF-8",
+};
+
 const TEMP_DIR = path.join(os.tmpdir(), "vantage-judge");
 
 // Ensure temp directory exists
@@ -526,9 +532,10 @@ function runWithTraceChannelHost(command, args, input, traceFile, extraEnv = {})
       input,
       timeout: TIME_LIMIT,
       maxBuffer: 10 * 1024 * 1024,
-      env: { ...process.env, VANTAGE_TRACE_FILE: traceFile, ...extraEnv },
+      env: { ...CHILD_ENV, VANTAGE_TRACE_FILE: traceFile, ...extraEnv },
       // stdin, stdout, stderr, then fd 3 → trace file.
       stdio: ["pipe", "pipe", "pipe", traceFd],
+      killSignal: "SIGKILL",
     });
     const time = Date.now() - start;
     return { stdout: stdout.toString(), stderr: "", time, exitCode: 0 };
@@ -574,6 +581,7 @@ function compileCppHost(code, sessionDir) {
     execSync(`g++ -std=c++17 -O2 -o "${outputFile}" "${sourceFile}"`, {
       timeout: COMPILE_TIMEOUT,
       stdio: ["pipe", "pipe", "pipe"],
+      env: CHILD_ENV,
     });
     return { success: true, binary: outputFile };
   } catch (compileErr) {
@@ -601,6 +609,8 @@ function runCppBinaryHost(binary, input) {
       timeout: TIME_LIMIT,
       maxBuffer: 10 * 1024 * 1024,
       stdio: ["pipe", "pipe", "pipe"],
+      env: CHILD_ENV,
+      killSignal: "SIGKILL",
     });
     const time = Date.now() - start;
     return { stdout: stdout.toString(), stderr: "", time, exitCode: 0 };
@@ -639,6 +649,7 @@ function compileJavaHost(code, sessionDir) {
       timeout: COMPILE_TIMEOUT,
       cwd: sessionDir,
       stdio: ["pipe", "pipe", "pipe"],
+      env: CHILD_ENV,
     });
     return { success: true, className, classDir: sessionDir };
   } catch (compileErr) {
@@ -666,6 +677,8 @@ function runJavaClassHost(classDir, className, input) {
       timeout: TIME_LIMIT,
       maxBuffer: 10 * 1024 * 1024,
       stdio: ["pipe", "pipe", "pipe"],
+      env: CHILD_ENV,
+      killSignal: "SIGKILL",
     });
     const time = Date.now() - start;
     return { stdout: stdout.toString(), stderr: "", time, exitCode: 0 };
