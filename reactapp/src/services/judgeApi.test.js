@@ -23,7 +23,7 @@ describe("traceCode", () => {
 
     expect(global.fetch).toHaveBeenCalledTimes(1);
     const [url, options] = global.fetch.mock.calls[0];
-    expect(url).toMatch(/\/api\/trace$/);
+    expect(url).toMatch(/\/api\/judge\/trace$/);
     expect(options.method).toBe("POST");
     expect(options.headers["Content-Type"]).toBe("application/json");
     expect(JSON.parse(options.body)).toEqual({

@@ -1,43 +1,23 @@
-/**
- * Judge API Service
- * Connects the React frontend to the standalone judge backend.
- * 
- * Configuration:
- * - Set REACT_APP_JUDGE_URL in .env file (never commit .env to git)
- * - For local development: REACT_APP_JUDGE_URL=http://localhost:9000
- * - For production: REACT_APP_JUDGE_URL=http://your-server:9000
- */
+import { API_BASE, authFetch } from "./api";
 
-const JUDGE_BASE_URL = process.env.REACT_APP_JUDGE_URL || "http://localhost:9000";
-
-/**
- * Fetch all problems (summary)
- */
-
+const json = () => ({ "Content-Type": "application/json" });
 
 export async function fetchProblems() {
-  const res = await fetch(`${JUDGE_BASE_URL}/api/problems`);
+  const res = await authFetch(`${API_BASE}/judge/problems`);
   if (!res.ok) throw new Error("Failed to fetch problems");
   return res.json();
 }
 
-/**
- * Fetch a single problem by ID (full details)
- */
 export async function fetchProblem(id) {
-  const res = await fetch(`${JUDGE_BASE_URL}/api/problems/${id}`);
+  const res = await authFetch(`${API_BASE}/judge/problems/${id}`);
   if (!res.ok) throw new Error(`Failed to fetch problem: ${id}`);
   return res.json();
 }
 
-/**
- * Submit code for full evaluation against all test cases
- * @param {{ problemId: string, language: string, code: string }} payload
- */
 export async function submitCode({ problemId, language, code }) {
-  const res = await fetch(`${JUDGE_BASE_URL}/api/submit`, {
+  const res = await authFetch(`${API_BASE}/judge/submit`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: json(),
     body: JSON.stringify({ problemId, language, code }),
   });
   if (!res.ok) {
@@ -47,14 +27,10 @@ export async function submitCode({ problemId, language, code }) {
   return res.json();
 }
 
-/**
- * Run code with custom input (single execution)
- * @param {{ language: string, code: string, input: string }} payload
- */
 export async function runCode({ language, code, input }) {
-  const res = await fetch(`${JUDGE_BASE_URL}/api/run`, {
+  const res = await authFetch(`${API_BASE}/judge/run`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: json(),
     body: JSON.stringify({ language, code, input }),
   });
   if (!res.ok) {
@@ -63,18 +39,12 @@ export async function runCode({ language, code, input }) {
   }
   return res.json();
 }
-/**
- * Capture an execution-flow trace for visualization (single execution)
- * POSTs to /api/trace and resolves the parsed TraceResult on success.
- * Does not mutate the provided payload.
- * @param {{ language: string, code: string, input?: string }} payload
- * @returns {Promise<object>} the parsed TraceResult
- */
+
 export async function traceCode(payload) {
   const { language, code, input = "" } = payload || {};
-  const res = await fetch(`${JUDGE_BASE_URL}/api/trace`, {
+  const res = await authFetch(`${API_BASE}/judge/trace`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: json(),
     body: JSON.stringify({ language, code, input }),
   });
   if (!res.ok) {
