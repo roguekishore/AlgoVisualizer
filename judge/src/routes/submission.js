@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const { executeCode, runAgainstTestCases } = require("../executor");
-const { getProblem } = require("../problemStore");
 const { traceProgram } = require("../tracer");
 
 const MAX_CODE_SIZE = 64 * 1024;   // 64 KB
@@ -12,10 +11,10 @@ const MAX_INPUT_SIZE = 1024 * 1024; // 1 MB
  * Submit code for full evaluation against all test cases
  */
 router.post("/submit", async (req, res) => {
-  const { problemId, language, code } = req.body;
+  const { language, code, testCases } = req.body;
 
-  if (!problemId || !language || !code) {
-    return res.status(400).json({ error: "Missing required fields: problemId, language, code" });
+  if (!language || !code || !Array.isArray(testCases)) {
+    return res.status(400).json({ error: "Missing required fields: language, code, testCases" });
   }
 
   if (!["cpp", "java"].includes(language)) {
@@ -26,13 +25,8 @@ router.post("/submit", async (req, res) => {
     return res.status(400).json({ error: `Code exceeds maximum size of ${MAX_CODE_SIZE / 1024} KB.` });
   }
 
-  const problem = getProblem(problemId);
-  if (!problem) {
-    return res.status(404).json({ error: `Problem '${problemId}' not found.` });
-  }
-
   try {
-    const result = await runAgainstTestCases(language, code, problem.testCases);
+    const result = await runAgainstTestCases(language, code, testCases);
     return res.json(result);
   } catch (err) {
     console.error("Submission error:", err);
